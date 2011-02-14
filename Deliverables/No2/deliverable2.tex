@@ -1,0 +1,156 @@
+\documentclass[a4paper,11pt]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+\usepackage[british,english]{babel}
+\usepackage[T1]{fontenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Multipart figures
+\usepackage{subfigure}
+
+% More symbols
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% Uncomment if you want to use Palatino as font
+\usepackage[sc]{mathpazo}
+\linespread{1.05}         % Palatino needs more leading (space between lines)
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{Product and Process Brief\\\small{for}\\\small{Danske Bank: Peer-to-peer}}
+\author{ Jesper Borgstrup, Thomas Kjeldsen and Mads Ohm Larsen }
+
+\date{February 18}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+\tableofcontents
+\vspace{2cm}
+
+\noindent\textbf{Terms}
+
+The term ‘task’ is often used in the team charter. 
+It substitutes all RTC element types – e.g. business deliverable, defect etc. unless otherwise stated.
+
+\pagebreak
+Multiple reasons exist for preparing a team charter. One is to document the team’s purpose and clearly define individual roles, responsibilities, and operating rules. Next, it establishes procedures for both the team and agency management on communicating, reporting, and decision-making procedures. It lays out a blueprint for conducting business for the acquisition and defines how the team works in an empowered manner, including setting out responsibility and authority. Finally it facilitates stakeholder buy in by including key members in the decision making process and obtaining their concurrence along the way. 
+
+\section{Purpose/Vision} % (fold)
+\label{sec:purpose_vision}
+
+\subsection{Roadmap} % (fold)
+\label{subsec:roadmap}
+
+% subsection roadmap (end)
+
+% section purpose_vision (end)
+
+\section{User/Customer} % (fold)
+\label{sec:user_customer}
+
+% section user_customer (end)
+
+\section{Team resources, roles and obligations} % (fold)
+\label{sec:team_resources_roles_and_obligations}
+
+\subsection{Skills} % (fold)
+\label{subsec:skills}
+In this team the following skills are needed:
+
+\begin{tabular}{|p{4cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+Skills                   & High   & Medium & Low 					 \\\hline
+Android development      & Jesper & Thomas & Mads 					 \\\hline
+Configuration Management &        &        &      					 \\\hline
+Scrum Master             &        &        & Jesper, Thomas and Mads \\\hline 
+\end{tabular}
+% subsection skills (end)
+
+\subsection{Resources} % (fold)
+\label{subsec:resources}
+Correspondence between team members and roles:
+
+\begin{tabular}{|p{4cm}|p{3cm}|p{3cm}|}
+\hline
+Team Member              & Roles and responsibilities   & Strengths and focus area \\\hline
+Jesper                   &                              &                          \\\hline
+Thomas                   &                              &                          \\\hline
+Mads                     &                              &                          \\\hline 
+\end{tabular}
+% subsection resources (end)
+
+% section team_resources_roles_and_obligations (end)
+
+\section{Team empowerment} % (fold)
+\label{sec:team_empowerment}
+
+% section team_empowerment (end)
+
+\section{Team values} % (fold)
+\label{sec:team_values}
+
+% section team_values (end)
+
+\section{Team processes} % (fold)
+\label{sec:team_processes}
+
+\subsection{Configuration management} % (fold)
+\label{subsec:configuration_management}
+
+% subsection configuration_management (end)
+
+\subsection{Office rules} % (fold)
+\label{subsec:office_rules}
+
+% subsection office_rules (end)
+
+\subsection{Calendar planning} % (fold)
+\label{subsec:calendar_planning}
+
+% subsection calendar_planning (end)
+
+% section team_processes (end)
+
+\section{Team performance \& progress monitoring} % (fold)
+\label{sec:team_performance_progress_monitoring}
+
+% section team_performance_progress_monitoring (end)
+
+
+\end{document}
