@@ -135,7 +135,6 @@ Mads                     &                              &                       
 \section{Team empowerment} % (fold)
 \label{sec:team_empowerment}
 
-
 % section team_empowerment (end)
 
 \section{Team values} % (fold)
@@ -144,6 +143,7 @@ Mads                     &                              &                       
 \begin{itemize}
   \item We're respectfully nice to each other.
   \item If someone's feeling overwhelmed they're entitled to a hug (subject to a daily maximum of 3 and a weekly maximum of 5)
+  \item We show up on time, and if we're prevented or running late we let each other know.
 \end{itemize}
 
 % section team_values (end)
@@ -153,6 +153,15 @@ Mads                     &                              &                       
 
 \subsection{Configuration management} % (fold)
 \label{subsec:configuration_management}
+
+We use Git as our SCM system. Our repository is hosted publicly on GitHub (unless product owner poses restrictions due to proprietary code etc). @TODO: Clarify!
+
+We're using a Test Driven Development approach, which imposes the following structure on the Master branch:
+\begin{itemize}
+\item Code committed to the central repository must be thoroughly covered by JUnit tests.
+\item Tests must not fail when comitted, even if this means methods are stubbed.
+\item Code must compile.
+\end{itemize}
 
 % subsection configuration_management (end)
 
