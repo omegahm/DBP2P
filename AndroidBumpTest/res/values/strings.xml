@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, MainActivity!</string>
+    <string name="app_name">AndroidBumpTest</string>
+    <string name="start_bumpapi_activity">Start BumpAPI Activity</string>
+</resources>
