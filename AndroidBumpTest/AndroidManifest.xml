@@ -15,6 +15,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".ConnectedActivity" android:theme="@android:style/Theme" android:label="@string/connected_with_bump"/>
 		<activity android:name="com.bumptech.bumpapi.BumpAPI"
 			android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
 		<activity android:name="com.bumptech.bumpapi.EditTextActivity"

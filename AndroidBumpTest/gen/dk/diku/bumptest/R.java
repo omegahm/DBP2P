@@ -45,7 +45,9 @@ public final class R {
     }
     public static final class id {
         public static final int api_popup=0x7f080000;
-        public static final int btnStartBumpAPI=0x7f08001e;
+        public static final int btnDisconnectBump=0x7f080022;
+        public static final int btnSendMessage=0x7f080021;
+        public static final int btnStartBumpAPI=0x7f080027;
         public static final int bump_hand_left=0x7f080005;
         public static final int bump_hand_right=0x7f080006;
         public static final int bump_icon=0x7f080007;
@@ -57,13 +59,19 @@ public final class R {
         public static final int content_layout=0x7f08000c;
         public static final int edit_text_cancel=0x7f080015;
         public static final int edit_text_okay=0x7f080016;
-        public static final int linearLayout1=0x7f08001d;
+        public static final int lblConnectedTo=0x7f08001d;
+        public static final int lblLog=0x7f080023;
+        public static final int lblLogArea=0x7f080026;
+        public static final int lblSendText=0x7f08001e;
+        public static final int linearLayout1=0x7f080020;
+        public static final int linearLayout2=0x7f080025;
         public static final int no_button=0x7f080011;
         public static final int notify=0x7f08000e;
         public static final int notify_bar=0x7f08000d;
         public static final int progress=0x7f08000a;
         public static final int prompt_edit_text=0x7f080012;
         public static final int response_bar=0x7f080014;
+        public static final int scrollView1=0x7f080024;
         public static final int start_edit_name=0x7f08001a;
         public static final int start_prompt=0x7f080017;
         public static final int start_user_name=0x7f080019;
@@ -71,6 +79,7 @@ public final class R {
         public static final int status_bar=0x7f080004;
         public static final int text_edit_text=0x7f080013;
         public static final int title_bar=0x7f080001;
+        public static final int txtSendText=0x7f08001f;
         public static final int user_bar=0x7f080018;
         public static final int waiting_progress=0x7f08001c;
         public static final int waiting_prompt=0x7f08001b;
@@ -82,7 +91,8 @@ public final class R {
         public static final int bump_edit_text=0x7f030002;
         public static final int bump_start_view=0x7f030003;
         public static final int bump_waiting_view=0x7f030004;
-        public static final int main=0x7f030005;
+        public static final int connected=0x7f030005;
+        public static final int main=0x7f030006;
     }
     public static final class raw {
         public static final int bump_blip=0x7f050000;
@@ -930,7 +940,13 @@ public final class R {
  This message informs the user that he canceled the bump connection.  "bump" is used as a noun here.   
          */
         public static final int bump_you_canceled=0x7f060010;
+        public static final int connected_to=0x7f060025;
+        public static final int connected_with_bump=0x7f060023;
+        public static final int disconnect_bump=0x7f060027;
         public static final int hello=0x7f060020;
+        public static final int log=0x7f060028;
+        public static final int send_message=0x7f060024;
+        public static final int send_message_button=0x7f060026;
         public static final int start_bumpapi_activity=0x7f060022;
     }
     public static final class style {
