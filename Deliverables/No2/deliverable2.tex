@@ -65,16 +65,16 @@
 
 \noindent\textbf{Terms}
 
-The term ‘task’ is often used in the team charter. 
+The term ``task'' is often used in the team charter. 
 It substitutes all RTC element types – e.g. business deliverable, defect etc. unless otherwise stated.
 
 \pagebreak
-Multiple reasons exist for preparing a team charter. One is to document the team’s purpose and clearly define individual roles, responsibilities, and operating rules. Next, it establishes procedures for both the team and agency management on communicating, reporting, and decision-making procedures. It lays out a blueprint for conducting business for the acquisition and defines how the team works in an empowered manner, including setting out responsibility and authority. Finally it facilitates stakeholder buy in by including key members in the decision making process and obtaining their concurrence along the way. 
+Multiple reasons exist for preparing a team charter. One is to document the team's purpose and clearly define individual roles, responsibilities, and operating rules. Next, it establishes procedures for both the team and agency management on communicating, reporting, and decision-making procedures. It lays out a blueprint for conducting business for the acquisition and defines how the team works in an empowered manner, including setting out responsibility and authority. Finally it facilitates stakeholder buy in by including key members in the decision making process and obtaining their concurrence along the way. 
 
 \section{Purpose/Vision} % (fold)
 \label{sec:purpose_vision}
 
-The aim of this project is to extend the functionality of the Danske Bank (DB) Android App. The proposed extension will facilitate easy transfer of money from one DB customer's account to another DB customer's account, by merely bumping their phones together.
+The aim of this project is to provide an API, with which the Danske Bank (DB) Android App could be extended. The proposed extension will facilitate easy transfer of money from one DB customer's account to another DB customer's account, by merely bumping their phones together.
 
 This extension of the app aligns with the company's marketing strategy, by adding another ``cool'' technology to the app, which users will hopefully show off to friends and family similar to the recent/current voice recognition ``craze'' (Voice Search, Voice and Translate from Google, Tellme voice search for Windows Phone 7 etc.).
 
@@ -95,7 +95,7 @@ These five sprints, and their goals, are as follows:
 	
 	\item Sprint \#2 (April 1$^{\text{st}}$, 2011)
 	\begin{itemize}
-		\item Integration w/ DB server API (actual transfers)
+		\item Making safe transfers between two phones
 	\end{itemize}
 	
 	\item Sprint \#3 (April 29$^{\text{th}}$, 2011)
@@ -121,9 +121,7 @@ These five sprints, and their goals, are as follows:
 \section{User/Customer} % (fold)
 \label{sec:user_customer}
 
-Our customer is Danske Bank.
-However, the product owner hasn't been specified yet.
-% TODO: Find out who is product owner
+Our customer is Danske Bank and Sune Lomholt has agreed to be out product owner.
 
 % section user_customer (end)
 
@@ -141,7 +139,8 @@ Mads Ohm Larsen  & {\tt mads.ohm@gmail.com} 	  & (+45) 60 16 39 53 \\\hline
 
 \subsection{Skills} % (fold)
 \label{subsec:skills}
-In this team the following skills are needed: \\
+In our team we will need some different skills.
+This is the distribution on how we find ourselves fitted for these skills: \\
 
 \begin{tabular}{|p{4.5cm}|p{3cm}|p{3cm}|p{3cm}|}
 \hline
@@ -149,20 +148,25 @@ In this team the following skills are needed: \\
 Android development      & Jesper & Thomas & Mads 					 \\\hline
 Configuration Management & Mads & Jesper and Thomas          &      					 \\\hline
 Scrum Master             &        &        & Jesper, Thomas and Mads \\\hline 
+User involvement         &        & Mads, Jesper and Thomas & \\\hline
+Test                     & Mads   & Jesper and Thomas & \\\hline
 \end{tabular}
 % subsection skills (end)
 
 \subsection{Resources} % (fold)
 \label{subsec:resources}
-Correspondence between team members and roles:
+Correspondence between team members and roles:\\
 
 \begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
 \hline
-\textbf{Team Member}              & \textbf{Roles and responsibilities}   & \textbf{Strengths and focus area} \\\hline
-Jesper                   &                              &                          \\\hline
-Thomas                   &                              &                          \\\hline
-Mads                     &                              &                          \\\hline 
+\textbf{Team Member} & \textbf{Roles and responsibilities}   & \textbf{Strengths and focus area} \\\hline
+Jesper               & Coder                   & Development \\\hline
+Thomas               & Scrum Master, tester    & Test                 \\\hline
+Mads                 & SCM maintainer, tester  & Test, user involvement                         \\\hline 
 \end{tabular}
+\\
+\\
+These roles are very loose, and will be subject to change throughout the course. E.g. we will all be Scrum Master at some point during this course.
 % subsection resources (end)
 
 % section team_resources_roles_and_obligations (end)
@@ -203,9 +207,9 @@ The following are agreements made between the project members
 \label{sec:team_processes}
 
 \begin{itemize}
-	\item We are still discussing if our code can be open/publicly available
-	% TODO: Talks to Sune about this
-	\item We have agreed on using git, either via GitHub or private server
+	\item Our code will be open for everybody to see
+	
+	\item We have agreed on using git, and our code will be stationed at GitHub
 	
 	\item We have agreed on working together in person, but also being available on both a messenger platform and on Skype - or eMeeting
 	\begin{itemize}
@@ -216,9 +220,10 @@ The following are agreements made between the project members
 \subsection{Configuration management} % (fold)
 \label{subsec:configuration_management}
 
-We use Git as our SCM system. Our repository is hosted publicly on GitHub (unless product owner poses restrictions due to proprietary code etc). @TODO: Clarify!
+We use Git as our SCM system. 
+Our repository is hosted publicly on GitHub.
 
-We're using a Test Driven Development approach, which imposes the following structure on the Master branch:
+We're using a Test Driven Development approach, which imposes the following structure on the \texttt{master} branch:
 \begin{itemize}
 \item Code committed to the central repository must be thoroughly covered by JUnit tests.
 \item Tests must not fail when comitted, even if this means methods are stubbed.
