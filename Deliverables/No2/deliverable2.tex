@@ -74,13 +74,19 @@ Multiple reasons exist for preparing a team charter. One is to document the team
 \section{Purpose/Vision} % (fold)
 \label{sec:purpose_vision}
 
-The aim of this project is to provide an API, with which the Danske Bank (DB) Android App could be extended. The proposed extension will facilitate easy transfer of money from one DB customer's account to another DB customer's account, by merely bumping their phones together.
+The aim of this project is to provide a library, which Android App developers can utilize to facilitate secure communication through Bump.
 
-This extension of the app aligns with the company's marketing strategy, by adding another ``cool'' technology to the app, which users will hopefully show off to friends and family similar to the recent/current voice recognition ``craze'' (Voice Search, Voice and Translate from Google, Tellme voice search for Windows Phone 7 etc.).
+Information exchanged through Bump is subject to the Bump privacy policy, which specifically states that Bump is allowed to retain all exchanged information. For co-op games and other non-sensitive applications this may be good enough, but for exhange of financial information it is not neccesarily good enough.
 
-In addition to the social advertising aspects it further solidifies Danske Banks presence in the mobile area, which is one the factors currently differentiating DB from it's competitors for Danish private customers. 
+We have chosen to focus our sample application and prototype to target financial institututions and bank where high security and transactional confidentiality is a prerequisite, but the library will be of value to anyone who wants to utilize the Bump API while safeguarding transactions.
 
-Finally it's worth noting that PayPal, which is a major international player in micro-payments, currently has Bump functionality in their mobile app. While PayPal does not pose a significant threat to DB at present time it's worth staying on the forefront in case of a sudden surge in either micro-payments or Bump-technology ``craze''.
+Banks who use our library will be able to facilitate easy transfer of money from one customer's account to another customer's account, by merely bumping their phones together.
+
+Danske Bank is one potential customer, since its marketing strategy is throughly based on a strong presence in both social media and on the mobile platform. Their mobile banking application already has a number of technology features and it is one of the key differentiating features compared to their competitors among Danish banks.
+
+In addition to easing transactions, adding Bump would add yet another ``cool'' feature, which users will hopefully show off to friends and family similar to the recent/current voice recognition ``craze'' (Voice Search, Voice and Translate from Google, Tellme voice search for Windows Phone 7 etc.), thus adding further value through viral marketing.
+
+Finally it's worth noting that PayPal, which is a major international player in micro-payments, currently has Bump functionality in their mobile app. While PayPal does not pose a significant threat to established financial institutions at present time it's worth staying on the forefront in case of a sudden surge in either micro-payments or Bump-technology ``craze''.
 
 \subsection{Roadmap} % (fold)
 \label{subsec:roadmap}
@@ -90,22 +96,22 @@ These five sprints, and their goals, are as follows:
 \begin{itemize}
 	\item Sprint \#1 (March 11$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Research bump technology, provide working prototype of bump between two Android smartphones
+		\item Read up on relevant documentation, APIs and product and process brief refined. Implementation of a fully working prototype that allows two Android smartphones to be bumped together and transfer information between them.
 	\end{itemize}
-	
+\pagebreak
 	\item Sprint \#2 (April 1$^{\text{st}}$, 2011)
 	\begin{itemize}
-		\item Making safe transfers between two phones
+		\item Sample App that can perform safe transfers between two phones. Functionality packaged as a distributable library.
 	\end{itemize}
 	
 	\item Sprint \#3 (April 29$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item UI, polishing, user experience tested
+		\item Different approaches as how to secure information in transit have been evaluated and benefits and drawbacks have been thoroughly examined. Prototype app can perform secure communication using the preferred approach.
 	\end{itemize}
 	
 	\item Sprint \#4 (May 20$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Undecided (kept open, due to project uncertainty)
+		\item UI polished and user experience evaluated.
 	\end{itemize}
 	
 	\item Sprint \#5 (June 10$^{\text{th}}$, 2011)
@@ -121,7 +127,9 @@ These five sprints, and their goals, are as follows:
 \section{User/Customer} % (fold)
 \label{sec:user_customer}
 
-Our customer is Danske Bank and Sune Lomholt has agreed to be out product owner.
+Our customers are Android app developers, banks and financial institutions in particular, who are interested in utilizing the Bump to facilitate communication or transactions between two phones, but are not interested in leaving entirely in the hands of the creators of Bump and having clear text data be subject to the Bump privacy policy.
+
+Sune Lomholt has agreed to act as a representative of our product owner(s).
 
 % section user_customer (end)
 
@@ -259,9 +267,14 @@ At the end of a sprint, we will have a so-called sprint retrospective, discussin
 
 \section{Team performance \& progress monitoring} % (fold)
 \label{sec:team_performance_progress_monitoring}
-We will use Google Docs as our scrum tool, but we're planning to (briefly) evaluate some of the scrum tools mentioned at lectures, and also IBM's JAZZ.
+To support our process we are interested in a scrum tool that, especially because we have no offices or static whiteboards, facilitates a virtual collaboration using the scrum model.
 
-The purpose of a scrum tool is to be able to have a virtual storyboard and burndown.
+We are using Google Docs as our scrum tool and have set up a logbook of (virtual) daily scrum meetings, burndown chart, sprint- and product backlogs.
+
+Throughout Sprint 1 we will will assess how the tools are working to ensure that they are being used to their maximum potential and they are providing the neccesary product support.
+
+Pending this assessment we will consider evaluating additional scrum tools, such as IBM's Rational Team Concert (based on the Jazz collaboration platform).
+
 % section team_performance_progress_monitoring (end)
 
 
