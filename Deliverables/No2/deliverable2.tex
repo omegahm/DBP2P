@@ -63,24 +63,123 @@
 \tableofcontents
 \vspace{2cm}
 
-\noindent\textbf{Terms}
+\section{temporary notes}
 
-The term ‘task’ is often used in the team charter. 
-It substitutes all RTC element types – e.g. business deliverable, defect etc. unless otherwise stated.
+migrer til accunote
 
-\pagebreak
-Multiple reasons exist for preparing a team charter. One is to document the team’s purpose and clearly define individual roles, responsibilities, and operating rules. Next, it establishes procedures for both the team and agency management on communicating, reporting, and decision-making procedures. It lays out a blueprint for conducting business for the acquisition and defines how the team works in an empowered manner, including setting out responsibility and authority. Finally it facilitates stakeholder buy in by including key members in the decision making process and obtaining their concurrence along the way. 
+Klaus:
+* ideen
+* kan vi køre DB ud på et sidespor
+* final product: library, sample app
+
+
+
+powerconsumption per kb
+* bluetooth
+* gprs/3g
+
+value proposition
+define sprints:
+1 (2 uger): bump, bluetooth MAC + application UUID, secret key + researchet + testet
+2: bluetooth forbindelse (sikker), UI polished
+3: library, vores API
+4: konkret sample application showcasing either paypal/DB transfers, chat or filetransfers...
+5: wrap up
+
+læst op på bluetooth API
+Diffie-Helman cryptography: http://developer.android.com/reference/javax/crypto/interfaces/package-summary.html
+undersøg nok med bluetooth encryption?
+bump overførsel af ???: secretkey + bluetooth UUID
+
+
+3:
+
+bump pairing OK
+bluetooth discovery på 1 (og evt. bluetooth on på 2)
+bluetooth pairing på begge (første gang)
+
+
+Hvis getRemoteDevice virker, så slipper vi for discovery:
+
+bump pairing OK
+(evt. bluetooth on)
+bluetooth pairing på begge (første gang)
+
+
+tændt bluetooth
+visibility on
+beslut en eller begge telefoner: server (anden er bluetooth klient) <- overfør m. bump?
+forbind / opsæt RFCOMM
+krypteret kanalen
+
+???
+
+offentliggjort / tilgængelighed for andre: API
+* opret
+* luk
+* send
+* lyt
+
+???
+
+demo app muligheder:
+* paypal
+* sikker chat
+* filoverførsel
+(ikke søbet ind i vores SecureBTtransfers kode, men importerer library)
+
+???
+
+profit / world domination
+
+
+optional/extensions/develop with this in mind:
+other identity providers: NFC
+XXX for root users
+
+References:
+> http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today
+The two gamers only need to touch their devices and allow the NFC software on the devices to handle the discovery, inquiry, authentication and encryption set-up required to establish a Bluetooth link.\\
+> http://developer.android.com/sdk/android-2.3.3.html
+Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure socket connections. This lets applications communicate with simple devices that may not offer a UI for authentication. See createInsecureRfcommSocketToServiceRecord(java.util.UUID) and listenUsingInsecureRfcommWithServiceRecord(java.lang.String, java.util.UUID) for more information.\\
+> http://mobisocial.stanford.edu/news/2011/02/nfc-and-bluetooth-brought-together-with-android-2-3-3/
+To use NFC to kick off a Bluetooth session, first start a running socket server on one device, using a randomly generated service UUID. Then, create an NDEF message encoding the MAC address of the phone’s Bluetooth device and the UUID of the listening service. When this message is received by the joining phone, it will have enough information to connect to the Bluetooth server socket
+
+
+
+% end temporary notes
+
+\pagebreak 
 
 \section{Purpose/Vision} % (fold)
 \label{sec:purpose_vision}
 
-The aim of this project is to extend the functionality of the Danske Bank (DB) Android App. The proposed extension will facilitate easy transfer of money from one DB customer's account to another DB customer's account, by merely bumping their phones together.
+The aim of this project is to provide a library, which Android App developers can utilize to facilitate easy secure communication between two phones over Bluetooth.
 
-This extension of the app aligns with the company's marketing strategy, by adding another ``cool'' technology to the app, which users will hopefully show off to friends and family similar to the recent/current voice recognition ``craze'' (Voice Search, Voice and Translate from Google, Tellme voice search for Windows Phone 7 etc.).
+Providing secure communication can be reduced to two discting problems: 1) securing communication against eavesdropping and 2) validating the identity of the other party to protect against man-in-the-middle style attacks.
 
-In addition to the social advertising aspects it further solidifies Danske Banks presence in the mobile area, which is one the factors currently differentiating DB from it's competitors for Danish private customers. 
+We will use Bluetooth as the transport medium over which the transfers take place, which in addition to cryptographic measures adds additional resilience by forcing a potential attacker to be in close proximity to the user.
 
-Finally it's worth noting that PayPal, which is a major international player in micro-payments, currently has Bump functionality in their mobile app. While PayPal does not pose a significant threat to DB at present time it's worth staying on the forefront in case of a sudden surge in either micro-payments or Bump-technology ``craze''.
+Bluetooth offers advantages compared to transmitting data over the mobile network, since it is is quite efficient in terms of both power drain and transfer speed and it is not subject to usage fees.
+*** SOMETHING ABOUT EASE (or rather lack thereof) of setting up Bluetooth connections (from a user perspective) ***
+
+The library will be able to support multiple identity providers, which provide identification of the client and transport the neccessary information (out of band) for setting up the secure bluetooth transport. Support for using Bump as an identity provider will be included as a part of the project, but the library could be extended with further identity providers such as NFC (Near Field Communication) or 3rd party solutions e.g. a custom authentification server set up by a Bank or by NemID.
+
+Information exchanged through Bump is subject to the Bump privacy policy, which specifically states that Bump is allowed to retain all exchanged information. For co-op games and other non-sensitive applications this may be good enough, but for exhange of financial information it is not neccesarily good enough. *** REWRITE/REMOVE: not true ***
+
+*** REWRITE / REFOCUS below ***
+
+We have chosen to focus our sample application and prototype to target financial institututions and bank where high security and transactional confidentiality is a prerequisite, but the library will be of value to anyone who wants to utilize the Bump API while safeguarding transactions.
+
+Banks who use our library will be able to facilitate easy transfer of money from one customer's account to another customer's account, by merely bumping their phones together.
+
+Danske Bank is one potential customer, since its marketing strategy is throughly based on a strong presence in both social media and on the mobile platform. Their mobile banking application already has a number of technology features and it is one of the key differentiating features compared to their competitors among Danish banks.
+
+In addition to easing transactions, adding Bump would add yet another ``cool'' feature, which users will hopefully show off to friends and family similar to the recent/current voice recognition ``craze'' (Voice Search, Voice and Translate from Google, Tellme voice search for Windows Phone 7 etc.), thus adding further value through viral marketing.
+
+Finally it's worth noting that PayPal, which is a major international player in micro-payments, currently has Bump functionality in their mobile app. While PayPal does not pose a significant threat to established financial institutions at present time it's worth staying on the forefront in case of a sudden surge in either micro-payments or Bump-technology ``craze''.
+
+% TODO: Evt. egen bump-service?
 
 \subsection{Roadmap} % (fold)
 \label{subsec:roadmap}
@@ -90,22 +189,22 @@ These five sprints, and their goals, are as follows:
 \begin{itemize}
 	\item Sprint \#1 (March 11$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Research bump technology, provide working prototype of bump between two Android smartphones
+		\item Read up on relevant documentation, APIs and product and process brief refined. Implementation of a fully working prototype that allows two Android smartphones to be bumped together and transfer information between them.
 	\end{itemize}
-	
+\pagebreak
 	\item Sprint \#2 (April 1$^{\text{st}}$, 2011)
 	\begin{itemize}
-		\item Integration w/ DB server API (actual transfers)
+		\item Sample App that can perform secure transfers between two phones. Functionality packaged as a distributable library.
 	\end{itemize}
 	
 	\item Sprint \#3 (April 29$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item UI, polishing, user experience tested
+		\item Different approaches as how to secure information in transit have been evaluated and benefits and drawbacks have been thoroughly examined. Prototype app can perform secure communication using the preferred approach.
 	\end{itemize}
 	
 	\item Sprint \#4 (May 20$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Undecided (kept open, due to project uncertainty)
+		\item UI polished and user experience evaluated.
 	\end{itemize}
 	
 	\item Sprint \#5 (June 10$^{\text{th}}$, 2011)
@@ -121,9 +220,9 @@ These five sprints, and their goals, are as follows:
 \section{User/Customer} % (fold)
 \label{sec:user_customer}
 
-Our customer is Danske Bank.
-However, the product owner hasn't been specified yet.
-% TODO: Find out who is product owner
+Our customers are Android app developers, banks and financial institutions in particular, who are interested in utilizing the Bump to facilitate communication or transactions between two phones, but are not interested in leaving entirely in the hands of the creators of Bump and having clear text data be subject to the Bump privacy policy.
+
+Sune Lomholt has agreed to act as a representative of our product owner(s).
 
 % section user_customer (end)
 
@@ -141,7 +240,8 @@ Mads Ohm Larsen  & {\tt mads.ohm@gmail.com} 	  & (+45) 60 16 39 53 \\\hline
 
 \subsection{Skills} % (fold)
 \label{subsec:skills}
-In this team the following skills are needed: \\
+In our team we will need some different skills.
+This is the distribution on how we find ourselves fitted for these skills: \\
 
 \begin{tabular}{|p{4.5cm}|p{3cm}|p{3cm}|p{3cm}|}
 \hline
@@ -149,20 +249,26 @@ In this team the following skills are needed: \\
 Android development      & Jesper & Thomas & Mads 					 \\\hline
 Configuration Management & Mads & Jesper and Thomas          &      					 \\\hline
 Scrum Master             &        &        & Jesper, Thomas and Mads \\\hline 
+User involvement         &        & Mads and Jesper & Thomas \\\hline
+Test                     & Mads and Thomas   & Jesper & \\\hline
 \end{tabular}
 % subsection skills (end)
 
 \subsection{Resources} % (fold)
 \label{subsec:resources}
-Correspondence between team members and roles:
+Correspondence between team members and roles:\\
 
 \begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
 \hline
-\textbf{Team Member}              & \textbf{Roles and responsibilities}   & \textbf{Strengths and focus area} \\\hline
-Jesper                   &                              &                          \\\hline
-Thomas                   &                              &                          \\\hline
-Mads                     &                              &                          \\\hline 
+\textbf{Team Member} & \textbf{Roles and responsibilities}   & \textbf{Strengths and focus area} \\\hline
+Jesper               & Coder                   & Development \\\hline
+Thomas               & Scrum Master, tester    & Test                 \\\hline
+Mads                 & SCM maintainer, tester  & Test, user involvement                         \\\hline 
 \end{tabular}
+\\
+% TODO: Overvej ovenstående
+\\
+These roles are very loose, and will be subject to change throughout the course. E.g. we will all be Scrum Master at some point during this course.
 % subsection resources (end)
 
 % section team_resources_roles_and_obligations (end)
@@ -203,9 +309,9 @@ The following are agreements made between the project members
 \label{sec:team_processes}
 
 \begin{itemize}
-	\item We are still discussing if our code can be open/publicly available
-	% TODO: Talks to Sune about this
-	\item We have agreed on using git, either via GitHub or private server
+	\item Our code will be open for everybody to see
+	
+	\item We have agreed on using git, and our code will be stationed at GitHub
 	
 	\item We have agreed on working together in person, but also being available on both a messenger platform and on Skype - or eMeeting
 	\begin{itemize}
@@ -216,9 +322,10 @@ The following are agreements made between the project members
 \subsection{Configuration management} % (fold)
 \label{subsec:configuration_management}
 
-We use Git as our SCM system. Our repository is hosted publicly on GitHub (unless product owner poses restrictions due to proprietary code etc). @TODO: Clarify!
+We use Git as our SCM system. 
+Our repository is hosted publicly on GitHub.
 
-We're using a Test Driven Development approach, which imposes the following structure on the Master branch:
+We're using a Test Driven Development approach, which imposes the following structure on the \texttt{master} branch:
 \begin{itemize}
 \item Code committed to the central repository must be thoroughly covered by JUnit tests.
 \item Tests must not fail when comitted, even if this means methods are stubbed.
@@ -254,9 +361,16 @@ At the end of a sprint, we will have a so-called sprint retrospective, discussin
 
 \section{Team performance \& progress monitoring} % (fold)
 \label{sec:team_performance_progress_monitoring}
-We will use Google Docs as our scrum tool, but we're planning to (briefly) evaluate some of the scrum tools mentioned at lectures, and also IBM's JAZZ.
+To support our process we are interested in a scrum tool that, especially because we have no offices or static whiteboards, facilitates a virtual collaboration using the scrum model.
 
-The purpose of a scrum tool is to be able to have a virtual storyboard and burndown.
+We are using Google Docs as our scrum tool and have set up a logbook of (virtual) daily scrum meetings, burndown chart, sprint- and product backlogs.
+
+Throughout Sprint 1 we will will assess how the tools are working to ensure that they are being used to their maximum potential and they are providing the neccesary product support.
+
+Pending this assessment we will consider evaluating additional scrum tools, such as IBM's Rational Team Concert (based on the Jazz collaboration platform).
+
+% TODO: Acunote?
+
 % section team_performance_progress_monitoring (end)
 
 
