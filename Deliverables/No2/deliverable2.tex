@@ -66,8 +66,6 @@
 \section{temporary notes}
 
 migrer til accunote
-skriv til Sune
-
 
 Klaus:
 * ideen
@@ -141,9 +139,11 @@ XXX for root users
 
 References:
 > http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today
-The two gamers only need to touch their devices and allow the NFC software on the devices to handle the discovery, inquiry, authentication and encryption set-up required to establish a Bluetooth link.
+The two gamers only need to touch their devices and allow the NFC software on the devices to handle the discovery, inquiry, authentication and encryption set-up required to establish a Bluetooth link.\\
 > http://developer.android.com/sdk/android-2.3.3.html
-Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure socket connections. This lets applications communicate with simple devices that may not offer a UI for authentication. See createInsecureRfcommSocketToServiceRecord(java.util.UUID) and listenUsingInsecureRfcommWithServiceRecord(java.lang.String, java.util.UUID) for more information.
+Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure socket connections. This lets applications communicate with simple devices that may not offer a UI for authentication. See createInsecureRfcommSocketToServiceRecord(java.util.UUID) and listenUsingInsecureRfcommWithServiceRecord(java.lang.String, java.util.UUID) for more information.\\
+> http://mobisocial.stanford.edu/news/2011/02/nfc-and-bluetooth-brought-together-with-android-2-3-3/
+To use NFC to kick off a Bluetooth session, first start a running socket server on one device, using a randomly generated service UUID. Then, create an NDEF message encoding the MAC address of the phone’s Bluetooth device and the UUID of the listening service. When this message is received by the joining phone, it will have enough information to connect to the Bluetooth server socket
 
 
 
@@ -154,9 +154,20 @@ Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure s
 \section{Purpose/Vision} % (fold)
 \label{sec:purpose_vision}
 
-The aim of this project is to provide a library, which Android App developers can utilize to facilitate secure communication through Bump.
+The aim of this project is to provide a library, which Android App developers can utilize to facilitate easy secure communication between two phones over Bluetooth.
 
-Information exchanged through Bump is subject to the Bump privacy policy, which specifically states that Bump is allowed to retain all exchanged information. For co-op games and other non-sensitive applications this may be good enough, but for exhange of financial information it is not neccesarily good enough.
+Providing secure communication can be reduced to two discting problems: 1) securing communication against eavesdropping and 2) validating the identity of the other party to protect against man-in-the-middle style attacks.
+
+We will use Bluetooth as the transport medium over which the transfers take place, which in addition to cryptographic measures adds additional resilience by forcing a potential attacker to be in close proximity to the user.
+
+Bluetooth offers advantages compared to transmitting data over the mobile network, since it is is quite efficient in terms of both power drain and transfer speed and it is not subject to usage fees.
+*** SOMETHING ABOUT EASE (or rather lack thereof) of setting up Bluetooth connections (from a user perspective) ***
+
+The library will be able to support multiple identity providers, which provide identification of the client and transport the neccessary information (out of band) for setting up the secure bluetooth transport. Support for using Bump as an identity provider will be included as a part of the project, but the library could be extended with further identity providers such as NFC (Near Field Communication) or 3rd party solutions e.g. a custom authentification server set up by a Bank or by NemID.
+
+Information exchanged through Bump is subject to the Bump privacy policy, which specifically states that Bump is allowed to retain all exchanged information. For co-op games and other non-sensitive applications this may be good enough, but for exhange of financial information it is not neccesarily good enough. *** REWRITE/REMOVE: not true ***
+
+*** REWRITE / REFOCUS below ***
 
 We have chosen to focus our sample application and prototype to target financial institututions and bank where high security and transactional confidentiality is a prerequisite, but the library will be of value to anyone who wants to utilize the Bump API while safeguarding transactions.
 
