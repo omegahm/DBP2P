@@ -63,6 +63,92 @@
 \tableofcontents
 \vspace{2cm}
 
+\section{temporary notes}
+
+migrer til accunote
+skriv til Sune
+
+
+Klaus:
+* ideen
+* kan vi køre DB ud på et sidespor
+* final product: library, sample app
+
+
+
+powerconsumption per kb
+* bluetooth
+* gprs/3g
+
+value proposition
+define sprints:
+1 (2 uger): bump, bluetooth MAC + application UUID, secret key + researchet + testet
+2: bluetooth forbindelse (sikker), UI polished
+3: library, vores API
+4: konkret sample application showcasing either paypal/DB transfers, chat or filetransfers...
+5: wrap up
+
+læst op på bluetooth API
+Diffie-Helman cryptography: http://developer.android.com/reference/javax/crypto/interfaces/package-summary.html
+undersøg nok med bluetooth encryption?
+bump overførsel af ???: secretkey + bluetooth UUID
+
+
+3:
+
+bump pairing OK
+bluetooth discovery på 1 (og evt. bluetooth on på 2)
+bluetooth pairing på begge (første gang)
+
+
+Hvis getRemoteDevice virker, så slipper vi for discovery:
+
+bump pairing OK
+(evt. bluetooth on)
+bluetooth pairing på begge (første gang)
+
+
+tændt bluetooth
+visibility on
+beslut en eller begge telefoner: server (anden er bluetooth klient) <- overfør m. bump?
+forbind / opsæt RFCOMM
+krypteret kanalen
+
+???
+
+offentliggjort / tilgængelighed for andre: API
+* opret
+* luk
+* send
+* lyt
+
+???
+
+demo app muligheder:
+* paypal
+* sikker chat
+* filoverførsel
+(ikke søbet ind i vores SecureBTtransfers kode, men importerer library)
+
+???
+
+profit / world domination
+
+
+optional/extensions/develop with this in mind:
+other identity providers: NFC
+XXX for root users
+
+References:
+> http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today
+The two gamers only need to touch their devices and allow the NFC software on the devices to handle the discovery, inquiry, authentication and encryption set-up required to establish a Bluetooth link.
+> http://developer.android.com/sdk/android-2.3.3.html
+Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure socket connections. This lets applications communicate with simple devices that may not offer a UI for authentication. See createInsecureRfcommSocketToServiceRecord(java.util.UUID) and listenUsingInsecureRfcommWithServiceRecord(java.lang.String, java.util.UUID) for more information.
+
+
+
+% end temporary notes
+
 \pagebreak 
 
 \section{Purpose/Vision} % (fold)
