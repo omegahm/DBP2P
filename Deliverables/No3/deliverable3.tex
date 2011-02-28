@@ -1,0 +1,153 @@
+\documentclass[a4paper,11pt]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+\usepackage[british,english]{babel}
+\usepackage[T1]{fontenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Multipart figures
+\usepackage{subfigure}
+
+% More symbols
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+
+% For pretty URLs, see: http://en.wikibooks.org/wiki/LaTeX/Hyperlinks
+\usepackage{hyperref}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% Uncomment if you want to use Palatino as font
+\usepackage[sc]{mathpazo}
+\linespread{1.05}         % Palatino needs more leading (space between lines)
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{Deliverable 3: Sprint \#1\\\small{for}\\\small{Danske Bank: Peer-to-peer}}
+\author{ Group Delta:\\Jesper Borgstrup, Thomas Kjeldsen and Mads Ohm Larsen }
+
+\date{March 11, 2011}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+%\tableofcontents
+%\vspace{2cm}
+
+\section{Requirements for this deliverable}
+\begin{enumerate}
+\item Doing a demo in class (on 2011-03-09)
+\item Giving us access to your source code
+\item Handing in a collection of your sprint material
+\item Describing a sprint retrospective (e.g., as a set of bullets outlining what
+when well, what went wrong, and how you will improve for the next sprint)
+\end{enumerate}
+
+The Sprint Demo was given on March 9th. This document describes requirements 2-4.
+
+\section{Source code access}
+Our source code is publicly available on Github from \url{https://github.com/omegahm/DBP2P}.
+
+Please note that we are working on multiple branches (use the button switch branch to view another branch).
+
+The master branch currently holds only documentation and deliverables, while we have a dedicated development branch for sprint \#1 named "dustytuba".
+
+If you wish to checkout our code (read-only) using Git, then use git clone with this URL:
+\url{git://github.com/omegahm/DBP2P.git}
+
+
+\section{Sprint material}
+%TODO
+Sprint Material needed to assess our progress include the following:
+\begin{itemize}
+\item source code (version number and access method is sufficient)
+\item product backlog (before and after the sprint)
+\item sprint backlog
+\item any other material (e.g., burndown chart) that illustrates your progress
+\end{itemize}
+
+% TODO: Describe Acunote in general and that access have been granted.
+
+\subsection{Source Code}
+%TODO: Merge final product, or rewrite
+%TODO: Update commit ID + URL
+The final product of sprint \#1 has been merged into the master branch as per commit-id  \href{https://github.com/omegahm/DBP2P/commit/0a8382e920d5129e4e57a7e54018b8769dcb3273}{0a8382e920d5129e4e57}.
+
+The code and tests are located in the folders "DustyTuba" and "DustyTuba".
+
+\subsection{Product Backlog (before sprint)}
+%TODO: Nothing
+
+\subsection{Product Backlog (after sprint)}
+%TODO: Insert
+
+\subsection{Sprint Backlog}
+%TODO: Insert
+
+\subsection{Burndown chart}
+% TODO: Insert PIC?
+
+\subsection{Other relevant material}
+% TODO: Describe "daily" log files?
+
+
+\section{Sprint retrospective}
+
+%TODO Describing a sprint retrospective (e.g., as a set of bullets outlining what went well, what went wrong, and how you will improve for the next sprint)
+
+What went well:
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
+
+\noindent
+What went wrong:
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
+
+\noindent
+Steps/measures for improvements in next sprint:
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
+
+\end{document}
