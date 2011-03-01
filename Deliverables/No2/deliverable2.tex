@@ -65,7 +65,7 @@
 
 \section{temporary notes}
 
-migrer til accunote
+
 
 Klaus:
 * ideen
@@ -160,12 +160,13 @@ Providing secure communication can be reduced to two discting problems: 1) secur
 
 We will use Bluetooth as the transport medium over which the transfers take place, which in addition to cryptographic measures adds additional resilience by forcing a potential attacker to be in close proximity to the user.
 
-Bluetooth offers advantages compared to transmitting data over the mobile network, since it is is quite efficient in terms of both power drain and transfer speed and it is not subject to usage fees.
-*** SOMETHING ABOUT EASE (or rather lack thereof) of setting up Bluetooth connections (from a user perspective) ***
+Bluetooth offers advantages compared to transmitting data over the mobile network, since it is is quite efficient in terms of both power drain and transfer speed and it is not subject to usage fees. 
 
 The library will be able to support multiple identity providers, which provide identification of the client and transport the neccessary information (out of band) for setting up the secure bluetooth transport. Support for using Bump as an identity provider will be included as a part of the project, but the library could be extended with further identity providers such as NFC (Near Field Communication) or 3rd party solutions e.g. a custom authentification server set up by a Bank or by NemID.
 
 Information exchanged through Bump is subject to the Bump privacy policy, which specifically states that Bump is allowed to retain all exchanged information. For co-op games and other non-sensitive applications this may be good enough, but for exhange of financial information it is not neccesarily good enough. *** REWRITE/REMOVE: not true ***
+
+One of the disadvantages of bluetooth is that it is not that convenient to connect two phones: both phones have to enable the bluetooth radio, one has to be in discoverable mode (at least temporarily) and the users need to scan and pick the right device to transmit to. Easy setup of a bluetooth connection between two phones is one of the things NFC is poised to facilitate\footnote{http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today}, but with support for Bump as an identity provider this library will facilitate easy connection setup for the large number of phones that do not have a built-in NFC chip.
 
 *** REWRITE / REFOCUS below ***
 
@@ -363,11 +364,9 @@ At the end of a sprint, we will have a so-called sprint retrospective, discussin
 \label{sec:team_performance_progress_monitoring}
 To support our process we are interested in a scrum tool that, especially because we have no offices or static whiteboards, facilitates a virtual collaboration using the scrum model.
 
-We are using Google Docs as our scrum tool and have set up a logbook of (virtual) daily scrum meetings, burndown chart, sprint- and product backlogs.
+We are using Acunote as our scrum tool and have set up a logbook for our (virtual) scrum meetings, a burndown chart, sprint- and product backlogs.
 
 Throughout Sprint 1 we will will assess how the tools are working to ensure that they are being used to their maximum potential and they are providing the neccesary product support.
-
-Pending this assessment we will consider evaluating additional scrum tools, such as IBM's Rational Team Concert (based on the Jazz collaboration platform).
 
 % TODO: Der skal skrives at vi bruger Acunote?
 
