@@ -1,0 +1,114 @@
+These are written to be used on a *NIX box, sorry Windows folks
+===============================================================
+
+First of all, you'd want to set your name and email address
+
+$ git config --global user.name "Your Name Comes Here"
+$ git config --global user.email you@yourdomain.example.com
+
+/============\
+| Initialise |
+\============/
+To initialise a git repository one should first move into it
+$ cd project
+$ git init
+
+To add all the files and folder to the repository
+$ git add .
+(Notice the dot)
+
+The snapshot is now stored locally, and are ready to be pushed
+This is done by first committing the changes to ones repository
+$ git commit
+
+This will prompt for a message. One could instead write the 
+message in the terminal
+$ git commit -m "message"
+(This message can't include !, as sh, bash, and other will 
+treat this as a command)
+
+/========\
+| Modify |
+\========/
+First modify some files.
+To add the modifications to the repository do
+$ git add file1 file2 file3
+
+Here comes a tricky one
+$ git diff --cached
+will show what is about to be committed, whilst
+$ git diff
+will show any changes made, but not yet added
+
+When you are ready to commit, commit
+$ git commit
+
+A powerful tools is
+$ git commit -a
+which will add all modified files prior to committing
+
+$ git status
+can also be used to look up the status
+
+To undo a committed file, do a 
+$ git checkout file_name
+
+/======================\
+| View project history |
+\======================/
+Not likely we will use this, but 
+$ git log --stat --summary
+gives a nice overview of the log, with author, date, changes
+and so on.
+
+/===========\
+| Branching |
+\===========/
+To create a new branch
+$ git branch new_branch
+
+If you run 
+$ git branch
+you will get a list of all the branches.
+The * marks the one currently used.
+
+To change branch, do a checkout from it
+$ git checkout new_branch
+
+Now you can edit files on the branch, commit them, and when
+you're ready, return to the master branch.
+
+To merge "new_branch" into master do
+$ git merge new_branch
+
+If there is conflicts, these will be left in the files.
+Edit them, and commit
+$ git commit -a
+
+To delete a branch, but with insurance that the changes have
+been merged, do
+$ git branch -d new_branch 
+
+/===============\
+| Collaboration |
+\===============/
+To clone a project, from e.g. GitHub, do
+$ git clone git@github.com:omegahm/DBP2P.git dbp2p
+This will create a new folder, called dbp2p, with the 
+repository from github.
+
+To push a commit to GitHub, simply use 
+$ git push
+This will put the commit you have made to the current branch.
+One could also specify how to push
+$ git push dev
+will push the local branch "dev" to the remote branch "dev" and
+$ git push origin master
+will push the local origin to the remote master
+
+To get the content pushed by others, one would have to pull
+$ git pull
+This pulls the current branch, and updates your files.
+If files have conflicted, these should be edited manually.
+
+
