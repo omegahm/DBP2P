@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import android.bluetooth.*;
+
 public class MainActivity extends Activity {
 
 	public static final String BUMP_INTENT = "bump_intent";
