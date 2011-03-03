@@ -16,6 +16,9 @@
 \usepackage{amssymb}
 \usepackage{latexsym}
 
+% For pretty URLs, see: http://en.wikibooks.org/wiki/LaTeX/Hyperlinks
+\usepackage{hyperref}
+
 % Surround parts of graphics with box
 \usepackage{boxedminipage}
 
@@ -48,7 +51,7 @@
 \title{Product and Process Brief\\\small{for}\\\small{Danske Bank: Peer-to-peer}}
 \author{ Jesper Borgstrup, Thomas Kjeldsen and Mads Ohm Larsen }
 
-\date{February 18}
+\date{Updated: March 1st}
 
 \begin{document}
 
@@ -63,89 +66,20 @@
 \tableofcontents
 \vspace{2cm}
 
-\section{temporary notes}
+% \section{temporary notes / todos}
+%læst op på bluetooth API
+%undersøg nok med bluetooth encryption?
+%bump overførsel af ???: secretkey + bluetooth UUID
 
+%Refs:
+% > http://developer.android.com/reference/javax/crypto/interfaces/package-summary.html
+% Diffie-Helman cryptography
 
+%> http://developer.android.com/sdk/android-2.3.3.html
+%Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure socket connections. This lets applications communicate with simple devices that may not offer a UI for authentication. See createInsecureRfcommSocketToServiceRecord(java.util.UUID) and listenUsingInsecureRfcommWithServiceRecord(java.lang.String, java.util.UUID) for more information.
 
-Klaus:
-* ideen
-* kan vi køre DB ud på et sidespor
-* final product: library, sample app
-
-
-
-powerconsumption per kb
-* bluetooth
-* gprs/3g
-
-value proposition
-define sprints:
-1 (2 uger): bump, bluetooth MAC + application UUID, secret key + researchet + testet
-2: bluetooth forbindelse (sikker), UI polished
-3: library, vores API
-4: konkret sample application showcasing either paypal/DB transfers, chat or filetransfers...
-5: wrap up
-
-læst op på bluetooth API
-Diffie-Helman cryptography: http://developer.android.com/reference/javax/crypto/interfaces/package-summary.html
-undersøg nok med bluetooth encryption?
-bump overførsel af ???: secretkey + bluetooth UUID
-
-
-3:
-
-bump pairing OK
-bluetooth discovery på 1 (og evt. bluetooth on på 2)
-bluetooth pairing på begge (første gang)
-
-
-Hvis getRemoteDevice virker, så slipper vi for discovery:
-
-bump pairing OK
-(evt. bluetooth on)
-bluetooth pairing på begge (første gang)
-
-
-tændt bluetooth
-visibility on
-beslut en eller begge telefoner: server (anden er bluetooth klient) <- overfør m. bump?
-forbind / opsæt RFCOMM
-krypteret kanalen
-
-???
-
-offentliggjort / tilgængelighed for andre: API
-* opret
-* luk
-* send
-* lyt
-
-???
-
-demo app muligheder:
-* paypal
-* sikker chat
-* filoverførsel
-(ikke søbet ind i vores SecureBTtransfers kode, men importerer library)
-
-???
-
-profit / world domination
-
-
-optional/extensions/develop with this in mind:
-other identity providers: NFC
-XXX for root users
-
-References:
-> http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today
-The two gamers only need to touch their devices and allow the NFC software on the devices to handle the discovery, inquiry, authentication and encryption set-up required to establish a Bluetooth link.\\
-> http://developer.android.com/sdk/android-2.3.3.html
-Bluetooth: Android 2.3.3 adds platform and API support for Bluetooth nonsecure socket connections. This lets applications communicate with simple devices that may not offer a UI for authentication. See createInsecureRfcommSocketToServiceRecord(java.util.UUID) and listenUsingInsecureRfcommWithServiceRecord(java.lang.String, java.util.UUID) for more information.\\
-> http://mobisocial.stanford.edu/news/2011/02/nfc-and-bluetooth-brought-together-with-android-2-3-3/
-To use NFC to kick off a Bluetooth session, first start a running socket server on one device, using a randomly generated service UUID. Then, create an NDEF message encoding the MAC address of the phone’s Bluetooth device and the UUID of the listening service. When this message is received by the joining phone, it will have enough information to connect to the Bluetooth server socket
-
-
+%> http://mobisocial.stanford.edu/news/2011/02/nfc-and-bluetooth-brought-together-with-android-2-3-3/
+%To use NFC to kick off a Bluetooth session, first start a running socket server on one device, using a randomly generated service UUID. Then, create an NDEF message encoding the MAC address of the phone’s Bluetooth device and the UUID of the listening service. When this message is received by the joining phone, it will have enough information to connect to the Bluetooth server socket
 
 % end temporary notes
 
@@ -154,64 +88,61 @@ To use NFC to kick off a Bluetooth session, first start a running socket server 
 \section{Purpose/Vision} % (fold)
 \label{sec:purpose_vision}
 
-The aim of this project is to provide a library, which Android App developers can utilize to facilitate easy secure communication between two phones over Bluetooth.
+The aim of this project is to provide a library, which Android App developers can utilize to facilitate easy and secure communication between two phones over Bluetooth.
 
 Providing secure communication can be reduced to two discting problems: 1) securing communication against eavesdropping and 2) validating the identity of the other party to protect against man-in-the-middle style attacks.
 
 We will use Bluetooth as the transport medium over which the transfers take place, which in addition to cryptographic measures adds additional resilience by forcing a potential attacker to be in close proximity to the user.
-
 Bluetooth offers advantages compared to transmitting data over the mobile network, since it is is quite efficient in terms of both power drain and transfer speed and it is not subject to usage fees. 
 
-The library will be able to support multiple identity providers, which provide identification of the client and transport the neccessary information (out of band) for setting up the secure bluetooth transport. Support for using Bump as an identity provider will be included as a part of the project, but the library could be extended with further identity providers such as NFC (Near Field Communication) or 3rd party solutions e.g. a custom authentification server set up by a Bank or by NemID.
+The library will be able to support multiple identity providers, which provide identification of the client and transport the neccessary information (out of band) for setting up the secure bluetooth transport. Support for using Bump as an identity provider will be included as a part of the project, but the library could be extended with further identity providers such as NFC (Near Field Communication) or 3rd party solutions e.g. a custom authentification server set up by a Bank, by NemID etc.
 
-Information exchanged through Bump is subject to the Bump privacy policy, which specifically states that Bump is allowed to retain all exchanged information. For co-op games and other non-sensitive applications this may be good enough, but for exhange of financial information it is not neccesarily good enough. *** REWRITE/REMOVE: not true ***
+One of the disadvantages of bluetooth is that it is not that convenient to connect two phones: both phones have to enable the bluetooth radio, one has to be in discoverable mode (at least temporarily) and the users need to scan and pick the right device to transmit to. Easy setup of a bluetooth connection between two phones is one of the things NFC is poised to facilitate
+\footnote{
+\url{http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today}
+}, but with support for Bump as an identity provider this library will facilitate easy connection setup for the large number of phones that do not have a built-in NFC chip.\\
 
-One of the disadvantages of bluetooth is that it is not that convenient to connect two phones: both phones have to enable the bluetooth radio, one has to be in discoverable mode (at least temporarily) and the users need to scan and pick the right device to transmit to. Easy setup of a bluetooth connection between two phones is one of the things NFC is poised to facilitate\footnote{http://www.eetimes.com/design/communications-design/4012606/How-NFC-can-to-speed-Bluetooth-transactions-151-today}, but with support for Bump as an identity provider this library will facilitate easy connection setup for the large number of phones that do not have a built-in NFC chip.
+%value proposition:
+%powerconsumption per kb?
+%* bluetooth
+%* gprs/3g
 
-*** REWRITE / REFOCUS below ***
-
-We have chosen to focus our sample application and prototype to target financial institututions and bank where high security and transactional confidentiality is a prerequisite, but the library will be of value to anyone who wants to utilize the Bump API while safeguarding transactions.
-
-Banks who use our library will be able to facilitate easy transfer of money from one customer's account to another customer's account, by merely bumping their phones together.
-
-Danske Bank is one potential customer, since its marketing strategy is throughly based on a strong presence in both social media and on the mobile platform. Their mobile banking application already has a number of technology features and it is one of the key differentiating features compared to their competitors among Danish banks.
-
-In addition to easing transactions, adding Bump would add yet another ``cool'' feature, which users will hopefully show off to friends and family similar to the recent/current voice recognition ``craze'' (Voice Search, Voice and Translate from Google, Tellme voice search for Windows Phone 7 etc.), thus adding further value through viral marketing.
-
-Finally it's worth noting that PayPal, which is a major international player in micro-payments, currently has Bump functionality in their mobile app. While PayPal does not pose a significant threat to established financial institutions at present time it's worth staying on the forefront in case of a sudden surge in either micro-payments or Bump-technology ``craze''.
-
-% TODO: Evt. egen bump-service?
+\noindent
+Our primary goal with this project is the library described above and the capabilities it provides, but to showcase the use of the library another part of the project will be to develop a sample application. Our sample application will focus on facilitating secure file transfers.
 
 \subsection{Roadmap} % (fold)
 \label{subsec:roadmap}
-Our roadmap is divided into our five sprints.
-
-These five sprints, and their goals, are as follows:
+Our roadmap is divided into our five sprints. These five sprints, and their goals, are:
 \begin{itemize}
 	\item Sprint \#1 (March 11$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Read up on relevant documentation, APIs and product and process brief refined. Implementation of a fully working prototype that allows two Android smartphones to be bumped together and transfer information between them.
+		\item Read up on relevant documentation, APIs and product and process brief refined. Implementation of a fully working prototype that allows two Android smartphones to be bumped together and transfer information (specifically bluetooth MAC + UUID, neccesary for setting up bluetooth connection in next sprint) between them.
 	\end{itemize}
 \pagebreak
 	\item Sprint \#2 (April 1$^{\text{st}}$, 2011)
 	\begin{itemize}
-		\item Sample App that can perform secure transfers between two phones. Functionality packaged as a distributable library.
+		\item Library can perform secure bluetooth connection setup. Sample App can perform secure transfers between two phones and supports easy initiation directly from a file's context menu. 
 	\end{itemize}
 	
 	\item Sprint \#3 (April 29$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Different approaches as how to secure information in transit have been evaluated and benefits and drawbacks have been thoroughly examined. Prototype app can perform secure communication using the preferred approach.
+		\item API finalised. Code is robust, well tested and documented, consistent and implements alle current Android Best Practices. Library completed, packaged and published on Android Market.
 	\end{itemize}
 	
 	\item Sprint \#4 (May 20$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item UI polished and user experience evaluated.
+		\item Additional identity provider included in library: NFC. Library targets and supports multiple Android API levels. Sample App supports sharing using NFC.
 	\end{itemize}
 	
 	\item Sprint \#5 (June 10$^{\text{th}}$, 2011)
 	\begin{itemize}
-		\item Final product delivered to customer
-		\item Paper finished and submitted
+		\item Wrap up.
+		% Time allowing perhaps an additional extension:
+		% * safe chat
+		% * 3rd party identity provider example (bank, PKI infrastructure w/ client certificates, ...)
+		% * Investigate Root User possibilities:
+		% * * even less confirmation dialogs etc
+		% * * join ad-hoc wireless or transfer using
 	\end{itemize}
 \end{itemize}
 % subsection roadmap (end)
@@ -221,7 +152,7 @@ These five sprints, and their goals, are as follows:
 \section{User/Customer} % (fold)
 \label{sec:user_customer}
 
-Our customers are Android app developers, banks and financial institutions in particular, who are interested in utilizing the Bump to facilitate communication or transactions between two phones, but are not interested in leaving entirely in the hands of the creators of Bump and having clear text data be subject to the Bump privacy policy.
+Our customers are Android app developers, who are interested in transferring information between two phones in a both easy and secure way. Especially apps where the need for confidentiality is so high that US based companies such as Bump and their privacy policy are not enough (e.g. financial institutions), or where the amount of information is so large that the cellular network is not the best option.
 
 Sune Lomholt has agreed to act as a representative of our product owner(s).
 
@@ -234,9 +165,9 @@ The team consists of three Master's students at the Department of Computer Scien
 \begin{tabular}{|p{4.5cm}|p{5cm}|p{3.5cm}|}
 \hline
 \textbf{Name}    & E-mail				          &	Telephone         \\\hline
-Jesper Borgstrup & {\tt jesper@borgstrup.dk} 	  & (+45) 61 30 30 81 \\\hline
-Thomas Kjeldsen  & {\tt thomas@thomaskjeldsen.dk} & (+45) 61 30 80 01 \\\hline
-Mads Ohm Larsen  & {\tt mads.ohm@gmail.com} 	  & (+45) 60 16 39 53 \\\hline
+Jesper Borgstrup & \href{mailto:jesper@borgstrup.dk}{jesper@borgstrup.dk} 	  & (+45) 61 30 30 81 \\\hline
+Thomas Kjeldsen  & \href{mailto:thomas@thomaskjeldsen.dk}{thomas@thomaskjeldsen.dk} & (+45) 61 30 80 01 \\\hline
+Mads Ohm Larsen  & \href{mailto:mads.ohm@gmail.com}{mads.ohm@gmail.com} & (+45) 60 16 39 53 \\\hline
 \end{tabular}
 
 \subsection{Skills} % (fold)
@@ -261,10 +192,10 @@ Correspondence between team members and roles:\\
 
 \begin{tabular}{|p{3cm}|p{5cm}|p{5cm}|}
 \hline
-\textbf{Team Member} & \textbf{Roles and responsibilities}   & \textbf{Strengths and focus area} \\\hline
+\textbf{Team Member} & \textbf{Primary roles and responsibilities}   & \textbf{Strengths and focus area} \\\hline
 Jesper               & Coder                   & Development \\\hline
-Thomas               & Scrum Master, tester    & Test                 \\\hline
-Mads                 & SCM maintainer, tester  & Test, user involvement                         \\\hline 
+Thomas               & Scrum Master, coder, tester    & Test                 \\\hline
+Mads                 & SCM maintainer, coder, tester  & Test, user involvement                         \\\hline 
 \end{tabular}
 \\
 % TODO: Overvej ovenstående
@@ -314,10 +245,7 @@ The following are agreements made between the project members
 	
 	\item We have agreed on using git, and our code will be stationed at GitHub
 	
-	\item We have agreed on working together in person, but also being available on both a messenger platform and on Skype - or eMeeting
-	\begin{itemize}
-		\item eMeeting is a platform suggested by Sune Lomholt
-	\end{itemize}
+	\item We have agreed on working together in person, but also being available on both a messenger platform and on Skype - or eMeeting (a platform suggested by Sune Lomholt)
 \end{itemize}
 
 \subsection{Configuration management} % (fold)
@@ -349,12 +277,14 @@ When working together, e.g. sitting together and working on stories, the followi
 \subsection{Calendar planning} % (fold)
 \label{subsec:calendar_planning}
 
-We have agreed to do a daily virtual scrum logging, where each participant writes an entry firstly about what he did today, what he will do tomorrow, and if any problems have occurred.
+We have agreed to regularly do a virtual scrum logging, where each participant writes an entry firstly about what he did today, what he will do tomorrow, and if any problems have occurred.
 
 Sprint demos will occur at, or around, the ending of a sprint, depending on when the product owner have got time.
 At the time of sprint demo, we will properly want to do a sprint planning, for the following sprint, together with the product owner.
 
 At the end of a sprint, we will have a so-called sprint retrospective, discussing what went well and what could be approved for next sprint.
+
+We use a shared Google calendar for recurring meetings and other scheduled events.
 
 % subsection calendar_planning (end)
 
