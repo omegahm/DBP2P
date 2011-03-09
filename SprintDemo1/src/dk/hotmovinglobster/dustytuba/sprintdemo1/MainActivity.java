@@ -14,7 +14,7 @@ import android.content.Intent;
 public class MainActivity extends Activity implements BumpAPIListener {
 	
 	private static final int REQUEST_ENABLE_BT = 1;
-	private static final int REQUEST_BUMP = 2;
+	private static final int REQUEST_BUMP = 3;
 	private static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
 	
 	private enum ProtocolState { NONE, SERVER_RANDOM_NUMBER, BLUETOOTH_MAC, BLUETOOTH_NAME };
