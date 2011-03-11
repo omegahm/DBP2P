@@ -106,7 +106,6 @@ The final product of sprint \#1 has been merged into the master branch as per co
 
 The code and tests are located in the folders ``DustyTuba'' and ``DustyTuba''.
 
-\subsection{Product Backlog}
 The following tasks have been completed during this sprint:
 \begin{itemize}
 	\item Some Sprint \#0 stuff:
@@ -128,6 +127,95 @@ In regards to our user stories, the tasks completed corresponds to the following
   I want to   identify a nearby device using Bump
   Such that   I can establish a connection in order to transfer information safely
 \end{verbatim}
+
+\subsection{Product Backlog}
+Due to the change of project scope, there didn't really exist a product backlog before the start of the sprint.
+
+Shown in figure \ref{productbacklog} on page \pageref{productbacklog} is our product backlog as it looks at the end of sprint \#1.
+
+\begin{figure}[ht!]
+	\begin{center}
+	% Insert sprint backlog here
+	\includegraphics[width=1.4\textwidth, angle=-90]{productbacklog.png}		
+	\end{center}
+	\caption{Our product backlog at the end of sprint \#1.}
+	\label{productbacklog}
+\end{figure}
+
+We recognized that our product backlog was somewhat lacking, so we spent some time fleshing out a draft for our sprint \#2 backlog as well as defining additional backlog items.
+These haven't been entered into Acunote as of yet, but they will be pending the outcome of our sprint planning meeting on Monday.
+For completeness they're included below.
+
+\subsubsection{Goals for sprint \#2}
+\begin{itemize}
+\item Secure Bluetooth connection + file context menu
+\item Establish bluetooth connection (2.1+ devices only)
+\begin{itemize}
+\item Extend information exchange through Bump with
+\begin{itemize}
+\item passkey ($1/2$ hour) (necessary)
+\item UUID ($1/2$ hour) (necessary)
+\item Bluetooth version (dictated by android version) (1 hour) (necessary)
+\item possibly protocol version (not important for this sprint) (use different classes to handle different versions of the protocol)
+\end{itemize}
+\item Minimize amount of user interaction during connecting of phones by bringing bluetooth pairing dialog to front
+\item Progress dialog during connection setup
+\item Option to abort during setup phase (e.g. exit gracefully if bump is aborted)
+\item Use bluetooth name as default Bump name
+\end{itemize}
+\item Send and receive file through the bluetooth connection (to be sample app)
+\begin{itemize}
+\item Integration with Android ‘Send file’ dialog
+\begin{itemize}
+\item Open our application
+\item Send file
+\end{itemize}
+\item Generic receive file activity\\Default action (save/open/both?)
+\item Send checksum to ensure validity\\
+Notify if something went wrong (with a possibility to restart transfer)
+\item Progress dialog
+\item Option to abort during transfer
+\end{itemize}
+\item Deliverable 4
+\begin{itemize}
+\item presentation
+\item create template
+\item populate template
+\end{itemize}
+\item Testing (ideally done as Test Driven Development (TDD), not seperately)
+\begin{itemize}
+\item Establish test cases for bluetooth connection
+\item Establish test cases for send and receive file
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Additional backlog entries}
+\begin{itemize}
+\item GPS Identity provider
+\begin{itemize}
+\item web-service
+\item both: report location
+\item sender: choose device from location
+\end{itemize}
+\item Breakdown “encrypt the connection”-story into:
+\begin{itemize}
+\item Bluetooth 2.1+ devices
+\item Pre-2.1 (legacy) devices
+\end{itemize}
+\item Secondary encryption measure
+\begin{itemize}
+\item Unsure if needed for Bluetooth Security Mode 4 (2.1+ devices): ECDH pub/priv?
+\item Necessary for <= 2.0 devices  (symmetic key derrived from PIN entry (length!))
+\item Selection of encryption measure (let user decide)
+\end{itemize}
+\item “Librarifying”
+\begin{itemize}
+\item Send method + Receive event
+\item RND: Limitations and possibilities of libraries
+\end{itemize}
+\end{itemize}
+
+
 
 \subsection{Sprint Backlog}
 Our sprint backlog is shown in figure \ref{sprintbacklog} on page \pageref{sprintbacklog}.
