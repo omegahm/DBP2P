@@ -13,6 +13,8 @@ import android.content.Intent;
 
 public class MainActivity extends Activity implements BumpAPIListener {
 	
+	private static final String TAG = "DustyTubaSampleApp";
+	
 	private static final int REQUEST_ENABLE_BT = 1;
 	private static final int REQUEST_BUMP = 3;
 	private static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
@@ -125,7 +127,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
 			if (resultCode == RESULT_OK) {
 				bConn = data.getParcelableExtra(BumpAPI.EXTRA_CONNECTION);
 				bConn.setListener( this );
-				Log.i( "SPRINTDEMO" , "Obtained connection through bump");
+				Log.i(TAG, "Obtained connection through bump");
 				sendBluetoothInfo();
 			} else if (data != null) {
 				// Failed to connect, obtain the reason
@@ -138,17 +140,17 @@ public class MainActivity extends Activity implements BumpAPIListener {
 
 	@Override
 	public void bumpDataReceived(byte[] arg0) {
-		Log.i("SPRINTDEMO", "Received: " + new String(arg0));
-		Log.i("SPRINTDEMO", "State prior: " + protocolState.toString() );
+		Log.i(TAG, "Received: " + new String(arg0));
+		Log.i(TAG, "State prior: " + protocolState.toString() );
 		for (int i = 0; i < arg0.length; i++)
 			byteReceived( arg0[i] );
-		Log.i("SPRINTDEMO", "State posterior: " + protocolState.toString() );
+		Log.i(TAG, "State posterior: " + protocolState.toString() );
 		//Toast.makeText(this, "Bump received: " + new String(arg0), Toast.LENGTH_SHORT).show();
 		
 	}
 	
 	private void byteReceived(byte arg0) {
-		Log.i("SPRINTDEMO", "Byte: " + arg0 + " (" + (int)arg0 + "), State: " + protocolState.toString() );
+		Log.i(TAG, "Byte: " + arg0 + " (" + (int)arg0 + "), State: " + protocolState.toString() );
 		if (protocolState == ProtocolState.NONE) {
 			switch (arg0) {
 				case PROTOCOL_SERVER_RANDOM_NUMBER:
@@ -199,7 +201,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
     	byl.addAll( ByteArrayTools.toByta( getBluetoothName() ) );
     	byl.add( (byte)0 );
     	bConn.send( byl.toArray() );
-    	Log.i("SPRINTDEMO", "Sent bluetooth info" );
+    	Log.i(TAG, "Sent bluetooth info" );
     }
     
 	private void otherServerNumberObtained() {
