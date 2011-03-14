@@ -21,6 +21,6 @@
 		</activity>
 		<activity android:name="com.bumptech.bumpapi.BumpAPI"
 			android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
-		<activity android:name="cocom.bumptech.bumpapi.EditTextActivity" android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
+		<activity android:name="com.bumptech.bumpapi.EditTextActivity" android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
 	</application>
 </manifest>
