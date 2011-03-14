@@ -74,6 +74,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
 			public void onClick(View v) {
 				Intent bump = new Intent(MainActivity.this, BumpAPI.class);
 				bump.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+				bump.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
 				startActivityForResult(bump, REQUEST_BUMP);
 			}
 		});
@@ -82,6 +83,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
     @Override
     public void onStart() {
     	super.onStart();
+    	btnConnectBump.setEnabled( false );
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -108,6 +110,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
     private void BluetoothActivated() {
         lblMyBTMac.setText( "MAC: " + getBluetoothAddress() );
         lblMyBTName.setText( "Name: " + getBluetoothName() );
+        btnConnectBump.setEnabled( true );
     }
     
     @Override
