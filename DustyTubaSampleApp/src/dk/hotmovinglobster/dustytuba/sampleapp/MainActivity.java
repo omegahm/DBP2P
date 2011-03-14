@@ -3,15 +3,19 @@ package dk.hotmovinglobster.dustytuba.sampleapp;
 import com.bumptech.bumpapi.*;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 //import android.bluetooth.*;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.res.Resources;
 
-public class MainActivity extends Activity implements BumpAPIListener {
+public class MainActivity extends Activity implements BumpAPIListener, OnCancelListener {
 	
 	private static final String TAG = "DustyTubaSampleApp";
 	
@@ -50,6 +54,10 @@ public class MainActivity extends Activity implements BumpAPIListener {
 	private String otherBluetoothName;
 	private boolean isServer;
 	
+	private ProgressDialog connectionSetupDialog;
+	
+	private Resources res;
+	
 	private BumpConnection bConn = null;
 	
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -62,6 +70,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
         setContentView(R.layout.main);
         
         initializeViews();
+        res = getResources();
         
         //if (mBluetoothAdapter == null) {
         //	Toast.makeText(this, "Bluetooth not available on this device!", Toast.LENGTH_LONG).show();
@@ -203,12 +212,14 @@ public class MainActivity extends Activity implements BumpAPIListener {
 					protocolBuffer.clear();
 					protocolState = ProtocolState.NONE;
 					otherBluetoothNameObtained();
+					connectionSetupDialog.dismiss();
 				}
 			}
 		}
 	}
 
     private void sendBluetoothInfo() {
+    	connectionSetupDialog = ProgressDialog.show(this, "", res.getString(R.string.setting_up_connection), true, true, this);
     	ByteArrayList byl = new ByteArrayList();
     	byl.add( PROTOCOL_VERSION );
     	byl.addAll( ByteArrayTools.toByta( VERSION ) );
@@ -223,6 +234,15 @@ public class MainActivity extends Activity implements BumpAPIListener {
     	Log.i(TAG, "Sent bluetooth info" );
     }
     
+    /** Used for when a user cancels a progress dialog **/
+	@Override
+	public void onCancel(DialogInterface dialog) {
+		if ( dialog == connectionSetupDialog ) {
+			// TODO: Define behaviour for when user cancels the setup dialog
+			Toast.makeText(this, "Connection setup canceled...", Toast.LENGTH_LONG).show();
+		}
+	}
+	
 	private void otherServerNumberObtained() {
 		if ( otherServerRandomNumber == serverRandomNumber ) {
 	    	bConn.send( new byte[]{PROTOCOL_SERVER_RANDOM_NUMBER} );

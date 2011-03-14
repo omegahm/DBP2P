@@ -4,4 +4,5 @@
     <string name="my_info">My information:</string>
     <string name="connect_bump">Connect through Bump</string>
     <string name="other_info">Other phone information:</string>
+    <string name="setting_up_connection">Setting up connection...\nPlease wait</string>
 </resources>
