@@ -19,10 +19,15 @@ public class MainActivity extends Activity implements BumpAPIListener {
 	private static final int REQUEST_BUMP = 3;
 	private static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
 	
-	private enum ProtocolState { NONE, SERVER_RANDOM_NUMBER, BLUETOOTH_MAC, BLUETOOTH_NAME };
+	private enum ProtocolState { NONE, VERSION, SERVER_RANDOM_NUMBER, BLUETOOTH_MAC, BLUETOOTH_NAME };
 	private ProtocolState protocolState = ProtocolState.NONE;
 	private ByteArrayList protocolBuffer = new ByteArrayList(64);
 	
+	/* Implementation details (of our current version) of the protocol */
+	private static final byte VERSION = 0; // Incremented on API changes
+	
+	/* Protocol States */
+	private static final byte PROTOCOL_VERSION = 0;
 	private static final byte PROTOCOL_SERVER_RANDOM_NUMBER = 1;
 	private static final byte PROTOCOL_BLUETOOTH_MAC = 2;
 	private static final byte PROTOCOL_BLUETOOTH_NAME = 3;
@@ -37,6 +42,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
 	private Button btnConnectBump;
 	
 	//private String MyMAC = null;
+	private float otherVersion;
 	private java.util.Random rnd = new java.util.Random();
 	private float serverRandomNumber = rnd.nextFloat();
 	private float otherServerRandomNumber;
@@ -47,6 +53,7 @@ public class MainActivity extends Activity implements BumpAPIListener {
 	private BumpConnection bConn = null;
 	
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
 	
     /** Called when the activity is first created. */
     @Override
@@ -153,6 +160,9 @@ public class MainActivity extends Activity implements BumpAPIListener {
 		Log.i(TAG, "Byte: " + arg0 + " (" + (int)arg0 + "), State: " + protocolState.toString() );
 		if (protocolState == ProtocolState.NONE) {
 			switch (arg0) {
+				case PROTOCOL_VERSION:
+					protocolState = ProtocolState.VERSION;
+					break;
 				case PROTOCOL_SERVER_RANDOM_NUMBER:
 					protocolState = ProtocolState.SERVER_RANDOM_NUMBER;
 					break;
@@ -165,7 +175,14 @@ public class MainActivity extends Activity implements BumpAPIListener {
 			}
 		} else {
 			protocolBuffer.add( arg0 );
-			if (protocolState == ProtocolState.SERVER_RANDOM_NUMBER) {
+			if (protocolState == ProtocolState.VERSION) {
+				if ( protocolBuffer.size() == 4 ) {
+					otherVersion = ByteArrayTools.toFloat( protocolBuffer.toArray() );
+					protocolBuffer.clear();
+					protocolState = ProtocolState.NONE;
+					otherVersionObtained();
+				}
+			} else if (protocolState == ProtocolState.SERVER_RANDOM_NUMBER) {
 				if ( protocolBuffer.size() == 4 ) {
 					otherServerRandomNumber = ByteArrayTools.toFloat( protocolBuffer.toArray() );
 					protocolBuffer.clear();
@@ -193,6 +210,8 @@ public class MainActivity extends Activity implements BumpAPIListener {
 
     private void sendBluetoothInfo() {
     	ByteArrayList byl = new ByteArrayList();
+    	byl.add( PROTOCOL_VERSION );
+    	byl.addAll( ByteArrayTools.toByta( VERSION ) );
     	byl.add( PROTOCOL_SERVER_RANDOM_NUMBER );
     	byl.addAll( ByteArrayTools.toByta( serverRandomNumber ) );
     	byl.add( PROTOCOL_BLUETOOTH_MAC );
@@ -219,6 +238,21 @@ public class MainActivity extends Activity implements BumpAPIListener {
 				lblOtherBTConnType.setText("Connection type: Server");
 			}
 		}
+	}
+
+    private void otherVersionObtained() {
+		if ( VERSION != otherVersion ) {
+			String errorText = "The application is out of date.";
+			if ( VERSION > otherVersion )
+				errorText = "Recipient application is out of date.";
+			Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
+		}    	
+		// TODO: Do something sensible, e.g.:
+		// * proper error respective to version number
+		// * abort
+		// * launch market link
+		// * offer to send apk (root only?) to other phone
+		// * extend with major / minor version
 	}
 	
     private void otherBluetoothMACObtained() {
