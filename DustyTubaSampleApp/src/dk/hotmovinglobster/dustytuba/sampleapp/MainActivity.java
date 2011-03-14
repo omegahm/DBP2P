@@ -28,7 +28,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private ByteArrayList protocolBuffer = new ByteArrayList(64);
 	
 	/* Implementation details (of our current version) of the protocol */
-	private static final byte VERSION = 0; // Incremented on API changes
+	private static final int VERSION = 0; // Incremented on API changes
 	
 	/* Protocol States */
 	private static final byte PROTOCOL_VERSION = 0;
@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private Button btnConnectBump;
 	
 	//private String MyMAC = null;
-	private float otherVersion;
+	private int otherVersion;
 	private java.util.Random rnd = new java.util.Random();
 	private float serverRandomNumber = rnd.nextFloat();
 	private float otherServerRandomNumber;
@@ -186,7 +186,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			protocolBuffer.add( arg0 );
 			if (protocolState == ProtocolState.VERSION) {
 				if ( protocolBuffer.size() == 4 ) {
-					otherVersion = ByteArrayTools.toFloat( protocolBuffer.toArray() );
+					otherVersion = ByteArrayTools.toInt( protocolBuffer.toArray() );
 					protocolBuffer.clear();
 					protocolState = ProtocolState.NONE;
 					otherVersionObtained();
