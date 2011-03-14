@@ -28,7 +28,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private ByteArrayList protocolBuffer = new ByteArrayList(64);
 	
 	/* Implementation details (of our current version) of the protocol */
-	private static final int VERSION = 0; // Incremented on API changes
+	private static final int VERSION = 1; // Incremented on API changes
 	
 	/* Protocol States */
 	private static final byte PROTOCOL_VERSION = 0;
@@ -39,9 +39,11 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private TextView lblMyBTMac;
 	private TextView lblMyBTName;
 	private TextView lblMyBTConnType;
+	private TextView lblMyProtocolVersion;
 	private TextView lblOtherBTMac;
 	private TextView lblOtherBTName;
 	private TextView lblOtherBTConnType;
+	private TextView lblOtherProtocolVersion;
 	
 	private Button btnConnectBump;
 	
@@ -81,9 +83,13 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		lblMyBTMac = (TextView)findViewById(R.id.lblMyBTMac);
         lblMyBTName = (TextView)findViewById(R.id.lblMyBTName);
         lblMyBTConnType = (TextView)findViewById(R.id.lblMyBTConnType);
+        lblMyProtocolVersion = (TextView)findViewById(R.id.lblMyProtocolVersion);
+        
         lblOtherBTMac = (TextView)findViewById(R.id.lblOtherBTMac);
         lblOtherBTName = (TextView)findViewById(R.id.lblOtherBTName);
         lblOtherBTConnType = (TextView)findViewById(R.id.lblOtherBTConnType);
+        lblOtherProtocolVersion = (TextView)findViewById(R.id.lblOtherProtocolVersion);
+
         
         btnConnectBump = (Button)findViewById(R.id.btnConnectBump);
         btnConnectBump.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +107,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     @Override
     public void onStart() {
     	super.onStart();
+        lblMyProtocolVersion.setText( Integer.toString( VERSION ) );
     	btnConnectBump.setEnabled( false );
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -261,12 +268,14 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	}
 
     private void otherVersionObtained() {
+    	lblOtherProtocolVersion.setText( "Protocol Version: " + Integer.toString( otherVersion ) );
 		if ( VERSION != otherVersion ) {
 			String errorText = "The application is out of date.";
 			if ( VERSION > otherVersion )
 				errorText = "Recipient application is out of date.";
 			Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
 		}    	
+		
 		// TODO: Do something sensible, e.g.:
 		// * proper error respective to version number
 		// * abort
@@ -276,11 +285,11 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	}
 	
     private void otherBluetoothMACObtained() {
-		lblOtherBTMac.setText(otherBluetoothMAC);
+		lblOtherBTMac.setText( "MAC: " + otherBluetoothMAC);
 	}
 
     private void otherBluetoothNameObtained() {
-		lblOtherBTName.setText(otherBluetoothName);
+		lblOtherBTName.setText( "Name: " + otherBluetoothName);
 	}
 
 	@Override
