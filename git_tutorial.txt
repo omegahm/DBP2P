@@ -105,6 +105,7 @@ $ git push dev
 will push the local branch "dev" to the remote branch "dev" and
 $ git push origin master
 will push the local origin to the remote master
+(Always do a pull before pushing stuff)
 
 To get the content pushed by others, one would have to pull
 $ git pull
