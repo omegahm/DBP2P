@@ -35,6 +35,9 @@
 % This is now the recommended way for checking for PDFLaTeX:
 \usepackage{ifpdf}
 
+
+\addto\captionsenglish{\renewcommand{\refname}{}}
+
 %\newif\ifpdf
 %\ifx\pdfoutput\undefined
 %\pdffalse % we are not running PDFLaTeX
@@ -75,7 +78,20 @@
 when well, what went wrong, and how you will improve for the next sprint)
 \end{enumerate}
 
-The Sprint Demo was given on March 9th. This document describes requirements 2-4.
+The Sprint Demo was given on March 9th. This document describes requirements 2-4 as well as the sprint learning goal -- software design and architecture.
+
+\section{Software design and architecture}
+Although our software currently is implemented as a standalone application, we intend, for our third sprint, to divide the functionality into two parts:
+\begin{itemize}
+\item An independent library responsible for establishing a secure bluetooth connection between two phones aided by an initial out-of-band (OOB) connection such as Bump.
+\item A sample application utilizing the library to securely send arbitrary files (e.g. pictures, video or music) to another nearby device using the aforementioned bluetooth connection.
+\end{itemize}
+
+\paragraph{Identity providers}
+An OOB connection used to exchange bluetooth identity information to setup the actual connection will be known as an \emph{identity provider}. In order to seamlessly support multiple identity providers, we plan on using the Abstract Factory\cite{GangOfFour} pattern. This way, a user of the API will not have to know about or rely upon the implementations of the different identity providers, but simply decide which provider to use.
+
+\paragraph{Android Intents}
+Luckily, parts of the Android API seems to have been designed with some design patterns in mind. As such, the Android intent system seems inspired by the Command\cite{GangOfFour} pattern with which you encapsulate all the information needed the call a method when appropriate.
 
 \section{Source code access}
 Our source code is publicly available on Github from \url{https://github.com/omegahm/DBP2P}.
@@ -182,5 +198,16 @@ How we will improve:
 \begin{itemize}
 	\item item
 \end{itemize}
+
+\section{References}
+\begin{thebibliography}{9}
+\vspace{-3em}
+
+\bibitem{GangOfFour}
+  Gamma et al.,
+  \emph{Design Patterns: Elements of Reusable Object-Oriented Software}.
+  Addison Wesley, 1994.
+
+\end{thebibliography}
 
 \end{document}

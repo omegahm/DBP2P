@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="hello">Hello World, MainActivity!</string>
-    <string name="app_name">SprintDemo1</string>
-    <string name="my_info">My information:</string>
-    <string name="connect_bump">Connect through Bump</string>
-    <string name="other_info">Other phone information:</string>
-</resources>
