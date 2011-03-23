@@ -69,6 +69,10 @@
 %\tableofcontents
 %\vspace{2cm}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Requirements for this deliverable}
 \begin{enumerate}
 \item Doing a demo in class (on 2011-03-30)
@@ -78,20 +82,36 @@
 when well, what went wrong, and how you will improve for the next sprint)
 \end{enumerate}
 
-The Sprint Demo was given on March 9th. This document describes requirements 2-4 as well as the sprint learning goal -- software design and architecture.
+The Sprint Demo was given on March 30th. This document describes requirements 2-4 as well as the sprint learning goal -- software design and architecture.
 
-\section{Software design and architecture}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Software architecture}
 Although our software currently is implemented as a standalone application, we intend, for our third sprint, to divide the functionality into two parts:
 \begin{itemize}
 \item An independent library responsible for establishing a secure bluetooth connection between two phones aided by an initial out-of-band (OOB) connection such as Bump.
 \item A sample application utilizing the library to securely send arbitrary files (e.g. pictures, video or music) to another nearby device using the aforementioned bluetooth connection.
 \end{itemize}
 
+As such, we are using layers to separate different parts of the application.
+The sample application needs not know about how the library is implemented, i.e. how it establishes a secure bluetooth connection, but can rely on that the library makes it happen and exposes an interface for doing so.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Software design}
 \paragraph{Identity providers}
 An OOB connection used to exchange bluetooth identity information to setup the actual connection will be known as an \emph{identity provider}. In order to seamlessly support multiple identity providers, we plan on using the Abstract Factory\cite{GangOfFour} pattern. This way, a user of the API will not have to know about or rely upon the implementations of the different identity providers, but simply decide which provider to use.
 
 \paragraph{Android Intents}
 Luckily, parts of the Android API seems to have been designed with some design patterns in mind. As such, the Android intent system seems inspired by the Command\cite{GangOfFour} pattern with which you encapsulate all the information needed the call a method when appropriate, so the system asynchronously can call the method.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Source code access}
 Our source code is publicly available on Github from \url{https://github.com/omegahm/DBP2P}.
@@ -103,6 +123,9 @@ The master branch currently holds only documentation and deliverables, while we 
 If you wish to checkout our code (read-only) using Git, then use git clone with this URL:
 \url{git://github.com/omegahm/DBP2P.git}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Sprint material}
 %TODO
@@ -178,6 +201,11 @@ The following tasks have been completed during this sprint:
 %We have got an Acunote account\footnote{\url{http://dbp2p.acunote.com/}} setup, and access to this have been granted.
 
 %\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Sprint retrospective}
 
 What went well during this sprint:
