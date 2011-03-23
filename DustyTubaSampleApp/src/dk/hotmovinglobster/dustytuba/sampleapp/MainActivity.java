@@ -60,10 +60,10 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private java.util.Random rnd = new java.util.Random();
 	private float serverRandomNumber = rnd.nextFloat();
 	private float otherServerRandomNumber;
-	private String otherBluetoothMAC;
-	private String otherBluetoothUUID;
-	private String bluetoothPassKey;
-	private String otherBluetoothName;
+	private String otherBluetoothMAC = "";
+	private String otherBluetoothUUID = "";
+	private String bluetoothPassKey = "";
+	private String otherBluetoothName = "";
 	private boolean isServer;
 	
 	private ProgressDialog connectionSetupDialog;
@@ -149,6 +149,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 				startActivityForResult(bump, REQUEST_BUMP);
 			}
 		});
+        
         btnConnectBluetooth = (Button)findViewById(R.id.btnConnectBluetooth);
         btnConnectBluetooth.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -178,21 +179,18 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     
 	/** Has identity provider provided us with enough info to do BT? */
 	protected boolean isReadyForBluetooth() {
-		// TODO expand with otherBluetoothUUID, passkey etc, isServer
-		return (otherVersion >= 0) && !"".equals(null);
-		//return !(otherBluetoothMAC == null) && !otherBluetoothMAC.equals("");		
+		return (otherVersion >= 0)
+			// not checking server negotiation 
+			//TODO && !"".equals(bluetoothPassKey)
+			//TODO && !"".equals(otherBluetoothUUID)
+			&& !"".equals(otherBluetoothMAC);
 	}
 	
 	/** Start bluetooth connection */
     protected void startBluetooth() {
-		// TODO: Make another intent / activity / library thingy instead of just a method
-		//Intent bluetooth = new Intent(MainActivity.this, BluetoothActivity.class);
-		//bluetooth.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
-		//bluetooth.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
-		//startActivityForResult(bluetooth, REQUEST_BUMP);
+		// TODO: Make another intent / activity / library thing similar to BUMP library call
 		
-    	// FIXME: Do something!    	
-		// TODO expand with otherBluetoothUUID, passkey etc, isServer
+    	// FIXME: with otherBluetoothUUID, passkey etc, isServer
 	}
 
 	@Override
