@@ -59,6 +59,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private float serverRandomNumber = rnd.nextFloat();
 	private float otherServerRandomNumber;
 	private String otherBluetoothMAC;
+	private String otherBluetoothUUID;
+	private String bluetoothPassKey;
 	private String otherBluetoothName;
 	private boolean isServer;
 	
@@ -69,6 +71,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private BumpConnection bConn = null;
 	
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+	private Button btnConnectBluetooth;
 
 	
     /** Called when the activity is first created. */
@@ -102,7 +106,6 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         
         btnConnectBump = (Button)findViewById(R.id.btnConnectBump);
         btnConnectBump.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				if (!hasInternetConnection()) {
@@ -115,13 +118,54 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 				startActivityForResult(bump, REQUEST_BUMP);
 			}
 		});
+        btnConnectBluetooth = (Button)findViewById(R.id.btnConnectBump);
+        btnConnectBluetooth.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Assert
+				if (!isReadyForBluetooth()) {
+					String errorText = "bluetooth button can be pressed, but we're not ready";
+					Log.e(TAG,errorText);
+					Toast.makeText(MainActivity.this, errorText, Toast.LENGTH_SHORT).show();
+        			MainActivity.this.finish();
+				}
+				// End Assert
+				
+				// Start bluetooth
+				startBluetooth();
+			}
+		});
 	}
     
-    @Override
+	/** Has identity provider provided us with enough info to do BT? */
+	protected boolean isReadyForBluetooth() {
+		// TODO Auto-generated method stub
+		
+		return
+			(otherBluetoothMAC == null) && (!otherBluetoothMAC.equals(""));
+			(otherBluetoothMAC == null) && (!otherBluetoothMAC.equals(""));
+		
+		
+		return false;
+	}
+	
+	/** Start bluetooth connection */
+    protected void startBluetooth() {
+		// TODO: Make another intent / activity / library thingy instead of just a method
+		//Intent bluetooth = new Intent(MainActivity.this, BluetoothActivity.class);
+		//bluetooth.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+		//bluetooth.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+		//startActivityForResult(bluetooth, REQUEST_BUMP);
+		
+    	// FIXME: Do something!
+	}
+
+	@Override
     public void onStart() {
     	super.onStart();
         lblMyProtocolVersion.setText( Integer.toString( VERSION ) );
-    	btnConnectBump.setEnabled( false );
+        btnConnectBump.setEnabled( false );
+        btnConnectBluetooth.setEnabled( false );
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);

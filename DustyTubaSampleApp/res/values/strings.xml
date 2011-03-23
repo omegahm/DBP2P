@@ -12,6 +12,5 @@
     <string name="no_internet_connection">No internet connection could be found.\nPlease ensure that you are connected to the internet and try again.</string>
     <string name="version_outdated_other">The recipient application is out of date.</string>
     <string name="version_outdated_this">The application is out of date.</string>
-
-
+    <string name="connect_bluetooth">Setup Bluetooth</string>
 </resources>

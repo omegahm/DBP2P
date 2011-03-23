@@ -15,4 +15,6 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherBTName" android:text="Name: N/A"></TextView>
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherBTConnType" android:text="Connection type: N/A"></TextView>
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherProtocolVersion" android:text="Protocol version: N/A"></TextView>
+    <Button android:layout_height="wrap_content" android:layout_marginTop="20sp" android:layout_marginBottom="20sp" android:id="@+id/btnConnectBluetooth" android:layout_width="fill_parent" android:text="@string/connect_bluetooth" android:enabled="false"/>
+    
 </LinearLayout>
