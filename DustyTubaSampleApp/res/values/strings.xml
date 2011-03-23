@@ -13,4 +13,9 @@
     <string name="version_outdated_other">The recipient application is out of date.</string>
     <string name="version_outdated_this">The application is out of date.</string>
     <string name="connect_bluetooth">Setup Bluetooth</string>
+    <string name="protocol_version_f">Protocol version: %d</string>
+    <string name="mac_address_f">MAC Address: %s</string>
+    <string name="name_f">Name: %s</string>
+    <string name="connection_type_client">Connection type: Client</string>
+    <string name="connection_type_server">Connection type: Server</string>
 </resources>

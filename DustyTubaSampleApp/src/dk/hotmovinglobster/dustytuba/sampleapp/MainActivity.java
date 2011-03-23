@@ -87,9 +87,40 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         // Volume buttons control media volume (which dictates bump sounds)
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC); 
         
+        restoreState( savedInstanceState );
+        
         //if (mBluetoothAdapter == null) {
         //	Toast.makeText(this, "Bluetooth not available on this device!", Toast.LENGTH_LONG).show();
         //}
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+    	outState.putString( "lblMyBTMacText",              lblMyBTMac.getText().toString() );
+    	outState.putString( "lblMyBTNameText",             lblMyBTName.getText().toString() );
+    	outState.putString( "lblMyBTConnTypeText",         lblMyBTConnType.getText().toString() );
+    	outState.putString( "lblMyProtocolVersionText",    lblMyProtocolVersion.getText().toString() );
+
+    	outState.putString( "lblOtherBTMacText",           lblOtherBTMac.getText().toString() );
+    	outState.putString( "lblOtherBTNameText",          lblOtherBTName.getText().toString() );
+    	outState.putString( "lblOtherBTConnTypeText",      lblOtherBTConnType.getText().toString() );
+    	outState.putString( "lblOtherProtocolVersionText", lblOtherProtocolVersion.getText().toString() );
+    }
+    
+    private void restoreState(Bundle inState) {
+    	if (inState == null)
+    		return;
+    	
+    	lblMyBTMac.setText( inState.getString( "lblMyBTMacText" ) );
+    	lblMyBTName.setText( inState.getString( "lblMyBTNameText" ) );
+    	lblMyBTConnType.setText( inState.getString( "lblMyBTConnTypeText" ) );
+    	lblMyProtocolVersion.setText( inState.getString( "lblMyProtocolVersionText" ) );
+    	
+    	lblOtherBTMac.setText( inState.getString( "lblOtherBTMacText" ) );
+    	lblOtherBTName.setText( inState.getString( "lblOtherBTNameText" ) );
+    	lblOtherBTConnType.setText( inState.getString( "lblOtherBTConnTypeText" ) );
+    	lblOtherProtocolVersion.setText( inState.getString( "lblOtherProtocolVersionText" ) );
+    	
     }
     
 	private void initializeViews() {
@@ -103,7 +134,6 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         lblOtherBTConnType = (TextView)findViewById(R.id.lblOtherBTConnType);
         lblOtherProtocolVersion = (TextView)findViewById(R.id.lblOtherProtocolVersion);
 
-        
         btnConnectBump = (Button)findViewById(R.id.btnConnectBump);
         btnConnectBump.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -142,11 +172,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		// TODO Auto-generated method stub
 		
 		return
-			(otherBluetoothMAC == null) && (!otherBluetoothMAC.equals(""));
-			(otherBluetoothMAC == null) && (!otherBluetoothMAC.equals(""));
-		
-		
-		return false;
+			(otherBluetoothMAC == null) && (!otherBluetoothMAC.equals(""));		
 	}
 	
 	/** Start bluetooth connection */
@@ -163,7 +189,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	@Override
     public void onStart() {
     	super.onStart();
-        lblMyProtocolVersion.setText( Integer.toString( VERSION ) );
+    	lblMyProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), PROTOCOL_VERSION ) );
         btnConnectBump.setEnabled( false );
         btnConnectBluetooth.setEnabled( false );
         if (!mBluetoothAdapter.isEnabled()) {
@@ -199,8 +225,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     }
     
     private void BluetoothActivated() {
-        lblMyBTMac.setText( "MAC: " + getBluetoothAddress() );
-        lblMyBTName.setText( "Name: " + getBluetoothName() );
+        lblMyBTMac.setText( String.format( res.getString(R.string.mac_address_f), getBluetoothAddress() ) );
+        lblMyBTName.setText( String.format( res.getString(R.string.name_f), getBluetoothName() ) );
         btnConnectBump.setEnabled( true );
     }
     
@@ -323,20 +349,19 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		} else {
 			if ( otherServerRandomNumber < serverRandomNumber ) {
 				isServer = true;
-				lblMyBTConnType.setText("Connection type: Server");
-				lblOtherBTConnType.setText("Connection type: Client");
+				lblMyBTConnType.setText( res.getString( R.string.connection_type_server ) );
+				lblOtherBTConnType.setText( res.getString( R.string.connection_type_client ) );
 			} else {
 				isServer = false;
-				lblMyBTConnType.setText("Connection type: Client");
-				lblOtherBTConnType.setText("Connection type: Server");
+				lblMyBTConnType.setText( res.getString( R.string.connection_type_client ) );
+				lblOtherBTConnType.setText( res.getString( R.string.connection_type_server ) );
 			}
 		}
 	}
 
     private void otherVersionObtained() {
     	// Update main screen feedback
-    	lblOtherProtocolVersion.setText( "Protocol Version: " + Integer.toString( otherVersion ) );
-		
+    	lblOtherProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), otherVersion ) );
     	// Check protocol versions:
     	// OK: Proceed
     	// THIS outdated: exit OR update on Market
@@ -372,11 +397,11 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	}
 	
     private void otherBluetoothMACObtained() {
-		lblOtherBTMac.setText( "MAC: " + otherBluetoothMAC);
+		lblOtherBTMac.setText( String.format( res.getString(R.string.mac_address_f), otherBluetoothMAC ) );
 	}
 
     private void otherBluetoothNameObtained() {
-		lblOtherBTName.setText( "Name: " + otherBluetoothName);
+		lblOtherBTName.setText( String.format( res.getString(R.string.name_f), otherBluetoothName ));
 	}
 
 	@Override

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DustyTuba Sample App</string>
+    <string name="my_info">Min information:</string>
+    <string name="connect_bump">Forbind via Bump</string>
+    <string name="other_info">Anden telefon information:</string>
+    <string name="setting_up_connection">Opretter forbindelse...\nVent venligst</string>
+    <string name="no_internet_connection">Der kunne ikke findes nogen internetforbindelse.\nTjek venligst at du er forbundet til internettet og prøv igen.</string>
+    <string name="protocol_version_f">Protokolversion: %d</string>
+    <string name="mac_address_f">MAC Adresse: %s</string>
+    <string name="name_f">Navn: %s</string>
+    <string name="connection_type_client">Forbindelsestype: Klient</string>
+    <string name="connection_type_server">Forbindelsestype: Server</string>
+</resources>
