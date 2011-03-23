@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -78,6 +79,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         
         initializeViews();
         res = getResources();
+        
+        // Volume buttons control media volume (which dictates bump sounds)
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC); 
         
         //if (mBluetoothAdapter == null) {
         //	Toast.makeText(this, "Bluetooth not available on this device!", Toast.LENGTH_LONG).show();

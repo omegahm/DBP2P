@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="package_name">dk.hotmovinglobster.dustytuba.sampleapp</string>
+	<string name="package_name">dk.hotmovinglobster.dustytuba.sampleapp</string>
+<!-- Random appliction package name for testing purposes
+	<string name="package_name">net.mandaria.tippytipper</string>
+ -->  	
     <string name="app_name">DustyTuba Sample App</string>
     <string name="my_info">My information:</string>
     <string name="connect_bump">Connect through Bump</string>
