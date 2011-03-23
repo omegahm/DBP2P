@@ -5,11 +5,13 @@ import com.bumptech.bumpapi.*;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 //import android.bluetooth.*;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -96,6 +98,10 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			
 			@Override
 			public void onClick(View v) {
+				if (!hasInternetConnection()) {
+					Toast.makeText(MainActivity.this, res.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
+					return;
+				}
 				Intent bump = new Intent(MainActivity.this, BumpAPI.class);
 				bump.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 				bump.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
@@ -115,6 +121,15 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         } else {
         	BluetoothActivated();
         }
+    }
+    
+    private boolean hasInternetConnection() {
+    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	android.net.NetworkInfo ni = cm.getActiveNetworkInfo();
+    	if (ni==null)
+    		return false;
+    	
+    	return ni.isConnectedOrConnecting();
     }
     
     private String getBluetoothAddress() {
