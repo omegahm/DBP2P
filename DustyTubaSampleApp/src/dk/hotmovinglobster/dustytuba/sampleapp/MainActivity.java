@@ -5,10 +5,10 @@ import com.bumptech.bumpapi.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.net.Uri;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -101,6 +101,10 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			
 			@Override
 			public void onClick(View v) {
+				if (!hasInternetConnection()) {
+					Toast.makeText(MainActivity.this, res.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
+					return;
+				}
 				Intent bump = new Intent(MainActivity.this, BumpAPI.class);
 				bump.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 				bump.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
@@ -120,6 +124,15 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         } else {
         	BluetoothActivated();
         }
+    }
+    
+    private boolean hasInternetConnection() {
+    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	android.net.NetworkInfo ni = cm.getActiveNetworkInfo();
+    	if (ni==null)
+    		return false;
+    	
+    	return ni.isConnectedOrConnecting();
     }
     
     private String getBluetoothAddress() {
@@ -295,7 +308,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		        	.setPositiveButton("Update", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
 			        	   Intent intent = new Intent(Intent.ACTION_VIEW);
-			        	   intent.setData(Uri.parse("market://details?id="+"@string/package_name"));
+			        	   intent.setData(Uri.parse("market://details?id=" + res.getString(R.string.package_name)));
 			        	   startActivity(intent);
 			        	   MainActivity.this.finish();
 			           }
@@ -323,10 +336,5 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		Toast.makeText(this, "Bump disconnected", Toast.LENGTH_LONG).show();
 		// TODO Auto-generated method stub
 		
-	}
-	
-	/** Exit app */
-	private void finishUp(){
-		finish();
 	}
 }
