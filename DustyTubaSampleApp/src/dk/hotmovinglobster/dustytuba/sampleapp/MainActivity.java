@@ -51,10 +51,12 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private TextView lblOtherBTConnType;
 	private TextView lblOtherProtocolVersion;
 	
+	// Buttons: because we want to modify clickability
 	private Button btnConnectBump;
+	private Button btnConnectBluetooth;
 	
 	//private String MyMAC = null;
-	private int otherVersion;
+	private int otherVersion = -1;
 	private java.util.Random rnd = new java.util.Random();
 	private float serverRandomNumber = rnd.nextFloat();
 	private float otherServerRandomNumber;
@@ -72,7 +74,6 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-	private Button btnConnectBluetooth;
 
 	
     /** Called when the activity is first created. */
@@ -148,7 +149,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 				startActivityForResult(bump, REQUEST_BUMP);
 			}
 		});
-        btnConnectBluetooth = (Button)findViewById(R.id.btnConnectBump);
+        btnConnectBluetooth = (Button)findViewById(R.id.btnConnectBluetooth);
         btnConnectBluetooth.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -165,14 +166,21 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 				startBluetooth();
 			}
 		});
+        
+        ((Button)findViewById(R.id.btnConnectAliceBob)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				identityProviderAliceBob();
+			}
+		});
+        
 	}
     
 	/** Has identity provider provided us with enough info to do BT? */
 	protected boolean isReadyForBluetooth() {
-		// TODO Auto-generated method stub
-		
-		return
-			(otherBluetoothMAC == null) && (!otherBluetoothMAC.equals(""));		
+		// TODO expand with otherBluetoothUUID, passkey etc, isServer
+		return (otherVersion >= 0) && !"".equals(null);
+		//return !(otherBluetoothMAC == null) && !otherBluetoothMAC.equals("");		
 	}
 	
 	/** Start bluetooth connection */
@@ -183,23 +191,23 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		//bluetooth.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
 		//startActivityForResult(bluetooth, REQUEST_BUMP);
 		
-    	// FIXME: Do something!
+    	// FIXME: Do something!    	
+		// TODO expand with otherBluetoothUUID, passkey etc, isServer
 	}
 
 	@Override
     public void onStart() {
     	super.onStart();
     	lblMyProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), PROTOCOL_VERSION ) );
-        btnConnectBump.setEnabled( false );
-        btnConnectBluetooth.setEnabled( false );
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         } else {
         	BluetoothActivated();
         }
+        btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
     }
-    
+	 
     private boolean hasInternetConnection() {
     	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     	android.net.NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -312,6 +320,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 					protocolState = ProtocolState.NONE;
 					otherBluetoothNameObtained();
 					connectionSetupDialog.dismiss();
+				} else {
+					// HACK: End of protocol
+					btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
 				}
 			}
 		}
@@ -409,5 +420,29 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		Toast.makeText(this, "Bump disconnected", Toast.LENGTH_LONG).show();
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void identityProviderAliceBob() {
+		Log.i(TAG, "Utilizing Alice&Bob Identity Provider");
+		
+		//Version
+		otherVersion = VERSION;
+		otherVersionObtained();
+
+		// Server + MAC + NAME
+		if (getBluetoothName().equals("Alice")){
+			otherServerRandomNumber = (float) 0.6;
+			otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase();
+			otherBluetoothName = "Bob";
+		} else {
+			otherServerRandomNumber = (float) 0.4;
+			otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase();
+			otherBluetoothName = "Alice";
+		}
+		otherBluetoothMACObtained();
+		otherBluetoothNameObtained();
+		otherServerNumberObtained();
+		// Identity information complete
+		btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
 	}
 }
