@@ -3,8 +3,12 @@ package dk.hotmovinglobster.dustytuba.sampleapp;
 import com.bumptech.bumpapi.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -75,6 +79,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         
         initializeViews();
         res = getResources();
+        
+        // Volume buttons control media volume (which dictates bump sounds)
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC); 
         
         restoreState( savedInstanceState );
         
@@ -313,19 +320,39 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	}
 
     private void otherVersionObtained() {
+    	// Update main screen feedback
     	lblOtherProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), otherVersion ) );
-		if ( VERSION != otherVersion ) {
-			String errorText = "The application is out of date.";
-			if ( VERSION > otherVersion )
-				errorText = "Recipient application is out of date.";
-			Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
+    	// Check protocol versions:
+    	// OK: Proceed
+    	// THIS outdated: exit OR update on Market
+    	// OTHER outdated: exit
+    	if ( VERSION != otherVersion ) {
+	    	Builder builder = new AlertDialog.Builder(this);
+	    	builder.setMessage("The recipient application is out of date.")
+	    		.setCancelable(false)
+	    		.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                MainActivity.this.finish();
+		           }
+	        	});
+	    	
+			if ( VERSION < otherVersion ) {
+				builder.setMessage("The application is out of date.")
+		        	.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   Intent intent = new Intent(Intent.ACTION_VIEW);
+			        	   intent.setData(Uri.parse("market://details?id=" + res.getString(R.string.package_name)));
+			        	   startActivity(intent);
+			        	   MainActivity.this.finish();
+			           }
+		        	});
+			}    	
+	        AlertDialog alert = builder.create();
+	    	alert.show();		
 		}    	
 		
 		// TODO: Do something sensible, e.g.:
-		// * proper error respective to version number
-		// * abort
-		// * launch market link
-		// * offer to send apk (root only?) to other phone
+		// * abort rather than quit if recipient is out of date
 		// * extend with major / minor version
 	}
 	

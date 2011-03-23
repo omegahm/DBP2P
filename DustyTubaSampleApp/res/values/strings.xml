@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="package_name">dk.hotmovinglobster.dustytuba.sampleapp</string>
+<!-- Random appliction package name for testing purposes
+	<string name="package_name">net.mandaria.tippytipper</string>
+ -->  	
     <string name="app_name">DustyTuba Sample App</string>
     <string name="my_info">My information:</string>
     <string name="connect_bump">Connect through Bump</string>
     <string name="other_info">Other phone information:</string>
     <string name="setting_up_connection">Setting up connection...\nPlease wait</string>
     <string name="no_internet_connection">No internet connection could be found.\nPlease ensure that you are connected to the internet and try again.</string>
+    <string name="version_outdated_other">The recipient application is out of date.</string>
+    <string name="version_outdated_this">The application is out of date.</string>
     <string name="protocol_version_f">Protocol version: %d</string>
     <string name="mac_address_f">MAC Address: %s</string>
     <string name="name_f">Name: %s</string>
