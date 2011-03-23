@@ -6,4 +6,9 @@
     <string name="other_info">Other phone information:</string>
     <string name="setting_up_connection">Setting up connection...\nPlease wait</string>
     <string name="no_internet_connection">No internet connection could be found.\nPlease ensure that you are connected to the internet and try again.</string>
+    <string name="protocol_version_f">Protocol version: %d</string>
+    <string name="mac_address_f">MAC Address: %s</string>
+    <string name="name_f">Name: %s</string>
+    <string name="connection_type_client">Connection type: Client</string>
+    <string name="connection_type_server">Connection type: Server</string>
 </resources>
