@@ -18,4 +18,5 @@
     <string name="name_f">Name: %s</string>
     <string name="connection_type_client">Connection type: Client</string>
     <string name="connection_type_server">Connection type: Server</string>
+    <string name="connect_alicebob">Fake Connect Alice and Bob</string>
 </resources>
