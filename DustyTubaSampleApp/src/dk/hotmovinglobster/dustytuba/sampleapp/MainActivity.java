@@ -202,8 +202,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     		
        		// Service Discovery Protocol name (can be arbitrary)
     		String sdpname = TAG+VERSION;
-    		Thread btServer = new BluetoothServer(sdpname, bluetoothUUID);
-    		btServer.run();
+    		//Thread btServer = new BluetoothServer(sdpname, bluetoothUUID);
+    		//btServer.run();
     		
     		// NOTE: This is probably the wrong way to go about it
     		// Here we're doing pairing thingy, rather than setting up device
@@ -214,8 +214,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     	} else {
     		// BluetoothSocket
     		BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(otherBluetoothMAC);
-    		Thread btClient = new BluetoothClient(bluetoothDevice, bluetoothUUID);
-    		btClient.run();
+    		//Thread btClient = new BluetoothClient(bluetoothDevice, bluetoothUUID);
+    		//btClient.run();
        	}	
 	}
 
@@ -454,7 +454,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		otherVersionObtained();
 
 		// UUID
-		bluetoothUUID = UUID.randomUUID();
+		//bluetoothUUID = UUID.randomUUID();
+		bluetoothUUID = UUID.fromString("fa87c0e0-afac-12de-8a39-a80f200c9a96");
 		
 		// Server + MAC + NAME
 		if (getBluetoothName().equals("Alice")){
