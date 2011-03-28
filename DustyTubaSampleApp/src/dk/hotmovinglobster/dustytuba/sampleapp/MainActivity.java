@@ -57,6 +57,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	// Buttons: because we want to modify clickability
 	private Button btnConnectBump;
 	private Button btnConnectBluetooth;
+	private Button btnReceive;
+	
 	
 	//private String MyMAC = null;
 	private int otherVersion = -1;
@@ -79,6 +81,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+	public static final String SENDING_DATA = "sending_data";
 
 	
     /** Called when the activity is first created. */
@@ -180,6 +183,18 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			}
 		});
         
+        btnReceive = (Button)findViewById(R.id.btnReceive);
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent bump = new Intent(MainActivity.this, BumpAPI.class);
+				bump.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+				bump.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+				startActivityForResult(bump, REQUEST_BUMP);
+				/* TODO: Connect via bluetooth */
+				/* TODO: Receive data */
+			}
+		});
 	}
     
 	/** Has identity provider provided us with enough info to do BT? */
@@ -230,6 +245,12 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         	BluetoothActivated();
         }
         btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
+        
+        /* If sending through a "send to..." dialog, we want to grab the data */
+        if(getIntent().getBooleanExtra(SENDING_DATA, false)) {
+        	Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
+        }
+        
     }
 	 
     private boolean hasInternetConnection() {
@@ -292,7 +313,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		for (int i = 0; i < arg0.length; i++)
 			byteReceived( arg0[i] );
 		Log.i(TAG, "State posterior: " + protocolState.toString() );
-		//Toast.makeText(this, "Bump received: " + new String(arg0), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Bump received: " + new String(arg0), Toast.LENGTH_SHORT).show();
 		
 	}
 	
