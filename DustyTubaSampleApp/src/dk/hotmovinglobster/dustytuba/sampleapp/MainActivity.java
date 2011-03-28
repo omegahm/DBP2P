@@ -1,5 +1,7 @@
 package dk.hotmovinglobster.dustytuba.sampleapp;
 
+import java.util.UUID;
+
 import com.bumptech.bumpapi.*;
 
 import android.app.Activity;
@@ -7,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.net.ConnectivityManager;
@@ -61,7 +64,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private float serverRandomNumber = rnd.nextFloat();
 	private float otherServerRandomNumber;
 	private String otherBluetoothMAC = "";
-	private String otherBluetoothUUID = "";
+	private String otherBluetoothUUIDStr = "";
+	private String myBluetoothUUIDStr = "";
+	private UUID bluetoothUUID;
 	private String bluetoothPassKey = "";
 	private String otherBluetoothName = "";
 	private boolean isServer;
@@ -182,15 +187,36 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		return (otherVersion >= 0)
 			// not checking server negotiation 
 			//TODO && !"".equals(bluetoothPassKey)
-			//TODO && !"".equals(otherBluetoothUUID)
-			&& !"".equals(otherBluetoothMAC);
+			&& bluetoothUUID != null
+			&& !"".equals(otherBluetoothMAC)
+			&& BluetoothAdapter.checkBluetoothAddress(otherBluetoothMAC);
 	}
 	
 	/** Start bluetooth connection */
     protected void startBluetooth() {
-		// TODO: Make another intent / activity / library thing similar to BUMP library call
-		
+		// TODO: Make another intent / activity / library thing similar to BUMP library call    	
     	// FIXME: with otherBluetoothUUID, passkey etc, isServer
+    	
+    	if (isServer){
+    		// BluetoothServerSocket -> BluetoothSocket + discard socket
+    		
+       		// Service Discovery Protocol name (can be arbitrary)
+    		String sdpname = TAG+VERSION;
+    		Thread btServer = new BluetoothServer(sdpname, bluetoothUUID);
+    		btServer.run();
+    		
+    		// NOTE: This is probably the wrong way to go about it
+    		// Here we're doing pairing thingy, rather than setting up device
+    		// based on preshared out of band secret
+    		
+    		// BluetoothDevice.createBondOutOfBand
+    		
+    	} else {
+    		// BluetoothSocket
+    		BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(otherBluetoothMAC);
+    		Thread btClient = new BluetoothClient(bluetoothDevice, bluetoothUUID);
+    		btClient.run();
+       	}	
 	}
 
 	@Override
@@ -427,6 +453,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		otherVersion = VERSION;
 		otherVersionObtained();
 
+		// UUID
+		bluetoothUUID = UUID.randomUUID();
+		
 		// Server + MAC + NAME
 		if (getBluetoothName().equals("Alice")){
 			otherServerRandomNumber = (float) 0.6;
