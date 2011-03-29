@@ -22,8 +22,6 @@ public class ShareActivity extends Activity {
     private Intent intent;
 	private int checksum;
 	
-	private static final int BT_CONNECT = 1;
-	
 	protected static final String INTENT_SEND_DATA = "intent_data";
 	protected static final String INTENT_SEND_CHECKSUM = "intent_checksum";
 	
@@ -49,7 +47,7 @@ public class ShareActivity extends Activity {
         	byte[] checksum = new Integer(intentData.hashCode()).toString().getBytes();
     		
     		/* Connect to other phone */
-    		intent = new Intent(this, Connector.class);
+    		intent = new Intent(this, ConnectorActivity.class);
     		
     		/* Send data */
     		intent.putExtra(INTENT_SEND_DATA, intentData);

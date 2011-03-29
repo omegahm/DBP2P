@@ -28,7 +28,9 @@
 	           	<data android:mimeType="*/*" />
 	        </intent-filter>
 		</activity>
-		<activity android:name=".Connector">
+		<activity android:name="ConnectorActivity">
+		</activity>
+		<activity android:name=".ReceiveActivity">
 		</activity>
 		<activity android:name="com.bumptech.bumpapi.BumpAPI"
 			android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
