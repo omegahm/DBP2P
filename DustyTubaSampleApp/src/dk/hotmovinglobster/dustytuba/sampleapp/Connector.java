@@ -75,6 +75,9 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 	private BumpConnection bumpConn = null;
 	private ProgressDialog connectionSetupDialog;
 	
+	private byte[] checksum;
+	private byte[] intentData;
+	private boolean dataSent = false;
 	/**
 	 * Launch the bump dialog and determine another bump user
 	 * @param context a context, which implements OnCancelListener
@@ -100,6 +103,11 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 		}
 		
 		res = getResources();
+		
+		Intent intent = getIntent();
+		intentData = intent.getByteArrayExtra(ShareActivity.INTENT_SEND_DATA);
+		checksum = intent.getByteArrayExtra(ShareActivity.INTENT_SEND_CHECKSUM);
+		
 		
 		/* Create the bump intent*/
 		Intent bump = new Intent(this, BumpAPI.class);
@@ -148,6 +156,11 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {}
 	        mConnService.connect(device);
+        }
+        
+        if(!dataSent) {
+        	sendMessage(intentData);
+        	sendMessage(checksum);
         }
 	}
     
