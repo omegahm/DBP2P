@@ -41,7 +41,7 @@ public class ShareActivity extends Activity {
     		
     		/* Launch main activity to take care of sending the data */
     		Intent i = new Intent(this, MainActivity.class);
-    		i.putExtra(MainActivity.SENDING_DATA, true);
+    		i.putExtra(MainActivity.INTENT_SEND_DATA, true);
     		startActivity(i);
     		
     		/* Stop this activity */

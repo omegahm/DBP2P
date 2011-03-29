@@ -11,6 +11,8 @@ import java.io.IOException;
  */
 public class ByteArrayList implements Serializable {
 
+	private static final long serialVersionUID = 4434791343837612392L;
+	
   private byte[] array;
   private int size;
 

@@ -1,15 +1,11 @@
 package dk.hotmovinglobster.dustytuba.sampleapp;
 
-import java.util.UUID;
-
 import com.bumptech.bumpapi.*;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.net.ConnectivityManager;
@@ -17,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-//import android.bluetooth.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -26,25 +21,56 @@ import android.content.res.Resources;
 
 public class MainActivity extends Activity implements BumpAPIListener, OnCancelListener {
 	
+	/* General */
+	private Resources res;
 	private static final String TAG = "DustyTubaSampleApp";
+    private static final boolean D = true; //TODO: use more of these: if(D) ...
+	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+	/* This Intent: Extras */
+	public static final String INTENT_SEND_DATA = "sending_data";
 	
-	private static final int REQUEST_ENABLE_BT = 1;
+    /* Other Intents: Request codes */
+	private static final int REQUEST_BT_ENABLE = 1;
+	private static final int REQUEST_BT_ESTABLISH = 2;
 	private static final int REQUEST_BUMP = 3;
+	
+	/* Application specifics */
+	private static final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
+	private static final String BT_SDP_NAME = TAG;
 	private static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
 	
+	/* Identity Provider Details*/
+	private String otherBluetoothMAC = "";
+	private boolean isServer;
+	// TODO: Consider whether we should have also have a BT protocol version (in addition to BUMP protocol version)
+	// * Bump version is only if we want to exchange other info / additional ID info... e.g. PASSKEY some day
+	// * BT conn version (so deprecate older, on on major application changes):
+	// *	* exchange stuff before handing over control? unlikely
+	// *	* as a service for developer, easier to keep track of versions of software?
+	// * 	*	nice to have, but far from vital. devs might want other behavior. Need devs to specify App package name.
+	
+	/* BUMP Protocol (current version) */
+	private static final int VERSION = 1; // Incremented on API changes
 	private enum ProtocolState { NONE, VERSION, SERVER_RANDOM_NUMBER, BLUETOOTH_MAC, BLUETOOTH_NAME };
 	private ProtocolState protocolState = ProtocolState.NONE;
 	private ByteArrayList protocolBuffer = new ByteArrayList(64);
-	
-	/* Implementation details (of our current version) of the protocol */
-	private static final int VERSION = 1; // Incremented on API changes
-	
-	/* Protocol States */
 	private static final byte PROTOCOL_VERSION = 0;
 	private static final byte PROTOCOL_SERVER_RANDOM_NUMBER = 1;
 	private static final byte PROTOCOL_BLUETOOTH_MAC = 2;
 	private static final byte PROTOCOL_BLUETOOTH_NAME = 3;
+	// TODO: Decide whether we're using the BYTES or ENUM. No need for both?
 	
+	/* BUMP */
+	private int otherVersion = -1;
+	private java.util.Random rnd = new java.util.Random();
+	private float serverRandomNumber = rnd.nextFloat();
+	private float otherServerRandomNumber;
+	private String otherBluetoothName = "";
+	private BumpConnection bConn = null;
+	private ProgressDialog connectionSetupDialog;
+	
+	/* DISPLAY */
 	private TextView lblMyBTMac;
 	private TextView lblMyBTName;
 	private TextView lblMyBTConnType;
@@ -53,38 +79,15 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private TextView lblOtherBTName;
 	private TextView lblOtherBTConnType;
 	private TextView lblOtherProtocolVersion;
-	
-	// Buttons: because we want to modify clickability
+	// Buttons: only needed for those we want to enable/disable clickability for
 	private Button btnConnectBump;
 	private Button btnConnectBluetooth;
-	private Button btnReceive;
 	
-	
-	//private String MyMAC = null;
-	private int otherVersion = -1;
-	private java.util.Random rnd = new java.util.Random();
-	private float serverRandomNumber = rnd.nextFloat();
-	private float otherServerRandomNumber;
-	private String otherBluetoothMAC = "";
-	private String otherBluetoothUUIDStr = "";
-	private String myBluetoothUUIDStr = "";
-	private UUID bluetoothUUID;
-	private String bluetoothPassKey = "";
-	private String otherBluetoothName = "";
-	private boolean isServer;
-	
-	private ProgressDialog connectionSetupDialog;
-	
-	private Resources res;
-	
-	private BumpConnection bConn = null;
-	
-	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-	public static final String SENDING_DATA = "sending_data";
-
+	/*
+	 * LOGIC + SETUP
+	 */
 	
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,11 +96,11 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         initializeViews();
         res = getResources();
         
-        // Volume buttons control media volume (which dictates bump sounds)
+        // BUMP Volume buttons control media volume (which dictates bump sounds)
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC); 
         
         restoreState( savedInstanceState );
-        
+             
         //if (mBluetoothAdapter == null) {
         //	Toast.makeText(this, "Bluetooth not available on this device!", Toast.LENGTH_LONG).show();
         //}
@@ -129,7 +132,6 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     	lblOtherBTName.setText( inState.getString( "lblOtherBTNameText" ) );
     	lblOtherBTConnType.setText( inState.getString( "lblOtherBTConnTypeText" ) );
     	lblOtherProtocolVersion.setText( inState.getString( "lblOtherProtocolVersionText" ) );
-    	
     }
     
 	private void initializeViews() {
@@ -153,7 +155,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 				}
 				Intent bump = new Intent(MainActivity.this, BumpAPI.class);
 				bump.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
-				bump.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+				bump.putExtra(BumpAPI.EXTRA_USER_NAME, getBluetoothName());
 				startActivityForResult(bump, REQUEST_BUMP);
 			}
 		});
@@ -162,17 +164,17 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         btnConnectBluetooth.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// Assert
+				// Assert TODO: Remove
 				if (!isReadyForBluetooth()) {
-					String errorText = "bluetooth button can be pressed, but we're not ready";
+					String errorText = "ERROR: bluetooth button can be pressed, but we're not ready";
 					Log.e(TAG,errorText);
 					Toast.makeText(MainActivity.this, errorText, Toast.LENGTH_SHORT).show();
-        			MainActivity.this.finish();
+        			finish();
 				}
 				// End Assert
 				
 				// Start bluetooth
-				startBluetooth();
+				startBluetooth();				
 			}
 		});
         
@@ -183,113 +185,54 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			}
 		});
         
-        btnReceive = (Button)findViewById(R.id.btnReceive);
-        btnReceive.setOnClickListener(new View.OnClickListener() {
+        ((Button)findViewById(R.id.btnReceive)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent bump = new Intent(MainActivity.this, BumpAPI.class);
-				bump.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
-				bump.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
-				startActivityForResult(bump, REQUEST_BUMP);
-				/* TODO: Connect via bluetooth */
-				/* TODO: Receive data */
+				Intent receive = new Intent(MainActivity.this, ReceiveActivity.class);
+				// TODO: Receive : Add extra parameters needed for bluetooth setup inside Receive Activity? Or pass Conn object.
+				//receive.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+				startActivity(receive);
 			}
 		});
 	}
-    
-	/** Has identity provider provided us with enough info to do BT? */
-	protected boolean isReadyForBluetooth() {
-		return (otherVersion >= 0)
-			// not checking server negotiation 
-			//TODO && !"".equals(bluetoothPassKey)
-			&& bluetoothUUID != null
-			&& !"".equals(otherBluetoothMAC)
-			&& BluetoothAdapter.checkBluetoothAddress(otherBluetoothMAC);
-	}
 	
-	/** Start bluetooth connection */
-    protected void startBluetooth() {
-		// TODO: Make another intent / activity / library thing similar to BUMP library call    	
-    	// FIXME: with otherBluetoothUUID, passkey etc, isServer
-    	
-    	if (isServer){
-    		// BluetoothServerSocket -> BluetoothSocket + discard socket
-    		
-       		// Service Discovery Protocol name (can be arbitrary)
-    		String sdpname = TAG+VERSION;
-    		//Thread btServer = new BluetoothServer(sdpname, bluetoothUUID);
-    		//btServer.run();
-    		
-    		// NOTE: This is probably the wrong way to go about it
-    		// Here we're doing pairing thingy, rather than setting up device
-    		// based on preshared out of band secret
-    		
-    		// BluetoothDevice.createBondOutOfBand
-    		
-    	} else {
-    		// BluetoothSocket
-    		BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(otherBluetoothMAC);
-    		//Thread btClient = new BluetoothClient(bluetoothDevice, bluetoothUUID);
-    		//btClient.run();
-       	}	
-	}
-
 	@Override
     public void onStart() {
     	super.onStart();
     	lblMyProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), PROTOCOL_VERSION ) );
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            startActivityForResult(enableBtIntent, REQUEST_BT_ENABLE);
         } else {
         	BluetoothActivated();
         }
+        
+        // FIXME: State not restored on orientation shift
         btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
         
         /* If sending through a "send to..." dialog, we want to grab the data */
-        if(getIntent().getBooleanExtra(SENDING_DATA, false)) {
+        if(getIntent().getBooleanExtra(INTENT_SEND_DATA, false)) {
         	Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
         }
         
     }
-	 
-    private boolean hasInternetConnection() {
-    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-    	android.net.NetworkInfo ni = cm.getActiveNetworkInfo();
-    	if (ni==null)
-    		return false;
-    	
-    	return ni.isConnectedOrConnecting();
-    }
-    
-    private String getBluetoothAddress() {
-    	return mBluetoothAdapter.getAddress();
-    	/*
-    	if (MyMAC == null) {
-        	MyMAC = "00:00:00:00:00:" + rnd.nextInt(10) + rnd.nextInt(10);
-    	}
-    	return MyMAC;
-    	*/
-    }
-    
-    private String getBluetoothName() {
-    	return mBluetoothAdapter.getName();
-    	//return MyMAC.substring(15, 17);
-    }
-    
-    private void BluetoothActivated() {
-        lblMyBTMac.setText( String.format( res.getString(R.string.mac_address_f), getBluetoothAddress() ) );
-        lblMyBTName.setText( String.format( res.getString(R.string.name_f), getBluetoothName() ) );
-        btnConnectBump.setEnabled( true );
-    }
     
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-    	if (requestCode == REQUEST_ENABLE_BT) {
+    	if (requestCode == REQUEST_BT_ENABLE) {
     		if (resultCode == RESULT_OK) {
     			BluetoothActivated();
     		} else {
     			Toast.makeText(this, "Bluetooth was not enabled. Cannot fetch information", Toast.LENGTH_LONG).show();
+    		}
+    	} else if (requestCode == REQUEST_BT_ESTABLISH) {
+    		if (resultCode == RESULT_OK) {
+    			Toast.makeText(this, "Connection established and finished OK", Toast.LENGTH_LONG).show();
+    		} else if (resultCode == RESULT_CANCELED) {
+    			Toast.makeText(this, "Connection cancelled", Toast.LENGTH_LONG).show();
+    		} else {
+    			// TODO: btConnectFailedReason
+    			Toast.makeText(this, "TODO: btConnectFailedReason", Toast.LENGTH_LONG).show();
     		}
     	} else if (requestCode == REQUEST_BUMP) {
 			if (resultCode == RESULT_OK) {
@@ -305,18 +248,29 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			}
     	}
     }
+	      
+	/*
+	 * BUMP
+	 */
 
+	/** REQ Called when the API connection terminates */
+    @Override
+	public void bumpDisconnect(BumpDisconnectReason arg0) {
+		Toast.makeText(this, "Bump disconnected", Toast.LENGTH_LONG).show();
+	}
+    
+	/** REQ Called when a chunk of data is received from the remote client */
 	@Override
 	public void bumpDataReceived(byte[] arg0) {
-		Log.i(TAG, "Received: " + new String(arg0));
-		Log.i(TAG, "State prior: " + protocolState.toString() );
+		if(D) Log.i(TAG, "Received: " + new String(arg0));
+		if(D) Log.i(TAG, "State prior: " + protocolState.toString() );
 		for (int i = 0; i < arg0.length; i++)
 			byteReceived( arg0[i] );
-		Log.i(TAG, "State posterior: " + protocolState.toString() );
+		if(D) Log.i(TAG, "State posterior: " + protocolState.toString() );
 		Toast.makeText(this, "Bump received: " + new String(arg0), Toast.LENGTH_SHORT).show();
-		
 	}
 	
+	/** Handles received data */
 	private void byteReceived(byte arg0) {
 		Log.i(TAG, "Byte: " + arg0 + " (" + (int)arg0 + "), State: " + protocolState.toString() );
 		if (protocolState == ProtocolState.NONE) {
@@ -364,15 +318,17 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 					protocolBuffer.clear();
 					protocolState = ProtocolState.NONE;
 					otherBluetoothNameObtained();
+					// HACK: We know Name is the last we send over BumpConn, so we're done!
 					connectionSetupDialog.dismiss();
-				} else {
-					// HACK: End of protocol
 					btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
+				} else {
+					// Keep reading characters.
 				}
 			}
 		}
 	}
 
+	/** Send stuff (BT setup info) through Bump Connection */
     private void sendBluetoothInfo() {
     	connectionSetupDialog = ProgressDialog.show(this, "", res.getString(R.string.setting_up_connection), true, true, this);
     	ByteArrayList byl = new ByteArrayList();
@@ -389,15 +345,26 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     	Log.i(TAG, "Sent bluetooth info" );
     }
     
-    /** Used for when a user cancels a progress dialog **/
+	/*
+	 * BUMP VIEW + LOGIC intermingled
+	 */
+    
+    /** Used for when a user cancels during progress dialog */
 	@Override
 	public void onCancel(DialogInterface dialog) {
 		if ( dialog == connectionSetupDialog ) {
-			// TODO: Define behaviour for when user cancels the setup dialog
-			Toast.makeText(this, "Connection setup canceled...", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Bump Transfer cancelled", Toast.LENGTH_LONG).show();
+			resetIdentityProviderInfo();
 		}
 	}
 	
+	/** Reset Identity Provider info (e.g. on Aborts) */
+	private void resetIdentityProviderInfo() {
+		otherBluetoothMAC = "INVALID_MAC";
+		btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
+	}
+	
+	/** Decide Server + renegotiate if Server could not be decided */
 	private void otherServerNumberObtained() {
 		if ( otherServerRandomNumber == serverRandomNumber ) {
 	    	bConn.send( new byte[]{PROTOCOL_SERVER_RANDOM_NUMBER} );
@@ -415,43 +382,17 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		}
 	}
 
-    private void otherVersionObtained() {
+	private void otherVersionObtained() {
     	// Update main screen feedback
     	lblOtherProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), otherVersion ) );
-    	// Check protocol versions:
-    	// OK: Proceed
-    	// THIS outdated: exit OR update on Market
-    	// OTHER outdated: exit
-    	if ( VERSION != otherVersion ) {
-	    	Builder builder = new AlertDialog.Builder(this);
-	    	builder.setMessage("The recipient application is out of date.")
-	    		.setCancelable(false)
-	    		.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                MainActivity.this.finish();
-		           }
-	        	});
-	    	
-			if ( VERSION < otherVersion ) {
-				builder.setMessage("The application is out of date.")
-		        	.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   Intent intent = new Intent(Intent.ACTION_VIEW);
-			        	   intent.setData(Uri.parse("market://details?id=" + res.getString(R.string.package_name)));
-			        	   startActivity(intent);
-			        	   MainActivity.this.finish();
-			           }
-		        	});
-			}    	
-	        AlertDialog alert = builder.create();
-	    	alert.show();		
-		}    	
-		
-		// TODO: Do something sensible, e.g.:
-		// * abort rather than quit if recipient is out of date
-		// * extend with major / minor version
+    	handleVersion(VERSION, otherVersion, res.getString(R.string.package_name));
 	}
+    
 	
+    /* 
+     * VIEW 
+     */
+    
     private void otherBluetoothMACObtained() {
 		lblOtherBTMac.setText( String.format( res.getString(R.string.mac_address_f), otherBluetoothMAC ) );
 	}
@@ -459,39 +400,129 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     private void otherBluetoothNameObtained() {
 		lblOtherBTName.setText( String.format( res.getString(R.string.name_f), otherBluetoothName ));
 	}
+    
+    private void BluetoothActivated() {
+        lblMyBTMac.setText( String.format( res.getString(R.string.mac_address_f), getBluetoothAddress() ) );
+        lblMyBTName.setText( String.format( res.getString(R.string.name_f), getBluetoothName() ) );
+        btnConnectBump.setEnabled( true );
+    }
 
-	@Override
-	public void bumpDisconnect(BumpDisconnectReason arg0) {
-		Toast.makeText(this, "Bump disconnected", Toast.LENGTH_LONG).show();
-		// TODO Auto-generated method stub
-		
-	}
+    /*
+     * IDENTITY PROVIDER
+     */
 	
+    /** ID Sets fake identity provider values */
 	private void identityProviderAliceBob() {
 		Log.i(TAG, "Utilizing Alice&Bob Identity Provider");
 		
 		//Version
 		otherVersion = VERSION;
 		otherVersionObtained();
-
-		// UUID
-		//bluetoothUUID = UUID.randomUUID();
-		bluetoothUUID = UUID.fromString("fa87c0e0-afac-12de-8a39-a80f200c9a96");
-		
+	
 		// Server + MAC + NAME
+		serverRandomNumber = (float) 0.5;
 		if (getBluetoothName().equals("Alice")){
 			otherServerRandomNumber = (float) 0.6;
-			otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase();
+			//otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper)
+			otherBluetoothMAC = "00:23:d4:36:da:4a".toUpperCase(); // HTC Hero (KMD)
 			otherBluetoothName = "Bob";
 		} else {
 			otherServerRandomNumber = (float) 0.4;
-			otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase();
+			otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase(); // HTC Desire (Thomas)
 			otherBluetoothName = "Alice";
 		}
+		
+		// VIEW + HANDLE
 		otherBluetoothMACObtained();
 		otherBluetoothNameObtained();
 		otherServerNumberObtained();
-		// Identity information complete
 		btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
+	}
+	
+	/*
+	 * BLUETOOTH
+	 */
+	
+	/** Start bluetooth connection */
+    private void startBluetooth() {
+		Intent bt = new Intent(MainActivity.this, BluetoothConnectionDialog.class);
+		bt.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.SERVER.name(), isServer);
+		bt.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.MAC.name(), otherBluetoothMAC);
+		bt.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.UUID.name(), BT_UUID);
+		bt.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
+		startActivityForResult(bt, REQUEST_BT_ESTABLISH);
+	}
+	
+	/*
+	 * HELPERS
+	 */
+	
+	/** Has identity provider provided us with enough info to do BT? */
+	private boolean isReadyForBluetooth() {
+		return !"".equals(otherBluetoothMAC)
+			&& BluetoothAdapter.checkBluetoothAddress(otherBluetoothMAC);
+	}
+	
+	/** Phone has (potential) Internet Connection (ignores invalid IP/gateway, capture portal etc) */
+    private boolean hasInternetConnection() {
+    	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	android.net.NetworkInfo ni = cm.getActiveNetworkInfo();
+    	if (ni==null)
+    		return false;
+    	return ni.isConnectedOrConnecting();
+    }
+    
+    /** Easy access to Bluetooth MAC */
+    private String getBluetoothAddress() {
+    	return mBluetoothAdapter.getAddress();
+    }
+
+    /** Easy access to Bluetooth name */
+    private String getBluetoothName() {
+    	return mBluetoothAdapter.getName();
+    }
+    
+	/** Handle versions using Alert Dialog
+	 * If same version:    Do nothing
+	 * If this is newest:  Abort or Exit
+	 * If other is newest: Update packageName or Exit
+	 */
+    public void handleVersion(int thisVersion, int otherVersion, String packageName) {
+    	if ( thisVersion != otherVersion ) {
+	    	resetIdentityProviderInfo();
+    		Builder builder = new AlertDialog.Builder(this);
+	    	builder.setMessage("The recipient application is out of date.")
+	    		.setCancelable(true)
+	    		// TODO: Run through and change strings to @strings and use res.getXXX()
+	    		.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                finish();
+		           }
+	    		}).setNeutralButton("Abort", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                // Do nothing.
+			           }
+	        	});
+	    	
+			if ( thisVersion < otherVersion ) {
+	    		builder = new AlertDialog.Builder(this);
+				builder.setMessage("The application is out of date.")
+		        	.setCancelable(false)	
+					.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                finish();
+			           }
+					}).setPositiveButton("Update", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   Intent intent = new Intent(Intent.ACTION_VIEW);
+			        	   intent.setData(Uri.parse("market://details?id=" + res.getString(R.string.package_name)));
+			        	   startActivity(intent);
+			        	   MainActivity.this.finish();
+			           }  
+		        	});
+			}    	
+	        AlertDialog alert = builder.create();
+	    	alert.show();		
+		}
 	}
 }
