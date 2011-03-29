@@ -28,10 +28,11 @@
 	           	<data android:mimeType="*/*" />
 	        </intent-filter>
 		</activity>
+		<activity android:name=".Connector">
+		</activity>
 		<activity android:name="com.bumptech.bumpapi.BumpAPI"
 			android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
 		<activity android:name="com.bumptech.bumpapi.EditTextActivity" android:configChanges="keyboardHidden|orientation" android:theme="@style/BumpDialog" />
-<!-- 	<activity android:name=".BluetoothConnectionDialog" />  -->
 		<activity android:name=".BluetoothConnectionDialog" android:theme="@android:style/Theme.Dialog" />
 	</application>
 </manifest>
