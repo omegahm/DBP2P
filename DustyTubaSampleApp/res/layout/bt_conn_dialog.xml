@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  >
+<!--     <RelativeLayout android:id="@+id/relativeLayout1" android:layout_height="fill_parent" android:layout_width="wrap_content" android:layout_above="@id/in">
+ -->
+	    <LinearLayout
+	        android:orientation="horizontal"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        >
+	        <Button android:id="@+id/btCon_inject"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Inject 'Data'"
+	            android:layout_weight="1"
+	            android:layout_gravity="bottom"
+	        />
+	        <Button android:id="@+id/btCon_cancel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/cancel"
+	        />
+	    </LinearLayout>
+<!--    </RelativeLayout>  -->
+    
+	<LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+	    <ListView android:id="@+id/in"
+	        android:layout_width="250dp"
+	        android:layout_height="fill_parent"
+	        android:stackFromBottom="true"
+	        android:transcriptMode="alwaysScroll"
+	        android:layout_weight="1"
+	    />
+    </LinearLayout>
+
+</LinearLayout>

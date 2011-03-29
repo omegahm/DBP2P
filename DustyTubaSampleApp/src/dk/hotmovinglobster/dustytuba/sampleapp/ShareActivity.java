@@ -35,13 +35,13 @@ public class ShareActivity extends Activity {
     		if(intentType.equals("text/plain")) {
     			/* The data is text */
     			intentData = intent.getStringExtra(Intent.EXTRA_TEXT).getBytes();
-    			i.putExtra(MainActivity.SENDING_DATA, (byte[]) intentData);
-    			i.putExtra(MainActivity.SENDING_TEXT, true);
+    			i.putExtra(MainActivity.INTENT_SEND_DATA, (byte[]) intentData);
+    			i.putExtra(MainActivity.INTENT_SEND_TEXT, true);
     		} else {
     			/* The data is something else (e.g. could be an image) */
     			intentData = intent.getExtras().getParcelable(Intent.EXTRA_STREAM);
-    			i.putExtra(MainActivity.SENDING_DATA, (Parcelable) intentData);
-    			i.putExtra(MainActivity.SENDING_TEXT, false);
+    			i.putExtra(MainActivity.INTENT_SEND_DATA, (Parcelable) intentData);
+    			i.putExtra(MainActivity.INTENT_SEND_TEXT, false);
     		}
  
     		Log.v("INTENT", "IntentTest: " + intentType + " " + intentData);
@@ -51,9 +51,11 @@ public class ShareActivity extends Activity {
     		/* Calculate the hash code of the data */
     		/* For two objects to be equal, this must be equal */
     		checksum = intentData.hashCode();
-    		i.putExtra(MainActivity.SENDING_CHECKSUM, checksum);
+    		i.putExtra(MainActivity.INTENT_SEND_CHECKSUM, checksum);
     		
     		/* Launch main activity to take care of sending the data */
+    		
+    		i.putExtra(MainActivity.INTENT_SEND_DATA, true);
     		startActivity(i);
     		
     		/* Stop this activity */
