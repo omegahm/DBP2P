@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -29,6 +30,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 
 	/* This Intent: Extras */
 	public static final String INTENT_SEND_DATA = "sending_data";
+	public static final String INTENT_SEND_CHECKSUM = "sending_checksum";
+	public static final String INTENT_SEND_TEXT = "sending_text";
+
 	
     /* Other Intents: Request codes */
 	private static final int REQUEST_BT_ENABLE = 1;
@@ -83,7 +87,6 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private Button btnConnectBump;
 	private Button btnConnectBluetooth;
 	
-
 	/*
 	 * LOGIC + SETUP
 	 */
@@ -211,10 +214,31 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
         
         /* If sending through a "send to..." dialog, we want to grab the data */
-        if(getIntent().getBooleanExtra(INTENT_SEND_DATA, false)) {
-        	Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
-        }
+        Intent intent = getIntent();
+        if(intent.hasExtra(INTENT_SEND_DATA)) {
+        	Object intentData;
+	        if(intent.getBooleanExtra(INTENT_SEND_TEXT, false)) {
+	        	intentData = (String) intent.getStringExtra(INTENT_SEND_DATA);
+	        } else if(!intent.getBooleanExtra(INTENT_SEND_TEXT, true)) {
+	        	intentData = intent.getParcelableExtra(INTENT_SEND_DATA);
+	        } else {
+	        	intentData = new Object();
+	        }
         
+	        /* Here is a way to check the checksums after we have done bluetooth transfer */
+	        /*try {
+	            int checksum = intent.getIntExtra(INTENT_SEND_CHECKSUM, 0);
+	        	if(checksum != intentData.hashCode()) {
+	        		Toast.makeText(this, "Something went wrong while transfering data", Toast.LENGTH_LONG).show();
+	        	} else {
+	        		Toast.makeText(this, "Checksums match", Toast.LENGTH_SHORT).show();
+	        	}
+	        } catch(Exception e) {
+	        	Toast.makeText(this, "Something went wrong while transfering data", Toast.LENGTH_LONG).show();
+	        }*/
+	        
+        	/* TODO: Now we need to send it via bluetooth */
+        }
     }
     
     @Override
