@@ -255,6 +255,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     @Override
 	public void bumpDisconnect(BumpDisconnectReason arg0) {
 		Toast.makeText(this, "Bump disconnected", Toast.LENGTH_LONG).show();
+		connectionSetupDialog.dismiss();
 	}
     
 	/** REQ Called when a chunk of data is received from the remote client */
@@ -351,6 +352,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	@Override
 	public void onCancel(DialogInterface dialog) {
 		if ( dialog == connectionSetupDialog ) {
+			// This happens on BACK key in progressdialog, so no need to dismiss.
 			Toast.makeText(this, "Bump Transfer cancelled", Toast.LENGTH_LONG).show();
 			resetIdentityProviderInfo();
 		}
