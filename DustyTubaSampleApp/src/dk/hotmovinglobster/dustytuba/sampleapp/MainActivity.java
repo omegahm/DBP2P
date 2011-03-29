@@ -26,23 +26,22 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private Resources res;
 	private static final String TAG = "DustyTubaSampleApp";
     private static final boolean D = true; //TODO: use more of these: if(D) ...
-	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+	protected static BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 	/* This Intent: Extras */
-	public static final String INTENT_SEND_DATA = "sending_data";
-	public static final String INTENT_SEND_CHECKSUM = "sending_checksum";
-	public static final String INTENT_SEND_TEXT = "sending_text";
+	protected static final String INTENT_SEND_DATA = "sending_data";
+	protected static final String INTENT_SEND_CHECKSUM = "sending_checksum";
+	protected static final String INTENT_SEND_TEXT = "sending_text";
 
-	
     /* Other Intents: Request codes */
-	private static final int REQUEST_BT_ENABLE = 1;
-	private static final int REQUEST_BT_ESTABLISH = 2;
-	private static final int REQUEST_BUMP = 3;
+	protected static final int REQUEST_BT_ENABLE = 1;
+	protected static final int REQUEST_BT_ESTABLISH = 2;
+	protected static final int REQUEST_BUMP = 3;
 	
 	/* Application specifics */
-	private static final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
-	private static final String BT_SDP_NAME = TAG;
-	private static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
+	protected static final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
+	protected static final String BT_SDP_NAME = TAG;
+	protected static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
 	
 	/* Identity Provider Details*/
 	private String otherBluetoothMAC = "";
@@ -123,8 +122,9 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     }
     
     private void restoreState(Bundle inState) {
-    	if (inState == null)
+    	if (inState == null) {
     		return;
+    	}
     	
     	lblMyBTMac.setText( inState.getString( "lblMyBTMacText" ) );
     	lblMyBTName.setText( inState.getString( "lblMyBTNameText" ) );
@@ -138,21 +138,21 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     }
     
 	private void initializeViews() {
-		lblMyBTMac = (TextView)findViewById(R.id.lblMyBTMac);
-        lblMyBTName = (TextView)findViewById(R.id.lblMyBTName);
-        lblMyBTConnType = (TextView)findViewById(R.id.lblMyBTConnType);
-        lblMyProtocolVersion = (TextView)findViewById(R.id.lblMyProtocolVersion);
+		lblMyBTMac = (TextView) findViewById(R.id.lblMyBTMac);
+        lblMyBTName = (TextView) findViewById(R.id.lblMyBTName);
+        lblMyBTConnType = (TextView) findViewById(R.id.lblMyBTConnType);
+        lblMyProtocolVersion = (TextView) findViewById(R.id.lblMyProtocolVersion);
         
-        lblOtherBTMac = (TextView)findViewById(R.id.lblOtherBTMac);
-        lblOtherBTName = (TextView)findViewById(R.id.lblOtherBTName);
-        lblOtherBTConnType = (TextView)findViewById(R.id.lblOtherBTConnType);
-        lblOtherProtocolVersion = (TextView)findViewById(R.id.lblOtherProtocolVersion);
+        lblOtherBTMac = (TextView) findViewById(R.id.lblOtherBTMac);
+        lblOtherBTName = (TextView) findViewById(R.id.lblOtherBTName);
+        lblOtherBTConnType = (TextView) findViewById(R.id.lblOtherBTConnType);
+        lblOtherProtocolVersion = (TextView) findViewById(R.id.lblOtherProtocolVersion);
 
-        btnConnectBump = (Button)findViewById(R.id.btnConnectBump);
+        btnConnectBump = (Button) findViewById(R.id.btnConnectBump);
         btnConnectBump.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (!hasInternetConnection()) {
+				if(!hasInternetConnection()) {
 					Toast.makeText(MainActivity.this, res.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -163,14 +163,14 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			}
 		});
         
-        btnConnectBluetooth = (Button)findViewById(R.id.btnConnectBluetooth);
+        btnConnectBluetooth = (Button) findViewById(R.id.btnConnectBluetooth);
         btnConnectBluetooth.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Assert TODO: Remove
-				if (!isReadyForBluetooth()) {
+				if(!isReadyForBluetooth()) {
 					String errorText = "ERROR: bluetooth button can be pressed, but we're not ready";
-					Log.e(TAG,errorText);
+					Log.e(TAG, errorText);
 					Toast.makeText(MainActivity.this, errorText, Toast.LENGTH_SHORT).show();
         			finish();
 				}
@@ -181,14 +181,14 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			}
 		});
         
-        ((Button)findViewById(R.id.btnConnectAliceBob)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.btnConnectAliceBob)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				identityProviderAliceBob();
 			}
 		});
         
-        ((Button)findViewById(R.id.btnReceive)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.btnReceive)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent receive = new Intent(MainActivity.this, ReceiveActivity.class);
@@ -203,7 +203,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     public void onStart() {
     	super.onStart();
     	lblMyProtocolVersion.setText( String.format( res.getString(R.string.protocol_version_f), PROTOCOL_VERSION ) );
-        if (!mBluetoothAdapter.isEnabled()) {
+        if(!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_BT_ENABLE);
         } else {
@@ -213,32 +213,6 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         // FIXME: State not restored on orientation shift
         btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
         
-        /* If sending through a "send to..." dialog, we want to grab the data */
-        Intent intent = getIntent();
-        if(intent.hasExtra(INTENT_SEND_DATA)) {
-        	Object intentData;
-	        if(intent.getBooleanExtra(INTENT_SEND_TEXT, false)) {
-	        	intentData = (String) intent.getStringExtra(INTENT_SEND_DATA);
-	        } else if(!intent.getBooleanExtra(INTENT_SEND_TEXT, true)) {
-	        	intentData = intent.getParcelableExtra(INTENT_SEND_DATA);
-	        } else {
-	        	intentData = new Object();
-	        }
-        
-	        /* Here is a way to check the checksums after we have done bluetooth transfer */
-	        /*try {
-	            int checksum = intent.getIntExtra(INTENT_SEND_CHECKSUM, 0);
-	        	if(checksum != intentData.hashCode()) {
-	        		Toast.makeText(this, "Something went wrong while transfering data", Toast.LENGTH_LONG).show();
-	        	} else {
-	        		Toast.makeText(this, "Checksums match", Toast.LENGTH_SHORT).show();
-	        	}
-	        } catch(Exception e) {
-	        	Toast.makeText(this, "Something went wrong while transfering data", Toast.LENGTH_LONG).show();
-	        }*/
-	        
-        	/* TODO: Now we need to send it via bluetooth */
-        }
     }
     
     @Override
@@ -445,15 +419,17 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	
 		// Server + MAC + NAME
 		serverRandomNumber = (float) 0.5;
-		if (getBluetoothName().equals("Alice")){
+		if (getBluetoothName().equals("Bob")){
 			otherServerRandomNumber = (float) 0.6;
 			//otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper)
-			otherBluetoothMAC = "00:23:d4:36:da:4a".toUpperCase(); // HTC Hero (KMD)
-			otherBluetoothName = "Bob";
+			//otherBluetoothMAC = "00:23:d4:36:da:4a".toUpperCase(); // HTC Hero (KMD)
+			otherBluetoothMAC = "00:23:d4:34:45:d7".toUpperCase(); // HTC Hero (Thomas)
+			otherBluetoothName = "Hero";
 		} else {
 			otherServerRandomNumber = (float) 0.4;
-			otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase(); // HTC Desire (Thomas)
-			otherBluetoothName = "Alice";
+			//otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase(); // HTC Desire (Thomas)
+			otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper)
+			otherBluetoothName = "Bob";
 		}
 		
 		// VIEW + HANDLE
@@ -483,7 +459,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	
 	/** Has identity provider provided us with enough info to do BT? */
 	private boolean isReadyForBluetooth() {
-		return !"".equals(otherBluetoothMAC)
+		return !otherBluetoothMAC.equals("")
 			&& BluetoothAdapter.checkBluetoothAddress(otherBluetoothMAC);
 	}
 	
@@ -497,12 +473,12 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     }
     
     /** Easy access to Bluetooth MAC */
-    private String getBluetoothAddress() {
+    protected String getBluetoothAddress() {
     	return mBluetoothAdapter.getAddress();
     }
 
     /** Easy access to Bluetooth name */
-    private String getBluetoothName() {
+    protected String getBluetoothName() {
     	return mBluetoothAdapter.getName();
     }
     

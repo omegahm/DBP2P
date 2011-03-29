@@ -34,7 +34,7 @@ import android.widget.Toast;
 
 /**
  * This is the main Activity that displays the current connection session.
- * TODO: Currently a debug connection dialog, we want a nicer one that looks more like a progress dialog that can be cancelled!
+ * TODO: Currently a debug connection dialog, we want a nicer one that looks more like a progress dialog that can be canceled!
  */
 public class BluetoothConnectionDialog extends Activity {
     // Debugging
@@ -182,7 +182,7 @@ public class BluetoothConnectionDialog extends Activity {
 			public void onClick(View v) {
                 // Send a 'message'
 				garbage_data += 1;
-                sendMessage(Integer.toString(garbage_data));
+                sendMessage(Integer.toString(garbage_data).getBytes());
             }
         });
 
@@ -226,7 +226,7 @@ public class BluetoothConnectionDialog extends Activity {
      * Sends a message.
      * @param message  A string of text to send.
      */
-    private void sendMessage(String message) {
+    private void sendMessage(byte[] message) {
         // Check that we're actually connected before trying anything
         if (mConnService.getState() != BluetoothConnectionService.STATE_CONNECTED) {
             Toast.makeText(this, "Cannot send, BT Not connected", Toast.LENGTH_SHORT).show();
@@ -235,9 +235,9 @@ public class BluetoothConnectionDialog extends Activity {
         }
 
         // Check that there's actually something to send
-        if (message.length() > 0) {
+        if (message.length > 0) {
             // Get the message bytes and tell the BluetoothConnectionService to write
-            byte[] send = message.getBytes();
+            byte[] send = message;
             mConnService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
