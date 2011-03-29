@@ -24,8 +24,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
-public class Connector extends Activity implements BumpAPIListener, OnCancelListener {
+public class ConnectorActivity extends Activity implements BumpAPIListener, OnCancelListener {
 	/* GENERAL */
 	private Resources res;
 	
@@ -78,6 +79,10 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 	private byte[] checksum;
 	private byte[] intentData;
 	private boolean dataSent = false;
+	private int state = -1;
+	private int SENDER = 0;
+	private int RECEIVER = 1;
+	
 	/**
 	 * Launch the bump dialog and determine another bump user
 	 * @param context a context, which implements OnCancelListener
@@ -104,10 +109,15 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 		
 		res = getResources();
 		
-		Intent intent = getIntent();
-		intentData = intent.getByteArrayExtra(ShareActivity.INTENT_SEND_DATA);
-		checksum = intent.getByteArrayExtra(ShareActivity.INTENT_SEND_CHECKSUM);
 		
+		Intent intent = getIntent();
+		if(intent.getBooleanExtra(ReceiveActivity.INTENT_RECEIVE_DATA, false)) {
+			state = RECEIVER;
+		} else if(intent.hasExtra(ShareActivity.INTENT_SEND_DATA)) {
+			state = SENDER;
+			intentData = intent.getByteArrayExtra(ShareActivity.INTENT_SEND_DATA);
+			checksum = intent.getByteArrayExtra(ShareActivity.INTENT_SEND_CHECKSUM);
+		}
 		
 		/* Create the bump intent*/
 		Intent bump = new Intent(this, BumpAPI.class);
@@ -158,7 +168,7 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 	        mConnService.connect(device);
         }
         
-        if(!dataSent) {
+        if(!dataSent && state == SENDER) {
         	sendMessage(intentData);
         	sendMessage(checksum);
         }
@@ -391,7 +401,7 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 			        	   Intent intent = new Intent(Intent.ACTION_VIEW);
 			        	   intent.setData(Uri.parse("market://details?id=" + res.getString(R.string.package_name)));
 			        	   startActivity(intent);
-			        	   Connector.this.finish();
+			        	   ConnectorActivity.this.finish();
 			           }  
 		        	});
 			}    	
@@ -445,12 +455,14 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
                 // construct a string from the buffer
                 String writeMessage = new String(writeBuf);
                 //mConversationArrayAdapter.add("OUT:  " + writeMessage);
+                Toast.makeText(ConnectorActivity.this, "Sending data: " + writeMessage, Toast.LENGTH_LONG).show();
                 break;
             case MESSAGE_READ:
                 byte[] readBuf = (byte[]) msg.obj;
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
                 //mConversationArrayAdapter.add("IN :  " + readMessage);
+                Toast.makeText(ConnectorActivity.this, "Receiving data: " + readMessage, Toast.LENGTH_LONG).show();
                 break;
             case MESSAGE_DEVICE_NAME:
                 // save the connected device's name
@@ -476,7 +488,7 @@ public class Connector extends Activity implements BumpAPIListener, OnCancelList
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
-		// TODO Auto-generated method stub
+		Toast.makeText(this, "Transfer canceled", Toast.LENGTH_LONG).show();
 		
 	}
 }
