@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -77,6 +78,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 	public static final String SENDING_DATA = "sending_data";
+	public static final String SENDING_CHECKSUM = "sending_checksum";
+	public static final String SENDING_TEXT = "sending_text";
 
 	
     /** Called when the activity is first created. */
@@ -223,9 +226,21 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         btnConnectBluetooth.setEnabled( isReadyForBluetooth() );
         
         /* If sending through a "send to..." dialog, we want to grab the data */
-        if(getIntent().getBooleanExtra(SENDING_DATA, false)) {
-        	Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
+        Intent intent = getIntent();
+        Object intentData;
+        int checksum = intent.getIntExtra(SENDING_CHECKSUM, 0);
+        if(intent.getBooleanExtra(SENDING_TEXT, false)) {
+        	intentData = intent.getStringExtra(SENDING_DATA);
+        	Toast.makeText(this, (String) intentData, Toast.LENGTH_LONG).show();
+        } else if(!intent.getBooleanExtra(SENDING_TEXT, true)) {
+        	intentData = intent.getParcelableExtra(SENDING_DATA);
+        } else {
+        	intentData = new Object();
         }
+        
+        if(checksum != intentData.hashCode()) {
+    		Toast.makeText(this, "Something went wrong while transfering data", Toast.LENGTH_LONG).show();
+    	}
         
     }
 	 
