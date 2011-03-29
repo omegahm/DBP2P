@@ -39,7 +39,7 @@ import android.widget.Toast;
 public class BluetoothConnectionDialog extends Activity {
     // Debugging
     private static final String TAG = "BluetoothConnectionDialog";
-    private static final boolean D = true;
+    private static final boolean D = false;
     
 	/* This Intent: Extras ( use with .name() )*/
     public enum BT_CONN_DATA {
@@ -141,20 +141,20 @@ public class BluetoothConnectionDialog extends Activity {
             if (mConnService.getState() == BluetoothConnectionService.STATE_NONE) {
               // Start the Bluetooth connection services
               mConnService.start();
-              if (D) mConversationArrayAdapter.add("ConnService started (listening)");
+              if (D) mConversationArrayAdapter.add("Listening for connections");
             }
         }
         
         // HACK: Always connect on start
         if (!isServer){
-        	if (D) mConversationArrayAdapter.add("Cancelling all current connections and trying to connect (I'm client!)");
 	        device = mBluetoothAdapter.getRemoteDevice(mac);
 	        // HACK: Ugly hack for 2 sec delay, since client might establish connection before server listens
 	        // TODO: Proper Delay w/ Retry and Error code is the way to go
 	        try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {}
-	        mConnService.connect(device);
+        	if (D) mConversationArrayAdapter.add("Connecting to server");
+	        mConnService.connect(device);  
         }        
     }
 
@@ -231,7 +231,7 @@ public class BluetoothConnectionDialog extends Activity {
         // Check that we're actually connected before trying anything
         if (mConnService.getState() != BluetoothConnectionService.STATE_CONNECTED) {
             Toast.makeText(this, "Cannot send, BT Not connected", Toast.LENGTH_SHORT).show();
-            mConversationArrayAdapter.add("ERR: " + "Cannot Send. Not connected");
+            if (D) mConversationArrayAdapter.add("ERR: " + "Cannot Send. Not connected");
             //mConnService.connect(device); // FIXME: Reestablishing connection, but loosing messages. Should probably give error instead.
             return;
         }
