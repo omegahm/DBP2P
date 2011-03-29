@@ -82,6 +82,7 @@ public class BluetoothConnectionDialog extends Activity {
 	private String mac;
 	private String uuid;
 	private String sdp_name;
+	private BluetoothDevice device;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,7 +148,7 @@ public class BluetoothConnectionDialog extends Activity {
         // HACK: Always connect on start
         if (!isServer){
         	if (D) mConversationArrayAdapter.add("Cancelling all current connections and trying to connect (I'm client!)");
-	        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mac);
+	        device = mBluetoothAdapter.getRemoteDevice(mac);
 	        // HACK: Ugly hack for 2 sec delay, since client might establish connection before server listens
 	        // TODO: Proper Delay w/ Retry and Error code is the way to go
 	        try {
@@ -231,6 +232,7 @@ public class BluetoothConnectionDialog extends Activity {
         if (mConnService.getState() != BluetoothConnectionService.STATE_CONNECTED) {
             Toast.makeText(this, "Cannot send, BT Not connected", Toast.LENGTH_SHORT).show();
             mConversationArrayAdapter.add("ERR: " + "Cannot Send. Not connected");
+            //mConnService.connect(device); // FIXME: Reestablishing connection, but loosing messages. Should probably give error instead.
             return;
         }
 
