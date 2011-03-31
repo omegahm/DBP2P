@@ -407,6 +407,17 @@ public class BluetoothConnectionService {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 
+                    /* FIXME:
+                     E/BluetoothConnectionService( 1805): disconnected
+E/BluetoothConnectionService( 1805): java.io.IOException: Connection reset by peer
+E/BluetoothConnectionService( 1805): 	at android.bluetooth.BluetoothSocket.readNative(Native Method)
+E/BluetoothConnectionService( 1805): 	at android.bluetooth.BluetoothSocket.read(BluetoothSocket.java:307)
+E/BluetoothConnectionService( 1805): 	at android.bluetooth.BluetoothInputStream.read(BluetoothInputStream.java:96)
+E/BluetoothConnectionService( 1805): 	at java.io.InputStream.read(InputStream.java:159)
+E/BluetoothConnectionService( 1805): 	at dk.hotmovinglobster.dustytuba.sampleapp.BluetoothConnectionService$ConnectedThread.run(BluetoothConnectionService.java:408)
+
+                     */
+                    
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(BluetoothConnectionDialog.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();

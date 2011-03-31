@@ -191,10 +191,36 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
         ((Button) findViewById(R.id.btnReceive)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// TODO: Use ReceiveActivity as it is now
+				/*
 				Intent receive = new Intent(MainActivity.this, ReceiveActivity.class);
 				// TODO: Receive : Add extra parameters needed for bluetooth setup inside Receive Activity? Or pass Conn object.
 				//receive.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
 				startActivity(receive);
+				*/
+				
+				// TODO: Use ConnectorActivity
+				Intent intent = new Intent(MainActivity.this, ConnectorActivity.class);
+				intent.putExtra("intent_receive_data", true);
+				startActivity(intent);
+				
+				
+				// FIXME: HACK if we overwrite ReceiveActivity w/ data from BluetoothConnecitonDialog
+				/*
+				Intent receive = new Intent(MainActivity.this, ReceiveActivity.class);
+				receive.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.SERVER.name(), isServer);
+				receive.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.MAC.name(), otherBluetoothMAC);
+				receive.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.UUID.name(), BT_UUID);
+				receive.putExtra(BluetoothConnectionDialog.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
+				startActivityForResult(receive, REQUEST_BT_ESTABLISH);
+				*/
+			}
+		});
+        
+        ((Button) findViewById(R.id.btnExit)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
 			}
 		});
 	}
@@ -417,24 +443,25 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 		
 		//Version
 		otherVersion = VERSION;
-		otherVersionObtained();
-	
+		
 		// Server + MAC + NAME
 		serverRandomNumber = (float) 0.5;
 		if (getBluetoothName().equals("Bob")){
-			otherServerRandomNumber = (float) 0.6;
-			//otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper)
-			//otherBluetoothMAC = "00:23:d4:36:da:4a".toUpperCase(); // HTC Hero (KMD)
-			otherBluetoothMAC = "00:23:d4:34:45:d7".toUpperCase(); // HTC Hero (Thomas)
-			otherBluetoothName = "Hero";
-		} else {
+			isServer=true; // Overwritten by otherServerNumberObtained()
 			otherServerRandomNumber = (float) 0.4;
-			//otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase(); // HTC Desire (Thomas)
-			otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper)
+			otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase(); // HTC Desire (Thomas) (ALICE)
+			otherBluetoothName = "Alice";
+		} else {
+			isServer=false; // Overwritten by otherServerNumberObtained()
 			otherBluetoothName = "Bob";
+			otherServerRandomNumber = (float) 0.6;
+			otherBluetoothMAC = "00:23:d4:36:da:4a".toUpperCase(); // HTC Hero (KMD) (BOB)
+			//otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper) (BOB)
+			//otherBluetoothMAC = "00:23:d4:34:45:d7".toUpperCase(); // HTC Hero (Ohm) (BOB)
 		}
 		
 		// VIEW + HANDLE
+		otherVersionObtained();
 		otherBluetoothMACObtained();
 		otherBluetoothNameObtained();
 		otherServerNumberObtained();
@@ -496,7 +523,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	    	builder.setMessage("The recipient application is out of date.")
 	    		.setCancelable(true)
 	    		// TODO: Run through and change strings to @strings and use res.getXXX()
-	    		.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+	    		.setNegativeButton(res.getString(R.string.exit), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		                finish();
 		           }
@@ -510,7 +537,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 	    		builder = new AlertDialog.Builder(this);
 				builder.setMessage("The application is out of date.")
 		        	.setCancelable(false)	
-					.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+					.setNegativeButton(res.getString(R.string.exit), new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
 			                finish();
 			           }
@@ -519,7 +546,7 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 			        	   Intent intent = new Intent(Intent.ACTION_VIEW);
 			        	   intent.setData(Uri.parse("market://details?id=" + res.getString(R.string.package_name)));
 			        	   startActivity(intent);
-			        	   MainActivity.this.finish();
+			        	   finish();
 			           }  
 		        	});
 			}    	

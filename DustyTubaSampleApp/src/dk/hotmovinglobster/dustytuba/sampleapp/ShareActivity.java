@@ -16,7 +16,7 @@ import android.widget.Toast;
 public class ShareActivity extends Activity {
 
 	/* DEBUG */ 
-	private static final String TAG = "DustyTubaSampleApp";
+	private static final String TAG = "DustyTubaSampleAppShareActivity";
     private static final boolean D = true;
 	
     private Intent intent;
@@ -33,11 +33,15 @@ public class ShareActivity extends Activity {
     		/* Get the type */
     		String intentType = intent.getType();
     		
+    		if (D) Log.i(TAG,"++ intent ++");
+    		
     		byte[] intentData;
     		if(intentType.equals("text/plain")) {
     			/* The data is text */
+        		if (D) Log.i(TAG,"++ type: text ++");
     			intentData = intent.getStringExtra(Intent.EXTRA_TEXT).getBytes();
     		} else {
+        		if (D) Log.i(TAG,"++ type: other ++");
     			/* The data is something else (e.g. could be an image) */
     			intentData = intent.getByteArrayExtra(Intent.EXTRA_STREAM);
     		}

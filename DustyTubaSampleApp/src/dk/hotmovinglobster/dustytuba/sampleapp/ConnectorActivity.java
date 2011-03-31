@@ -31,10 +31,9 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
 	private Resources res;
 	
 	/* DEBUG */ 
-	private static final String TAG = "DustyTubaSampleApp";
+	private static final String TAG = "DustyTubaSampleAppConnectorActivity";
     private static final boolean D = true;
     
-	/* BLUETOOTH */
     protected static BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     protected static final int REQUEST_BT_ENABLE = 1;
 	protected static final int REQUEST_BT_ESTABLISH = 2;
@@ -53,7 +52,7 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
 	protected static final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
 	protected static final String BT_SDP_NAME = TAG;
 	protected static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
-	private boolean isServer;
+	private boolean isServer = true; // DEFAULT blot lyt!
 	private StringBuffer mOutStringBuffer;
 	
 	/* BUMP Protocol (current version) */
@@ -94,6 +93,7 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
 		
 		/* Cancel if no internet is found */
 		if(!hasInternetConnection()) {
+			if(D) Log.d(TAG, "++ No INET ++");
 			this.finish();
 		}
 		
@@ -101,10 +101,6 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
 		if(!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_BT_ENABLE);
-		}
-		
-		if(!isReadyForBluetooth()) {
-			this.finish();
 		}
 		
 		res = getResources();
@@ -159,8 +155,42 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
         // HACK: Always connect on start
         if (!isServer){
         	if(D) Log.v(TAG, "Starting Bluetooth");
-	        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(otherBluetoothMAC);
-	        // HACK: Ugly hack for 2 sec delay, since client might establish connection before server listens
+    		
+        	if(!isReadyForBluetooth()) {
+        		// TODO: Start ActivityForResult iD provider
+        		
+        		/*
+	    		Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("Missing connection information.")
+		        	.setCancelable(false)	
+					.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                finish();
+			           }
+					}).setPositiveButton("Fake", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   identityProviderAliceBob();
+			           }  
+		        	});
+		        AlertDialog alert = builder.create();
+		    	alert.show();
+		    	*/
+        		
+        		debug("Using Alice&Bob ID provider");
+        		
+        		identityProviderAliceBob();
+	        }
+        	
+        	debug("Connecting to MAC: " + otherBluetoothMAC);
+        	
+        	if(!isReadyForBluetooth()){
+    			if (D) Log.d(TAG, "INVALID MAC: " + otherBluetoothMAC + "   QUITTING");
+    			Toast.makeText(this, "Invalid MAC: " + otherBluetoothMAC, Toast.LENGTH_LONG).show();
+    			finish();
+        	}
+        	
+        	BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(otherBluetoothMAC);
+	        // HACK: Ugly hack for (up to) 2 sec delay, since client might establish connection before server listens
 	        // TODO: Proper Delay w/ Retry and Error code is the way to go
 	        try {
 				Thread.sleep(2000);
@@ -175,6 +205,13 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
 	}
     
 		
+	private void debug(String message) {
+		if (D){
+			Log.d(TAG, message);
+			Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_BT_ENABLE) {
     		if (resultCode == RESULT_OK) {
@@ -251,7 +288,7 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
      * Has identity provider provided us with enough info to do BT? 
      */
 	private boolean isReadyForBluetooth() {
-		return !otherBluetoothMAC.equals("") && BluetoothAdapter.checkBluetoothAddress(otherBluetoothMAC);
+		return !"".equals(otherBluetoothMAC) && BluetoothAdapter.checkBluetoothAddress(otherBluetoothMAC);
 	}
 	
     /** 
@@ -490,5 +527,29 @@ public class ConnectorActivity extends Activity implements BumpAPIListener, OnCa
 	public void onCancel(DialogInterface dialog) {
 		Toast.makeText(this, "Transfer canceled", Toast.LENGTH_LONG).show();
 		
+	}
+	
+    /** ID Sets fake identity provider values */
+	private void identityProviderAliceBob() {
+		Log.i(TAG, "Utilizing Alice&Bob Identity Provider");
+		
+		//Version
+		otherVersion = VERSION;
+		
+		// Server + MAC + NAME
+		serverRandomNumber = (float) 0.5;
+		if (getBluetoothName().equals("Bob")){
+			isServer=true;
+			otherServerRandomNumber = (float) 0.4;
+			otherBluetoothMAC = "90:21:55:a1:a5:67".toUpperCase(); // HTC Desire (Thomas) (ALICE)
+			otherBluetoothName = "Alice";
+		} else {
+			isServer=false;
+			otherBluetoothName = "Bob";
+			otherServerRandomNumber = (float) 0.6;
+			otherBluetoothMAC = "00:23:d4:36:da:4a".toUpperCase(); // HTC Hero (KMD) (BOB)
+			//otherBluetoothMAC = "90:21:55:a1:a5:8d".toUpperCase(); // HTC Desire (Jesper) (BOB)
+			//otherBluetoothMAC = "00:23:d4:34:45:d7".toUpperCase(); // HTC Hero (Ohm) (BOB)
+		}
 	}
 }
