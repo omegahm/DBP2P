@@ -13,7 +13,7 @@ To initialise a git repository one should first move into it
 $ cd project
 $ git init
 
-To add all the files and folder to the repository
+To add all the files and fstaolder to the repository
 $ git add .
 (Notice the dot)
 
@@ -52,6 +52,9 @@ can also be used to look up the status
 
 To undo a committed file, do a 
 $ git checkout file_name
+
+***STASH***:
+http://www.kernel.org/pub/software/scm/git/docs/git-stash.html
 
 /======================\
 | View project history |

@@ -165,6 +165,11 @@ public class BluetoothConnectionDialog extends Activity {
         mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.bt_conn_dialog_message);
         mConversationView = (ListView) findViewById(R.id.in);
         mConversationView.setAdapter(mConversationArrayAdapter);
+             
+		// HACK: Present full screen
+		for (int i = 0; i < 18; i++) {
+			mConversationArrayAdapter.add("");
+		}
 
         // Initialize the cancel button with a listener that for click events
         mCancelButton = (Button) findViewById(R.id.btCon_cancel);
