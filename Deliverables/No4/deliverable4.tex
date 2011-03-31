@@ -116,9 +116,9 @@ Luckily, parts of the Android API seems to have been designed with some design p
 \section{Source code access}
 Our source code is publicly available on Github from \url{https://github.com/omegahm/DBP2P}.
 
-Please note that we are working on multiple branches (use the button switch branch to view another branch).
+%Please note that we are working on multiple branches (use the button switch branch to view another branch).
 
-The master branch currently holds only documentation and deliverables, while we have a dedicated development branch for sprint \#1 named \texttt{dustytuba}.
+%The master branch currently holds only documentation and deliverables, while we have a dedicated development branch for sprint \#1 named \texttt{dustytuba}.
 
 If you wish to checkout our code (read-only) using Git, then use git clone with this URL:
 \url{git://github.com/omegahm/DBP2P.git}
@@ -128,7 +128,6 @@ If you wish to checkout our code (read-only) using Git, then use git clone with 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Sprint material}
-%TODO
 Sprint Material needed to assess our progress include the following:
 \begin{itemize}
 \item source code (version number and access method is sufficient)
@@ -137,70 +136,71 @@ Sprint Material needed to assess our progress include the following:
 \item any other material (e.g., burndown chart) that illustrates your progress
 \end{itemize}
 
-% TODO: Describe Acunote in general and that access have been granted.
 
 \subsection{Source Code}
 
-%The final product of sprint \#1 has been merged into the master branch as per commit-id  \href{https://github.com/omegahm/DBP2P/commit/1abf2360b074729c7f2eefacb294f21fb668f9db}{1abf2360b074729c7f2eefacb294f21fb668f9db}.
+The final product of sprint \#2 has been tagged \href{https://github.com/omegahm/DBP2P/tree/sprintdemo2}{\tt sprintdemo2}. in the git repository, where the application is located in the folder {\tt DustyTubaSampleApp}.
 
-%The code and tests are located in the folders ``DustyTuba'' and ``DustyTuba''.
-
-The following tasks have been completed during this sprint:
+The following main tasks have been completed during this sprint:
 \begin{itemize}
-	\item item
+	\item Establish Bluetooth connection (2.1+ devices only)
+	\item Send and receive file through the bluetooth connection (to be sample app) (backlog from sprint 2)
 \end{itemize}
 
-%In regards to our user stories, the tasks completed corresponds to the following user stories:
-%\begin{verbatim}
-%  As a        user
-%  I want to   identify a nearby device
-%  Such that   I can establish a connection in order to transfer information safely	
-%
-%  As a        user
-%  I want to   identify a nearby device using Bump
-%  Such that   I can establish a connection in order to transfer information safely
-%\end{verbatim}
+In regards to our user stories, the tasks completed correspond to the following user stories:
+\begin{verbatim}
+  As a        user
+  I want to   be able to easily setup a local, secure connection between two Android phones
+  Such that   no 3rd party can read or alter the communication
+
+  As a        user
+  I want to   transfer any item I have selected on my device to a nearby device
+  Such that   I can easily transfer said item
+\end{verbatim}
+
+The second story, though, has not been completed for ``any item'', but only for web pages and images so far. The remainder has been moved to the forthcoming sprint 3.
 
 \subsection{Product Backlog}
+Our sprint backlog is shown in figure \ref{productbacklog} on page \pageref{productbacklog}.
 
-%\begin{figure}[ht!]
-%	\begin{center}
-%	% Insert sprint backlog here
-%	\includegraphics[width=1.4\textwidth, angle=-90]{productbacklog.png}		
-%	\end{center}
-%	\caption{Our product backlog at the end of sprint \#1.}
-%	\label{productbacklog}
-%\end{figure}
+\begin{figure}[ht!]
+	\begin{center}
+	% Insert sprint backlog here
+	\includegraphics[width=0.9\textwidth]{productbacklog.png}		
+	\end{center}
+	\caption{Our product backlog at the end of sprint \#2.}
+	\label{productbacklog}
+\end{figure}
 
 \subsection{Sprint Backlog}
-%Our sprint backlog is shown in figure \ref{sprintbacklog} on page \pageref{sprintbacklog}.
+Our sprint backlog is shown in figure \ref{sprintbacklog} on page \pageref{sprintbacklog}.
 
-%\begin{figure}[ht!]
-%	\begin{center}
-%	% Insert sprint backlog here
-%	\includegraphics[width=1.4\textwidth, angle=-90]{sprintbacklog.png}		
-%	\end{center}
-%	\caption{Our sprint backlog after the sprint was finished}
-%	\label{sprintbacklog}
-%\end{figure}
+\begin{figure}[ht!]
+	\begin{center}
+	% Insert sprint backlog here
+	\includegraphics[width=0.85\textwidth]{sprintbacklog.png}		
+	\end{center}
+	\caption{Our sprint backlog after the sprint was finished}
+	\label{sprintbacklog}
+\end{figure}
 
 \subsection{Burndown chart}
 
-%Our burndown chart is shown in figure \ref{burndown} on page \pageref{burndown}.
+Our burndown chart is shown in figure \ref{burndown} on page \pageref{burndown}.
 
-%\begin{figure}[ht!]
-%	\begin{center}
-%	% Insert burndown chart here
-%	\includegraphics[width=\textwidth]{burndown.png}		
-%	\end{center}
-%	\caption{Our burndown chart at the end of the sprint}
-%	\label{burndown}
-%\end{figure}
+\begin{figure}[ht!]
+	\begin{center}
+	% Insert burndown chart here
+	\includegraphics[width=\textwidth]{burndown.png}		
+	\end{center}
+	\caption{Our burndown chart at the end of the sprint}
+	\label{burndown}
+\end{figure}
 
 \subsection{Other relevant material}
-%We have got an Acunote account\footnote{\url{http://dbp2p.acunote.com/}} setup, and access to this have been granted.
+We have got an Acunote account\footnote{\url{http://dbp2p.acunote.com/}} setup, and access to this have been granted.
 
-%\clearpage
+\clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -211,20 +211,29 @@ The following tasks have been completed during this sprint:
 What went well during this sprint:
 
 \begin{itemize}
-	\item item
+	\item Better breakdown of the user stories for the sprint
+	\item Collaboration through git works more smoothly
 \end{itemize}
 
 \noindent
 What went wrong:
 
 \begin{itemize}
-	\item item
+	\item Lack of time due to heavy workload in other course
+	\item Not enough virtual scrum meetings held
+	\item Postponed too much work until late in the sprint
+	\item For major tasks, we didn’t know when they were complete
+	\item Some time estimates were overly optimistic
+	\item Lack of phones (no emulator support for Bluetooth)
 \end{itemize}
 
 \noindent
 How we will improve:
 \begin{itemize}
-	\item item
+	\item New scrum master will keep track of remaining workload and activate the team
+	\item We will define accept criteria for major tasks
+	\item We will be more conservative on time estimates for tasks
+	\item We will look at the projected burndown and react faster rather than an all-in end-of-sprint.
 \end{itemize}
 
 \section{References}
