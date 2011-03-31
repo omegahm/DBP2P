@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_height="fill_parent" android:layout_width="fill_parent">
+	<LinearLayout 
+	    android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="vertical">
+	    <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:id="@+id/linearLayoutInfo" android:layout_marginBottom="20sp" android:layout_width="fill_parent" android:gravity="center">
+			<LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/linearLayoutInfoMy" android:layout_weight="1">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblMyBTMac" android:text="MAC: N/A"></TextView>
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblMyBTName" android:text="Name: N/A"></TextView>
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblMyBTConnType" android:text="Connection type: N/A"></TextView>
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblMyProtocolVersion" android:text="Protocol version: N/A"></TextView>
+			</LinearLayout>
+			<LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/linearLayoutInfoOther" android:layout_weight="1">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherBTMac" android:text="MAC: N/A"></TextView>
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherBTName" android:text="Name: N/A"></TextView>
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherBTConnType" android:text="Connection type: N/A"></TextView>
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblOtherProtocolVersion" android:text="Protocol version: N/A"></TextView>
+			</LinearLayout>
+   	    </LinearLayout>
+	    <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:id="@+id/linearLayoutID" android:layout_marginBottom="20sp" android:layout_width="fill_parent">
+	    	<Button android:layout_height="wrap_content" android:id="@+id/btnConnectBump" android:layout_width="wrap_content" android:text="@string/connect_bump" android:enabled="false" android:layout_weight="1" />
+	        <Button android:id="@+id/btnConnectAliceBob" android:layout_height="wrap_content" android:enabled="true" android:layout_width="wrap_content" android:text="@string/connect_alicebob" android:layout_weight="1" ></Button>
+		</LinearLayout>
+	    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/linearLayoutStart" android:layout_marginBottom="20sp">
+   	        <Button android:id="@+id/btnReceive" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/receive" android:layout_weight="1"></Button>
+		    <Button android:layout_height="wrap_content" android:id="@+id/btnConnectBluetooth" android:layout_width="wrap_content" android:text="@string/connect_bluetooth" android:enabled="false" android:layout_weight="1" />
+	    </LinearLayout>
+	    <Button android:layout_height="wrap_content" android:id="@+id/btnExit" android:layout_width="fill_parent" android:text="@string/exit" android:enabled="true"/>
+	</LinearLayout>
+</ScrollView>
