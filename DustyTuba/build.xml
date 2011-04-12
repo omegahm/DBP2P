@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DustyTuba" default="help">
 
+  <property name="res" location="res"/>
   <property name="src" location="src"/>
   <property name="build" location="bin"/>
   <property name="dist"  location="dist"/>
@@ -66,13 +67,21 @@
   <target name="dist" depends="compile"
         description="generate the distribution" >
     <!-- Create the distribution directory -->
-    <mkdir dir="${dist}/lib"/>
+    <mkdir dir="${dist}/temp"/>
+    <mkdir dir="${dist}/temp/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/DustyTuba-${DSTAMP}.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/temp/lib/DustyTuba.jar" basedir="${build}"/>
+  	
+  	<zip destfile="${dist}/DustyTuba.zip" update="true">
+  	  <zipfileset dir="${dist}/temp" />
+  	  <zipfileset dir="${res}" prefix="res" />
+    </zip>
+  	
+  	<delete dir="${dist}/temp"/>
   </target>
 
-
+  
 
     <!-- Execute the Android Setup task that will setup some properties
          specific to the target, and import the build rules files.
