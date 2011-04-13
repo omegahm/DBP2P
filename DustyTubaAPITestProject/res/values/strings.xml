@@ -4,4 +4,5 @@
     <string name="app_name">API Test</string>
     <string name="launch_dustytuba_fake">Launch DustyTuba (Fake)</string>
     <string name="launch_dustytuba_manual">Launch DustyTuba (Manual)</string>
+    <string name="launch_dustytuba_bump">Launch DustyTuba (Bump!)</string>
 </resources>

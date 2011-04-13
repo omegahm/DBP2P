@@ -5,6 +5,7 @@
 	<property name="src" location="src" />
 	<property name="build" location="bin" />
 	<property name="dist" location="dist" />
+	<property name="assets" location="assets" />
 
 	<!-- The local.properties file is created and updated by the 'android'
      tool.
@@ -78,6 +79,11 @@
 		
 		<copy todir="${dist}/res">
 			<fileset dir="${res}" />
+		</copy>
+		
+		<copy todir="${dist}">
+			<fileset dir="${assets}/dist" excludes=".empty" />
+			<fileset dir="${assets}/bumpdist" />
 		</copy>
 	</target>
 	

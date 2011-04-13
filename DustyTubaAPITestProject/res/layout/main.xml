@@ -11,4 +11,5 @@
     />
 <Button android:layout_width="wrap_content" android:id="@+id/btnLaunchDustyTubaFake" android:layout_height="wrap_content" android:text="@string/launch_dustytuba_fake"></Button>
 <Button android:layout_width="wrap_content" android:id="@+id/btnLaunchDustyTubaManual" android:layout_height="wrap_content" android:text="@string/launch_dustytuba_manual"></Button>
+<Button android:layout_width="wrap_content" android:id="@+id/btnLaunchDustyTubaBump" android:layout_height="wrap_content" android:text="@string/launch_dustytuba_bump"></Button>
 </LinearLayout>

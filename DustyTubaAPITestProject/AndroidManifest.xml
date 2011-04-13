@@ -3,7 +3,7 @@
       package="dk.hotmovinglobster.dustytuba.apitest"
       android:versionCode="1"
       android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="4" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".MainActivity"
@@ -14,8 +14,21 @@
             </intent-filter>
         </activity>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity"></activity>
+        <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
+        	android:configChanges="keyboardHidden|orientation"/>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity"></activity>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity"></activity>
-
+		<activity android:name="com.bumptech.bumpapi.BumpAPI"
+			android:configChanges="keyboardHidden|orientation"
+			android:theme="@style/BumpDialog" />
+		<activity android:name="com.bumptech.bumpapi.EditTextActivity"
+			android:configChanges="keyboardHidden|orientation"
+			android:theme="@style/BumpDialog" />
     </application>
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 </manifest>

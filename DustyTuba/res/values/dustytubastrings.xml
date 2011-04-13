@@ -4,4 +4,5 @@
     <string name="dustytuba_manual_entermac">Please enter MAC address:</string>
     <string name="dustytuba_ok">OK</string>
     <string name="dustytuba_invalid_mac">Invalid MAC Address!</string>
+    <string name="dustytuba_setting_up_connection">Setting up connection...\nPlease wait</string>
 </resources>

@@ -47,11 +47,14 @@ public class BtAPI {
 		return intent;
 	}
 	
+	public static final String IDENTITY_PROVIDER_BUMP = "bump";
 	public static final String IDENTITY_PROVIDER_FAKE = "fake";
 	public static final String IDENTITY_PROVIDER_MANUAL = "manual";
 	
 	private static Class<?> stringToIdProviderClass(String idProvider) {
-		if (idProvider.equals(IDENTITY_PROVIDER_FAKE)) 
+		if (idProvider.equals(IDENTITY_PROVIDER_BUMP)) 
+			return BumpIPActivity.class;
+		else if (idProvider.equals(IDENTITY_PROVIDER_FAKE)) 
 			return FakeIPActivity.class;
 		else if (idProvider.equals(IDENTITY_PROVIDER_MANUAL)) 
 			return ManualIPActivity.class;
@@ -88,6 +91,11 @@ public class BtAPI {
 	public static int res(Context context, String type, String name) {
 		String pkg = "dk.hotmovinglobster.dustytuba.apitest";
 		return context.getResources().getIdentifier(name, type, pkg);
+	}
+	
+	public static String getBluetoothAddress() {
+		// TODO: Make good
+		return "00:00:00:00:00:00";
 	}
 
 }

@@ -1,3 +1,4 @@
-bin
-gen
-libs/DustyTuba.jar
+/bin
+/gen
+/libs
+/local.properties
