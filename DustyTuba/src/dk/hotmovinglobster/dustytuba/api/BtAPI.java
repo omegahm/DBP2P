@@ -1,7 +1,6 @@
 package dk.hotmovinglobster.dustytuba.api;
 
-import dk.hotmovinglobster.dustytuba.id.FakeIPActivity;
-import dk.hotmovinglobster.dustytuba.id.GenericIPActivity;
+import dk.hotmovinglobster.dustytuba.id.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,10 +48,13 @@ public class BtAPI {
 	}
 	
 	public static final String IDENTITY_PROVIDER_FAKE = "fake";
+	public static final String IDENTITY_PROVIDER_MANUAL = "manual";
 	
 	private static Class<?> stringToIdProviderClass(String idProvider) {
 		if (idProvider.equals(IDENTITY_PROVIDER_FAKE)) 
 			return FakeIPActivity.class;
+		else if (idProvider.equals(IDENTITY_PROVIDER_MANUAL)) 
+			return ManualIPActivity.class;
 		else 
 			return null;
 	}
@@ -82,5 +84,10 @@ public class BtAPI {
 	public static final String EXTRA_IP_MAC = "ip_mac";
 	
 	public static final String LOG_TAG = "DustyTuba";
+	
+	public static int res(Context context, String type, String name) {
+		String pkg = "dk.hotmovinglobster.dustytuba.apitest";
+		return context.getResources().getIdentifier(name, type, pkg);
+	}
 
 }

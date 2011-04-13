@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dustytuba_manual_header">Manual identity provider</string>
+    <string name="dustytuba_manual_entermac">Please enter MAC address:</string>
+    <string name="dustytuba_ok">OK</string>
+    <string name="dustytuba_invalid_mac">Invalid MAC Address!</string>
+</resources>

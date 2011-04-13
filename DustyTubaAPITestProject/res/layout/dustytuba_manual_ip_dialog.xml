@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" android:orientation="vertical">
+    <TextView android:layout_width="wrap_content" android:text="@string/dustytuba_manual_header" android:layout_height="wrap_content" android:layout_marginBottom="10sp" android:textStyle="bold"></TextView>
+    <TextView android:layout_width="wrap_content" android:text="@string/dustytuba_manual_entermac" android:layout_height="wrap_content"></TextView>
+    <EditText android:text="00:00:00:00:00:00" android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/dustytuba_manual_txt_mac"></EditText>
+    <LinearLayout android:layout_width="fill_parent" android:gravity="bottom" android:layout_height="fill_parent">
+        <Button android:layout_height="wrap_content" android:id="@+id/dustytuba_manual_btn_ok" android:text="@string/dustytuba_ok" android:layout_width="fill_parent"></Button>
+    </LinearLayout>
+</LinearLayout>

@@ -14,7 +14,7 @@ public class FakeIPActivity extends Activity {
     	Log.i(BtAPI.LOG_TAG, "FakeIPActivity: Created");
 
     	Intent thisIntent = getIntent();
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
+    	Log.i(BtAPI.LOG_TAG, "FakeIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
     	// Get data
         Bundle extras = thisIntent.getExtras();
         String mac = extras.getString(BtAPI.EXTRA_IP_MAC); // TODO: grab from somewhere

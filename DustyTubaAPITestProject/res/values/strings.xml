@@ -3,4 +3,5 @@
     <string name="hello">Hello World, MainActivity!</string>
     <string name="app_name">API Test</string>
     <string name="launch_dustytuba_fake">Launch DustyTuba (Fake)</string>
+    <string name="launch_dustytuba_manual">Launch DustyTuba (Manual)</string>
 </resources>

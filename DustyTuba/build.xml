@@ -64,18 +64,35 @@
 -->
 	<target name="dist" depends="compile" description="generate the distribution">
 		<!-- Create the distribution directory -->
-		<mkdir dir="${dist}/temp" />
-		<mkdir dir="${dist}/temp/lib" />
+		<mkdir dir="${dist}" />
+		<mkdir dir="${dist}/libs" />
+		<mkdir dir="${dist}/res" />
 
-		<!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-		<jar jarfile="${dist}/temp/lib/DustyTuba.jar" basedir="${build}" />
-
-		<zip destfile="${dist}/DustyTuba.zip" update="true">
-			<zipfileset dir="${dist}/temp" />
-			<zipfileset dir="${res}" prefix="res" />
+		<!-- Put everything in ${build} into the DustyTuba.jar file -->
+		<jar jarfile="${dist}/libs/DustyTuba.jar"
+			 basedir="${build}\classes">
+			<exclude name= "**/DustyTubaResources*.class"/>
+			<exclude name= "**/R*.class"/>
+			<exclude name= "**/antscripts/**" />
+		</jar>
+		
+		<copy todir="${dist}/res">
+			<fileset dir="${res}" />
+		</copy>
+	</target>
+	
+	<target name="updatetest" depends="dist">
+		<fail unless="mainproject">Please set mainproject=(path-to-project) in the local.properties file</fail>
+		<java classname="dk.hotmovinglobster.dustytuba.antscripts.CreateResourcesFile" classpath="${build}\classes" />
+		<copy todir="${mainproject}">
+			<fileset dir="${dist}" />
+		</copy>
+	</target>
+	
+	<target name="zip" depends="dist">
+		<zip destfile="DustyTuba.zip" update="true">
+			<zipfileset dir="${dist}" />
 		</zip>
-
-		<delete dir="${dist}/temp" />
 	</target>
 
 	<!-- Execute the Android Setup task that will setup some properties

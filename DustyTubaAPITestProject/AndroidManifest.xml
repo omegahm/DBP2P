@@ -15,6 +15,7 @@
         </activity>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity"></activity>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity"></activity>
+        <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity"></activity>
 
     </application>
 </manifest>

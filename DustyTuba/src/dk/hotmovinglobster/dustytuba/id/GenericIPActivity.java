@@ -53,13 +53,19 @@ public class GenericIPActivity extends Activity {
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 //    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: ");
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-    	if (resultCode == RESULT_OK) {
+    	
+    	if (resultCode == RESULT_CANCELED) {
+        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: cancel)");
+        	setResult( RESULT_CANCELED );
+    	} else if (resultCode == RESULT_OK) {
+        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: OK)");
+        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
         	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned MAC " + data.getStringExtra( BtAPI.EXTRA_IP_MAC ));
         	setResult( RESULT_OK, data );
-    	} else
-    		setResult( RESULT_CANCELED );
+    	} else {
+        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");
+    		setResult( resultCode );
+    	}
     	
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Finishing");
     	finish();
