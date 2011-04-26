@@ -10,7 +10,7 @@ public abstract interface BtAPIListener {
   
 	/**
 	 * Called when the API connection terminates
-	 * @param arg0
+	 * @param arg0 The reason to disconnect
 	 */
 	public abstract void btDisconnect(BtAPI.BtDisconnectReason arg0);
   
