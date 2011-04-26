@@ -198,6 +198,7 @@ is an identity provider allowing a user to manually enter a MAC address through 
   android:versionName="1.0">
   <uses-sdk android:minSdkVersion="4" />
 
+  <activity android:name="dk.hotmovinglobster.dustytuba.bt.BluetoothConnector"></activity>
   <application android:icon="@drawable/icon" android:label="@string/app_name">
     <activity android:name=".MainActivity"
       android:label="@string/app_name">
@@ -218,7 +219,9 @@ is an identity provider allowing a user to manually enter a MAC address through 
     android:configChanges="keyboardHidden|orientation"
    android:theme="@style/BumpDialog" />
   </application>
-    
+  
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <uses-permission android:name="android.permission.INTERNET" />
