@@ -89,6 +89,7 @@ See appendix \ref{sample-manifest} for a complete sample manifest file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Step three - Call the library}
+\label{stepthree}
 In order to call the library, you will use the \verb+BtAPI.getIntent()+ method (see section \ref{getIntent}) to generate an \verb+Intent+ which must be passed on to Android's \verb+startActivityForResult()+ method.
 
 When the activity contained in the \verb+Intent+ finishes, you must override the \verb+onActivityResult()+ method of your main activity to handle the result and extract the Bluetooth connection object.
@@ -112,7 +113,7 @@ where \verb+REQUEST_DUSTYTUBA+ is an integer constant chosen to distinguish betw
 protected void onActivityResult (int requestCode, int resultCode, Intent data) {
   if (requestCode == REQUEST_DUSTYTUBA) {
     if (resultCode == RESULT_CANCELED ) {
-      // User cancelled
+      // User canceled
     } else if (resultCode == RESULT_OK) {
       BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
     conn.setListener(this);
@@ -153,12 +154,20 @@ startActivityForResult(i, REQUEST_DUSTYTUBA);
 \end{verbatim}
 \normalsize
 
-
-
 \paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_FAKE}}
+The fake identity provider simply returns the MAC address you supply to it. This enables you to use a MAC address obtained through other means. As with the Bump\texttrademark{} identity provider, we supply the MAC address through a \verb+Bundle+:
 
+\footnotesize
+\begin{verbatim}
+Bundle b = new Bundle();
+b.putString(BtAPI.EXTRA_IP_MAC, "00:00:00:00:00:00");
+Intent i = BtAPI.getIntent(this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+startActivityForResult(i, REQUEST_DUSTYTUBA);
+\end{verbatim}
+\normalsize
 
 \paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_MANUAL}}
+is an identity provider allowing a user to manually enter a MAC address through a dialog. The manual identity provider is started as shown in section \ref{stepthree}. An optional default MAC address can be provided with the \verb+Bundle+ exactly as the fake MAC address was provided in the fake identity provider.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
