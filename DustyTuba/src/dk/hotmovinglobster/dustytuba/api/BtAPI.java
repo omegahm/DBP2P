@@ -86,6 +86,8 @@ public class BtAPI {
 	public static final String EXTRA_IP_BUNDLE = "ip_bundle";
 	public static final String EXTRA_IP_MAC = "ip_mac";
 	
+	public static final String EXTRA_BT_CONNECTION = "bt_connection";
+	
 	public static final String LOG_TAG = "DustyTuba";
 	
 	public static int res(Context context, String type, String name) {
