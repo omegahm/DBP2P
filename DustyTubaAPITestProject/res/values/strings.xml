@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MainActivity!</string>
+    <string name="label_id">Choose an Identity Provider</string>
+    <string name="label_connect_bt">Connect to Device:</string>
     <string name="app_name">API Test</string>
-    <string name="launch_dustytuba_fake">Launch DustyTuba (Fake)</string>
-    <string name="launch_dustytuba_manual">Launch DustyTuba (Manual)</string>
-    <string name="launch_dustytuba_bump">Launch DustyTuba (Bump!)</string>
+    <string name="launch_dustytuba_fake_alice">(Fake) Alice</string>
+    <string name="launch_dustytuba_fake_bob">(Fake) Bob</string>
+    <string name="launch_dustytuba_manual">Manual</string>
+    <string name="launch_dustytuba_bump">Bump!</string>
+    <string name="launch_dustytuba_bt">Setup BT connection</string>
 </resources>

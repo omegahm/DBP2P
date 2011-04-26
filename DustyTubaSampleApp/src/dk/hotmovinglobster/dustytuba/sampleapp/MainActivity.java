@@ -243,13 +243,16 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-    	if (requestCode == REQUEST_BT_ENABLE) {
+    	// Important to use switch rather than if/then/else because switch checks for duplicates in case we assign two result codes with duplicate values
+    	switch(requestCode){
+    	case REQUEST_BT_ENABLE:
     		if (resultCode == RESULT_OK) {
     			BluetoothActivated();
     		} else {
     			Toast.makeText(this, "Bluetooth was not enabled. Cannot fetch information", Toast.LENGTH_LONG).show();
     		}
-    	} else if (requestCode == REQUEST_BT_ESTABLISH) {
+    		break;
+    	case REQUEST_BT_ESTABLISH:
     		if (resultCode == RESULT_OK) {
     			Toast.makeText(this, "Connection established and finished OK", Toast.LENGTH_LONG).show();
     		} else if (resultCode == RESULT_CANCELED) {
@@ -258,7 +261,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
     			// TODO: btConnectFailedReason
     			Toast.makeText(this, "TODO: btConnectFailedReason", Toast.LENGTH_LONG).show();
     		}
-    	} else if (requestCode == REQUEST_BUMP) {
+    		break;
+    	case REQUEST_BUMP:
 			if (resultCode == RESULT_OK) {
 				bConn = data.getParcelableExtra(BumpAPI.EXTRA_CONNECTION);
 				bConn.setListener( this );
@@ -270,7 +274,8 @@ public class MainActivity extends Activity implements BumpAPIListener, OnCancelL
 					(BumpConnectFailedReason) data.getSerializableExtra(BumpAPI.EXTRA_REASON);
 				Toast.makeText(this, "Failed to connect with Bump.\n" + reason.toString(), Toast.LENGTH_LONG).show();
 			}
-    	}
+    		break;
+    	}  	
     }
 	      
 	/*
