@@ -25,7 +25,7 @@ public class BtAPI {
 	 * 
 	 * @param context A Context of the application package using this class.
 	 * @param idProvider A string deciding which identity provider to use
-	 * @return
+	 * @return The Intent to pass on to startActivityForResult
 	 */
 	public static Intent getIntent(Context context, String idProvider) {
 		return getIntent( context, idProvider, null );
@@ -39,7 +39,7 @@ public class BtAPI {
 	 * @param context A Context of the application package using this class.
 	 * @param idProvider A string deciding which identity provider to use
 	 * @param extras Extra data to bundle along with the intent
-	 * @return
+	 * @return The Intent to pass on to startActivityForResult
 	 */
 	public static Intent getIntent(Context context, String idProvider, Bundle extras) {
 		Class<?> cls = stringToIdProviderClass(idProvider);
@@ -61,6 +61,12 @@ public class BtAPI {
 	public static final String IDENTITY_PROVIDER_FAKE = "fake";
 	public static final String IDENTITY_PROVIDER_MANUAL = "manual";
 	
+	/**
+	 * Find the identity providor given a string name
+	 * 
+	 * @param idProvider A string name of an identity providor
+	 * @return The identity providor class
+	 */
 	private static Class<?> stringToIdProviderClass(String idProvider) {
 		if (idProvider.equals(IDENTITY_PROVIDER_BUMP)) 
 			return BumpIPActivity.class;
@@ -101,6 +107,14 @@ public class BtAPI {
 	
 	public static final String LOG_TAG = "DustyTuba";
 	
+	/**
+	 * Get res object from the application
+	 * 
+	 * @param context A Context of the application package using this class.
+	 * @param type Ressource type to find
+	 * @param name Name of ressource to find
+	 * @return The ressource
+	 */
 	public static int res(Context context, String type, String name) {
 		String pkg = context.getApplicationInfo().packageName;
 		return context.getResources().getIdentifier(name, type, pkg);
