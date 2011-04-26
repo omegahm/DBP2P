@@ -54,11 +54,16 @@ Now you must expand the Android manifest to include the activities provided and 
 
 \footnotesize
 \begin{verbatim}
+<!-- Reserved for future use: May replace all other activities when fully implemented -->
 <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
+<!-- Mandatory for API -->
+<activity android:name="dk.hotmovinglobster.dustytuba.bt.BluetoothConnector"></activity>
+<!-- Optional: Identity Providers, include one or more -->
 <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" />
 <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" />
 <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
     android:configChanges="keyboardHidden|orientation"/>
+<!-- Optional: Additional activities required by BumpIPActivity -->
 <activity android:name="com.bumptech.bumpapi.BumpAPI"
     android:configChanges="keyboardHidden|orientation"
     android:theme="@style/BumpDialog" />
@@ -72,6 +77,11 @@ The permissions to be declared goes in the main \verb+<manifest>+-element and ar
 
 \footnotesize
 \begin{verbatim}
+<!-- Mandatory for API -->
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<!-- Optional: BLUETOOTH_ADMIN needed for cancel discovery (powersave) -->
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<!-- Optional: Additional permissions required by BumpIPActivity -->
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.INTERNET" />
