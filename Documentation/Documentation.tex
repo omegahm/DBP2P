@@ -1,0 +1,221 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfig}
+\usepackage{ctable}
+\usepackage{hyperref}
+
+\newcommand{\term}[1]{{\bf #1}}
+
+%\author{Jesper Borgstrup}
+\title{DustyTuba Bluetooth Library Documentation}
+%\date{Torsdag d. 7. april 2011}
+
+\begin{document}
+%\setcounter{page}{0}
+\maketitle
+
+\begin{abstract}
+This document outlines the three basic steps needed to incorporate the DustyTuba Bluetooth Library in your Android application
+\end{abstract}
+
+%\tableofcontents
+
+%\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Step one - Include necessary files}
+Firstly, you need to copy the three folders (\verb+libs+, \verb+res+ and \verb+src+)-folder included in the archive to the root folder of the Android project in which you want to use the library.
+
+Secondly, you must include the libraries in the \verb+libs+ folder into your project. In Eclipse, this can be done by right-clicking your project and selecting ``Properties'', then selecting ``Java Build Path'', and in the tab ``Libraries'' clicking the ``Add JARs...'' button and selecting the two included {\tt .jar} files in the \verb+libs+ folder.
+
+As is also described in the Bump\texttrademark{} documentation, you must import your project's \verb+R+ class in the {\tt com.bumptech.bumpapi.BumpResources} source file -- i.e. if your project has package name {\tt com.example.test}, you must insert the following line into the {\tt BumpResources.java} file:
+
+\begin{verbatim}
+import com.example.test.R;
+\end{verbatim}
+
+\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Step two - Modify manifest}
+Now you must expand the Android manifest to include the activities provided and to use the permissions needed. The activities you must declare goes in the \verb+<application>+-element and are the following:
+
+\footnotesize
+\begin{verbatim}
+<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
+<activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" />
+<activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" />
+<activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
+    android:configChanges="keyboardHidden|orientation"/>
+<activity android:name="com.bumptech.bumpapi.BumpAPI"
+    android:configChanges="keyboardHidden|orientation"
+    android:theme="@style/BumpDialog" />
+<activity android:name="com.bumptech.bumpapi.EditTextActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:theme="@style/BumpDialog" />
+\end{verbatim}
+\normalsize
+
+The permissions to be declared goes in the main \verb+<manifest>+-element and are the following:
+
+\footnotesize
+\begin{verbatim}
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+\end{verbatim}
+\normalsize
+
+See appendix \ref{sample-manifest} for a complete sample manifest file.
+
+\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Step three - Call the library}
+\label{stepthree}
+In order to call the library, you will use the \verb+BtAPI.getIntent()+ method (see section \ref{getIntent}) to generate an \verb+Intent+ which must be passed on to Android's \verb+startActivityForResult()+ method.
+
+When the activity contained in the \verb+Intent+ finishes, you must override the \verb+onActivityResult()+ method of your main activity to handle the result and extract the Bluetooth connection object.
+
+To receive data from the other end of the Bluetooth connection, you need to have a class implement the \verb+BtAPIListener+ interface (usually this class would be your main activity).
+
+For example, to invoke the manual identity provider\footnote{Se section \ref{identity-providers} for a description of an identity provider}, insert the following code where you want it to be invoked:
+
+\footnotesize
+\begin{verbatim}
+Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
+startActivityForResult(i, REQUEST_DUSTYTUBA);
+\end{verbatim}
+\normalsize
+
+where \verb+REQUEST_DUSTYTUBA+ is an integer constant chosen to distinguish between the result of this activity and others you may be using. Also make your main activity implement the \verb+BtAPIListener+ interface and override the \verb+onActivityResult()+ method as follows:
+
+\footnotesize
+\begin{verbatim}
+@Override
+protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+  if (requestCode == REQUEST_DUSTYTUBA) {
+    if (resultCode == RESULT_CANCELED ) {
+      // User canceled
+    } else if (resultCode == RESULT_OK) {
+      BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
+    conn.setListener(this);
+    }
+  }
+}
+\end{verbatim}
+\normalsize
+
+\subsection{The {\tt getIntent()} method}
+\label{getIntent}
+The \verb+BtAPI+ provides the two static methods \verb+getIntent()+ used to generate an \verb+Intent+ to launch a given identity provider:
+
+\footnotesize
+\begin{verbatim}
+public static Intent getIntent(Context context, String idProvider);
+public static Intent getIntent(Context context, String idProvider, Bundle extras);
+\end{verbatim}
+\normalsize
+
+Both methods need a \verb+Context+ object and an identity provider to use (see section \ref{identity-providers} for a list). Furthermore, the second method allows for passing on a bundle of information to the identity provider -- which is used e.g. for providing the Bump\texttrademark{} with an API key.
+
+\subsection{Identity providers}
+\label{identity-providers}
+An identity provider is a way of pairing two bluetooth devices and exchanging their identities in order to make a bluetooth connection. As of now, three identity providers exist:
+
+\paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_BUMP}}
+Use the Bump\texttrademark{} service to physically bump two phones together and exchange connection information\footnote{The DustyTuba project is in no way affiliated with Bump\texttrademark, we are merely using their service to obtain a bluetooth connection}.
+
+The Bump\texttrademark{} service requires an API key, which can be obtained from their website\footnote{\url{http://bu.mp}}. This key must be provided to the identity provider as follows:
+
+\footnotesize
+\begin{verbatim}
+Bundle b = new Bundle();
+b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_KEY);
+Intent i = BtAPI.getIntent(this, BtAPI.IDENTITY_PROVIDER_BUMP, b);
+startActivityForResult(i, REQUEST_DUSTYTUBA);
+\end{verbatim}
+\normalsize
+
+\paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_FAKE}}
+The fake identity provider simply returns the MAC address you supply to it. This enables you to use a MAC address obtained through other means. As with the Bump\texttrademark{} identity provider, we supply the MAC address through a \verb+Bundle+:
+
+\footnotesize
+\begin{verbatim}
+Bundle b = new Bundle();
+b.putString(BtAPI.EXTRA_IP_MAC, "00:00:00:00:00:00");
+Intent i = BtAPI.getIntent(this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+startActivityForResult(i, REQUEST_DUSTYTUBA);
+\end{verbatim}
+\normalsize
+
+\paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_MANUAL}}
+is an identity provider allowing a user to manually enter a MAC address through a dialog. The manual identity provider is started as shown in section \ref{stepthree}. An optional default MAC address can be provided with the \verb+Bundle+ exactly as the fake MAC address was provided in the fake identity provider.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\appendix
+
+\section{Sample manifest}
+\label{sample-manifest}
+
+\footnotesize
+\begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="dk.hotmovinglobster.dustytuba.apitest"
+  android:versionCode="1"
+  android:versionName="1.0">
+  <uses-sdk android:minSdkVersion="4" />
+
+  <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <activity android:name=".MainActivity"
+      android:label="@string/app_name">
+    <intent-filter>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+  </activity>
+  <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
+  <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" />
+  <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" />
+  <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
+    android:configChanges="keyboardHidden|orientation"/>
+  <activity android:name="com.bumptech.bumpapi.BumpAPI"
+    android:configChanges="keyboardHidden|orientation"
+    android:theme="@style/BumpDialog" />
+  <activity android:name="com.bumptech.bumpapi.EditTextActivity"
+    android:configChanges="keyboardHidden|orientation"
+   android:theme="@style/BumpDialog" />
+  </application>
+    
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+</manifest>
+\end{verbatim}
+\normalsize
+
+\end{document}

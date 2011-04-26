@@ -4,6 +4,7 @@ import dk.hotmovinglobster.dustytuba.id.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 /** Setups and hands off connection */
 public class BtAPI {
@@ -96,10 +97,12 @@ public class BtAPI {
 	public static final String EXTRA_IP_MAC = "ip_mac";
 	public static final String EXTRA_BT_MAC = "bt_mac";
 	
+	public static final String EXTRA_BT_CONNECTION = "bt_connection";
+	
 	public static final String LOG_TAG = "DustyTuba";
 	
 	public static int res(Context context, String type, String name) {
-		String pkg = "dk.hotmovinglobster.dustytuba.apitest";
+		String pkg = context.getApplicationInfo().packageName;
 		return context.getResources().getIdentifier(name, type, pkg);
 	}
 	
