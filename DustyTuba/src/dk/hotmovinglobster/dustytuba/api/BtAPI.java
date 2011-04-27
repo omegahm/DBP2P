@@ -90,7 +90,7 @@ public class BtAPI {
 	/**
 	 * A BtDisconnectReason is returned by the API when the user exits after connection has been established.
 	 */
-	public enum BtDisconnectReason {
+	public static enum BtDisconnectReason {
 		END_USER_QUIT, 	     /** local user quit cleanly */
 		END_LOST_NET,        /** connection to the server was lost */
 		END_OTHER_USER_QUIT, /** remote user quit cleanly */

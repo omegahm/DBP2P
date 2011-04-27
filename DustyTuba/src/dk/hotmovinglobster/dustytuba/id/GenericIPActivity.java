@@ -53,7 +53,6 @@ public class GenericIPActivity extends Activity {
     
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-//    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: ");
     	// TODO: Move ID Provider + Setup BT to here from MainActivity
     	// TODO: For now implementing in MainActivity since that's easier
     	if (resultCode == RESULT_CANCELED) {
@@ -70,6 +69,5 @@ public class GenericIPActivity extends Activity {
     	}    	
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Finishing");
     	finish();
-    	
     }
 }
