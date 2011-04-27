@@ -89,6 +89,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 				String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
 				Bundle b = new Bundle();
 				b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+				b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
 
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Multiple activity");
@@ -148,6 +149,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 					String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
 					Bundle b = new Bundle();
 					b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+					b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
 				} else {
 					// TODO: Toast no ID chosen
