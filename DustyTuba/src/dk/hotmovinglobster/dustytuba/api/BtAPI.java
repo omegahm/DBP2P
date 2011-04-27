@@ -4,7 +4,6 @@ import dk.hotmovinglobster.dustytuba.id.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 /** Setups and hands off connection */
 public class BtAPI {

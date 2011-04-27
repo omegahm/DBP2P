@@ -7,6 +7,7 @@ import dk.hotmovinglobster.dustytuba.api.BtAPI;
 import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import dk.hotmovinglobster.dustytuba.id.GenericIPActivity;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -27,6 +29,8 @@ public class MainActivity extends Activity {
 	protected static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
 	private String other_mac;
 	
+	protected static BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,8 +41,7 @@ public class MainActivity extends Activity {
     }
 
 	private void initializeButtons() {
-		btnLaunchDustyTubaFake = (Button)findViewById(R.id.btnLaunchDustyTubaFakeAlice);
-        btnLaunchDustyTubaFake.setOnClickListener(new OnClickListener() {
+        ((Button)findViewById(R.id.btnLaunchDustyTubaFakeAlice)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Bundle b = new Bundle();
@@ -49,8 +52,7 @@ public class MainActivity extends Activity {
 			}
 		});
         
-		btnLaunchDustyTubaFake = (Button)findViewById(R.id.btnLaunchDustyTubaFakeBob);
-        btnLaunchDustyTubaFake.setOnClickListener(new OnClickListener() {
+        ((Button)findViewById(R.id.btnLaunchDustyTubaFakeBob)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Bundle b = new Bundle();
@@ -77,6 +79,8 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				Bundle b = new Bundle();
 				b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+				if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
+					b.putString(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
 				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_BUMP, b);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 				startActivityForResult(i, BtAPI.RESULTCODE_IDENTITY_PROVIDER);
@@ -86,13 +90,17 @@ public class MainActivity extends Activity {
         ((Button)findViewById(R.id.btnSetupBT)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Bundle b = new Bundle();
-				b.putString(BtAPI.EXTRA_BT_MAC, other_mac);
-				//	protected static final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
-				//	protected static final String BT_SDP_NAME = TAG;
-				
 				// FIXME: HACK: Not the proper way to go about this, but it will do for now...
 				Intent i = new Intent(MainActivity.this, BluetoothConnector.class);
+				boolean isServer = false; // try to connect as client in addition to being a server
+				String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
+				String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
+				// Change to use BTAPI CONSTANTS
+				//b.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
+				i.putExtra(BluetoothConnector.BT_CONN_DATA.SERVER.name(), isServer);
+				i.putExtra(BluetoothConnector.BT_CONN_DATA.MAC.name(), other_mac);
+				i.putExtra(BluetoothConnector.BT_CONN_DATA.UUID.name(), BT_UUID);
+				i.putExtra(BluetoothConnector.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
 				startActivityForResult(i, BtAPI.RESULTCODE_SETUP_BT);
 			}
@@ -110,8 +118,9 @@ public class MainActivity extends Activity {
         	} else if (resultCode == RESULT_OK) {
             	Log.i(LOG_TAG, "MainActivity: Reason: OK");
         		Log.i(LOG_TAG, "MainActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+        		other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
+	        	((TextView) findViewById(R.id.lblMAC)).setText( other_mac );
         	}
-        	other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
         	// TODO: Launch BT Setup automatically? For now just manual (TODO: perhaps enable button/label?)
     		break;
     	case BtAPI.RESULTCODE_SETUP_BT:
