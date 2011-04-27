@@ -4,6 +4,7 @@ import dk.hotmovinglobster.dustytuba.api.BtAPI;
 import dk.hotmovinglobster.dustytuba.api.BtConnection;
 import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,12 @@ import android.util.Log;
  * @author Jesper & Thomas
  */
 public class GenericIPActivity extends Activity {
+	
+	private static final int REQUEST_ENABLE_BT = 100;
+	private static final int REQUEST_IDENTITY_PROVIDER = 101;
+	
+	private Intent thisIntent;
+	private String ipClass;
 
 	private static final String LOG_TAG = "APITest:GenericIPActivity: ";
 	
@@ -30,10 +37,10 @@ public class GenericIPActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Created");
-    	Intent thisIntent = getIntent();
+    	thisIntent = getIntent();
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
     	
-    	String ipClass = thisIntent.getStringExtra( BtAPI.EXTRA_IP_CLASS );
+    	ipClass = thisIntent.getStringExtra( BtAPI.EXTRA_IP_CLASS );
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Received '" + ipClass + "' as subclass");
 /*    	
     	// Name of package of the identity provider activity
@@ -45,6 +52,23 @@ public class GenericIPActivity extends Activity {
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: subclass package: " + ipPackage);
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: subclass name: " + ipClass);
 */    	
+    	// Check for Bluetooth availability
+    	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
+    	if (ba == null) {
+    		setResult( BtAPI.RESULT_BT_UNAVAILABLE );
+    	    finish();
+    	    return;
+    	}
+    	if (!ba.isEnabled()) {
+    	    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    	    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+    	} else {
+    		bluetoothEnabled();
+    	}
+    	
+    }
+    
+    private void bluetoothEnabled() {
     	Intent newIntent = new Intent();
     	newIntent.setClassName(this, ipClass);
     	//newIntent.setComponent( new ComponentName( ipPackage, ipClass ) );
@@ -56,11 +80,11 @@ public class GenericIPActivity extends Activity {
     	}
     	
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Starting subactivity");
-    	startActivityForResult(newIntent, BtAPI.REQUEST_IDENTITY_PROVIDER);
+    	startActivityForResult(newIntent, REQUEST_IDENTITY_PROVIDER);
     	
-    }
-    
-    @Override
+	}
+
+	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
     	switch(requestCode){
 		case BtAPI.REQUEST_IDENTITY_PROVIDER:
@@ -95,7 +119,6 @@ public class GenericIPActivity extends Activity {
 	        	setResult(resultCode);
 	    	}
         	finish();
-			break;
     	}
     }
 

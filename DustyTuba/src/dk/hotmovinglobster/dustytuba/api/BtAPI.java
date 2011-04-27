@@ -62,9 +62,13 @@ public class BtAPI {
 		return intent;
 	}
 	
+	// Please note that the string values here also refer to resource strings in
+	// dustytubastrings.xml with the prefix 'dustytuba_identity_provider_',
+	// e.g. 'dustytuba_identity_provider_bump' 
 	public static final String IDENTITY_PROVIDER_BUMP   = "bump";
 	public static final String IDENTITY_PROVIDER_FAKE   = "fake";
 	public static final String IDENTITY_PROVIDER_MANUAL = "manual";
+	public static final String IDENTITY_PROVIDER_MULTIPLE = "multiple";
 	
 	/**
 	 * Find the identity providor given a string name
@@ -79,10 +83,20 @@ public class BtAPI {
 			return FakeIPActivity.class;
 		else if (idProvider.equals(IDENTITY_PROVIDER_MANUAL)) 
 			return ManualIPActivity.class;
+		else if (idProvider.equals(IDENTITY_PROVIDER_MULTIPLE)) 
+			return MultipleIPActivity.class;
 		else 
 			return null;
 	}
 	
+	public static String stringToIdProviderName(Context context, String idProvider) {
+		int resource = res( context, "string", "dustytuba_identity_provider_" + idProvider );
+		if (resource == 0)
+			resource = res( context, "string", "dustytuba_identity_provider_unknown" );
+		
+		return context.getResources().getString( resource );
+	}
+
 	/**
 	 * A BtDisconnectReason is returned by the API when the user exits after connection has been established.
 	 */
@@ -93,10 +107,11 @@ public class BtAPI {
 		END_OTHER_USER_LOST  /** remote user was lost */ // TODO: Remove (Bump has two connections to central server. We don't, so doesn't apply)
 	}
 	
-	public static final String EXTRA_IP_CLASS  = "ip_class";
-	public static final String EXTRA_IP_BUNDLE = "ip_bundle";
-	public static final String EXTRA_IP_MAC    = "ip_mac";
-	public static final String EXTRA_BT_MAC    = "bt_mac";
+	public static final String EXTRA_IP_CLASS     = "ip_class";
+	public static final String EXTRA_IP_BUNDLE    = "ip_bundle";
+	public static final String EXTRA_IP_MAC       = "ip_mac";
+	public static final String EXTRA_IP_PROVIDERS = "ip_providers";
+	public static final String EXTRA_BT_MAC       = "bt_mac";
 	
 	public static final String EXTRA_BT_CONNECTION = "bt_connection";
 	

@@ -148,7 +148,7 @@ Both methods need a \verb+Context+ object and an identity provider to use (see s
 
 \subsection{Identity providers}
 \label{identity-providers}
-An identity provider is a way of pairing two bluetooth devices and exchanging their identities in order to make a bluetooth connection. As of now, three identity providers exist:
+An identity provider is a way of pairing two bluetooth devices and exchanging their identities in order to make a bluetooth connection. As of now, four identity providers exist:
 
 \paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_BUMP}}
 Use the Bump\texttrademark{} service to physically bump two phones together and exchange connection information\footnote{The DustyTuba project is in no way affiliated with Bump\texttrademark, we are merely using their service to obtain a bluetooth connection}.
@@ -179,6 +179,21 @@ startActivityForResult(i, REQUEST_DUSTYTUBA);
 \paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_MANUAL}}
 is an identity provider allowing a user to manually enter a MAC address through a dialog. The manual identity provider is started as shown in section \ref{stepthree}. An optional default MAC address can be provided with the \verb+Bundle+ exactly as the fake MAC address was provided in the fake identity provider.
 
+\paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_MULTIPLE}}
+is a special identity provider allowing the user to manually select from a list of predefined identity providers. This list must be provided in a \verb+Bundle+ with the \verb+BtAPI.EXTRA_IP_PROVIDERS+ key, as shown here:
+
+\footnotesize
+\begin{verbatim}
+String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+Bundle b = new Bundle();
+b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_KEY);
+Intent i = BtAPI.getIntent(this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
+startActivityForResult(i, REQUEST_DUSTYTUBA);
+\end{verbatim}
+\normalsize
+
+Parameters to the selected identity provider must also be provided in the \verb+Bundle+ as shown with the Bump\texttrademark{} API key.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

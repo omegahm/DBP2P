@@ -5,4 +5,10 @@
     <string name="dustytuba_ok">OK</string>
     <string name="dustytuba_invalid_mac">Invalid MAC Address!</string>
     <string name="dustytuba_setting_up_connection">Setting up connection...\nPlease wait</string>
+    <string name="dustytuba_select_identity_provider">Select Identity Provider</string>
+    <string name="dustytuba_identity_provider_bump">Bump!</string>
+    <string name="dustytuba_identity_provider_fake">Fake</string>
+    <string name="dustytuba_identity_provider_manual">Manual</string>
+    <string name="dustytuba_identity_provider_multiple">Multiple</string>
+    <string name="dustytuba_identity_provider_unknown">Unknown</string>
 </resources>

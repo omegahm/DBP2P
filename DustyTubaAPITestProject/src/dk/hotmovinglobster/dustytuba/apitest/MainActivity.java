@@ -1,12 +1,5 @@
 package dk.hotmovinglobster.dustytuba.apitest;
 
-import com.bumptech.bumpapi.BumpAPI;
-import dk.hotmovinglobster.dustytuba.api.BtAPI;
-import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
-import dk.hotmovinglobster.dustytuba.api.BtAPIListener;
-import dk.hotmovinglobster.dustytuba.api.BtConnection;
-import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
-import dk.hotmovinglobster.dustytuba.id.*;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
@@ -17,6 +10,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.bumpapi.BumpAPI;
+
+import dk.hotmovinglobster.dustytuba.api.*;
+import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
+import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
+import dk.hotmovinglobster.dustytuba.id.*;
 
 public class MainActivity extends Activity implements BtAPIListener {
 	
@@ -33,7 +33,7 @@ public class MainActivity extends Activity implements BtAPIListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+
         initializeButtons();
     }
 
@@ -80,6 +80,22 @@ public class MainActivity extends Activity implements BtAPIListener {
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
 				chooseIDProvider("BUMP");
+			}
+		});
+        
+        ((Button)findViewById(R.id.btnLaunchDustyTubaMultiple)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+				Bundle b = new Bundle();
+				b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+				b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
+
+				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Multiple activity");
+				// FIXME: Commented out since this would start FULL
+				//startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
+				chooseIDProvider("MULTIPLE");
 			}
 		});
         
@@ -130,6 +146,12 @@ public class MainActivity extends Activity implements BtAPIListener {
 					Intent i = BtAPI.getIntent(getApplicationContext(), BtAPI.IDENTITY_PROVIDER_BUMP, b);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
+				} else if (chosenIDProvider == "MULTIPLE" ) {
+					String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+					Bundle b = new Bundle();
+					b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+					b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
 				} else {
 					Toast.makeText(getApplicationContext(),"Canceled: No ID Provider chosen", Toast.LENGTH_SHORT).show();
 				}
@@ -159,6 +181,9 @@ public class MainActivity extends Activity implements BtAPIListener {
         		other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
 	        	((TextView) findViewById(R.id.lblMAC)).setText( other_mac );
 	        	break;
+    		case BtAPI.RESULT_BT_UNAVAILABLE:
+            	Log.i(LOG_TAG, "MainActivity: Reason: Bluetooth unavailable (FAIL_BT_UNAVAILABLE)");
+            	break;
         	}
     		break;
     	case BtAPI.REQUEST_SETUP_BT:
