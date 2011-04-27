@@ -117,7 +117,7 @@ public class BluetoothConnector extends Activity {
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-        	setResult(BtAPI.BtConnectFailedReason.FAIL_BT_UNAVAILABLE);
+        	setResult(BtAPI.RESULT_BT_UNAVAILABLE);
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -332,8 +332,7 @@ public class BluetoothConnector extends Activity {
             } else {
                 // User did not enable Bluetooth or an error occured
                 Log.d(TAG, "BT not enabled");
-                // TODO: String
-                Toast.makeText(this, "BT not enabled", Toast.LENGTH_SHORT).show();
+                setResult(BtAPI.RESULT_BT_UNAVAILABLE);
                 finish();
             }
             break;

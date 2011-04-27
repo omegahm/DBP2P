@@ -16,9 +16,12 @@ public class BtAPI {
 	 * Hopefully we can get around this - and I think it's what Jesper has been trying to do with GenericIPActivity, but I'm not entirely sure.
 	 * If/when this succeeds, then this can be removed and relevant onActivityResult handling can be moved to API.
 	 */
-	public static final int REQUESTCODE_IDENTITY_PROVIDER = 0;
-	public static final int REQUESTCODE_SETUP_BT = 1;
-	public static final int REQUESTCODE_DUSTYTUBA = 2; // TODO: Idealy this will be the only one we use
+	public static final int REQUEST_IDENTITY_PROVIDER = 0;
+	public static final int REQUEST_SETUP_BT = 1;
+	public static final int REQUEST_DUSTYTUBA = 2; // TODO: Idealy this will be the only one we use
+	public static final int RESULT_BT_UNAVAILABLE = 99131; /** Cannot proceed, BT not enabled */
+	public static final int RESULT_FAILURE_CONNECT = 99132; /** Cannot establish connection to device */
+
 	
 	/**
 	 * Gets an intent to setup a bluetooth connection.
@@ -78,13 +81,6 @@ public class BtAPI {
 			return ManualIPActivity.class;
 		else 
 			return null;
-	}
-	
-	public class BtConnectFailedReason {
-		public static final int FAIL_NONE = 2;           /** No failure */ // TODO: Do we need this?
-		public static final int FAIL_USER_CANCELED = 3;  /** Local user quit the API */
-		public static final int FAIL_BT_UNAVAILABLE = 4; /** Local user quit before network became available (e.g. cancelled enable BT dialog) */
-		public static final int FAIL_OTHER = 5;          /** Something wierd happened TODO: Remove? */
 	}
 	
 	/**

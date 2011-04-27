@@ -41,10 +41,10 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaFakeAlice)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
+				Intent i = new Intent(getApplicationContext(), FakeIPActivity.class);
 				i.putExtra(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
 				chooseIDProvider("FAKE_ALICE"); // Choose for FULL
 			}
 		});
@@ -52,10 +52,10 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaFakeBob)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
+				Intent i = new Intent(getApplicationContext(), FakeIPActivity.class);
 				i.putExtra(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
 				chooseIDProvider("FAKE_BOB"); // Choose for FULL
 			}
 		});
@@ -63,9 +63,9 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaManual)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, ManualIPActivity.class);
+				Intent i = new Intent(getApplicationContext(), ManualIPActivity.class);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Manual activity");
-				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
 				chooseIDProvider("MANUAL"); // Choose for FULL
 			}
 		});
@@ -73,12 +73,12 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaBump)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, BumpIPActivity.class);
+				Intent i = new Intent(getApplicationContext(), BumpIPActivity.class);
 				if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
 					i.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
 				i.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
-				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
 				chooseIDProvider("BUMP");
 			}
 		});
@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 			@Override
 			public void onClick(View v) {
 				// FIXME: HACK: Not the proper way to go about this, but it will do for now...
-				Intent i = new Intent(MainActivity.this, BluetoothConnector.class);
+				Intent i = new Intent(getApplicationContext(), BluetoothConnector.class);
 				boolean isServer = false; // try to connect as client in addition to being a server
 				String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
 				String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
@@ -98,7 +98,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 				i.putExtra(BluetoothConnector.BT_CONN_DATA.UUID.name(), BT_UUID);
 				i.putExtra(BluetoothConnector.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-				startActivityForResult(i, BtAPI.REQUESTCODE_SETUP_BT);
+				startActivityForResult(i, BtAPI.REQUEST_SETUP_BT);
 			}
 		});
 		
@@ -109,27 +109,27 @@ public class MainActivity extends Activity implements BtAPIListener {
 				if ("FAKE_ALICE".equals(chosenIDProvider)){
 					Bundle b = new Bundle();
 					b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
-					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+					Intent i = BtAPI.getIntent(getApplicationContext(), BtAPI.IDENTITY_PROVIDER_FAKE, b);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
 				} else if ("FAKE_BOB".equals(chosenIDProvider)){
 					Bundle b = new Bundle();
 					b.putString(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
-					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+					Intent i = BtAPI.getIntent(getApplicationContext(), BtAPI.IDENTITY_PROVIDER_FAKE, b);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
 				} else if ("MANUAL".equals(chosenIDProvider)){
-					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
+					Intent i = BtAPI.getIntent(getApplicationContext(), BtAPI.IDENTITY_PROVIDER_MANUAL);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Manual activity");
-					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
 				} else if ("BUMP".equals(chosenIDProvider)){
 					Bundle b = new Bundle();
 					b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 					if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
 						b.putString(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
-					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_BUMP, b);
+					Intent i = BtAPI.getIntent(getApplicationContext(), BtAPI.IDENTITY_PROVIDER_BUMP, b);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
-					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
 				} else {
 					Toast.makeText(getApplicationContext(),"Canceled: No ID Provider chosen", Toast.LENGTH_SHORT).show();
 				}
@@ -147,7 +147,7 @@ public class MainActivity extends Activity implements BtAPIListener {
     	// TODO: Move ID Provider + Setup BT to GenericIPActivity (remove from here)
     	Log.i(LOG_TAG, "MainActivity: Returned from activity");
     	switch(requestCode){ // Use of switch rather than if/then/else ensures no duplicate result codes
-    	case BtAPI.REQUESTCODE_IDENTITY_PROVIDER:
+    	case BtAPI.REQUEST_IDENTITY_PROVIDER:
         	Log.i(LOG_TAG, "MainActivity: Returned from BtAPI ID activity");
         	switch(resultCode){
         	case RESULT_CANCELED:
@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 	        	break;
         	}
     		break;
-    	case BtAPI.REQUESTCODE_SETUP_BT:
+    	case BtAPI.REQUEST_SETUP_BT:
         	Log.i(LOG_TAG, "MainActivity: Returned from BtAPI BT SETUP activity");
         	switch(resultCode){
         	case RESULT_CANCELED:
@@ -173,21 +173,13 @@ public class MainActivity extends Activity implements BtAPIListener {
             	Log.i(LOG_TAG, "MainActivity: Reason: OK");
         		Log.i(LOG_TAG, "MainActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
 	        	break;
-	        case BtAPI.BtConnectFailedReason.FAIL_BT_UNAVAILABLE:
-	        	// TODO: alert/forward
-	        	break;
-	        case BtAPI.BtConnectFailedReason.FAIL_OTHER:
-	        	// TODO: alert/forward
-	        	break;
-	        case BtAPI.BtConnectFailedReason.FAIL_USER_CANCELED:
-	        	// TODO: alert/forward
-	        	break;
-	        case BtAPI.BtConnectFailedReason.FAIL_NONE:
-	        	// TODO: alert/forward OR REMOVE!
+	        case BtAPI.RESULT_BT_UNAVAILABLE:
+	        	Toast.makeText(getApplicationContext(), "ERROR: "
+                    + "Cannot proceed, BT not enabled", Toast.LENGTH_SHORT).show();
 	        	break;
         	}
     		break;
-    	case BtAPI.REQUESTCODE_DUSTYTUBA:
+    	case BtAPI.REQUEST_DUSTYTUBA:
         	Log.i(LOG_TAG, "MainActivity: Returned from BtAPI complete ID + SETUP activity");
         	switch(resultCode){
         	case RESULT_CANCELED:
@@ -203,6 +195,15 @@ public class MainActivity extends Activity implements BtAPIListener {
     			conn.setListener(this);
     			// Final usage of API:
     			// TODO: Start a timer that repeatedly sends a message every 5th second
+	        	break;
+        	case BtAPI.RESULT_BT_UNAVAILABLE:
+	        	Toast.makeText(getApplicationContext(), "ERROR: "
+                    + "Cannot proceed, BT not enabled", Toast.LENGTH_SHORT).show();
+	        	break;
+	        case BtAPI.RESULT_FAILURE_CONNECT:
+	        	// TODO: Not currently sent from anywhere. Fix so Connection fails this way.
+	        	Toast.makeText(getApplicationContext(), "FAILURE: "
+                    + "Could not connect to BT device", Toast.LENGTH_SHORT).show();
 	        	break;
         	}
     		break;
