@@ -11,9 +11,10 @@ import android.util.Log;
 /**
  * Generic identity provider activity starter class.
  * 
- * Expects all identity provider acitivities to return a MAC address,
- * and returns a bluetooth connection to this MAC address.
- *
+ * Expects all identity provider activities to return a MAC address
+ * with the key BtAPI.EXTRA_BT_MAC
+ * and returns a bluetooth connection to this MAC address with the key
+ * BtAPI.EXTRA_BT_CONNECTION
  * @author Jesper
  */
 public class GenericIPActivity extends Activity {
@@ -30,19 +31,11 @@ public class GenericIPActivity extends Activity {
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Created");
     	thisIntent = getIntent();
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
-    	
+
+    	// Get the class of the identity provider to use
     	ipClass = thisIntent.getStringExtra( BtAPI.EXTRA_IP_CLASS );
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Received '" + ipClass + "' as subclass");
-/*    	
-    	// Name of package of the identity provider activity
-    	// Should be 'dk.hotmovinglobster.dustytuba.id' for local identity provider
-    	String ipPackage = fullClass.substring(0, fullClass.lastIndexOf('.') );
-    	// Name of class in package. Must start with leading . (e.g. '.FakeIPActivity')
-    	String ipClass = fullClass.substring(fullClass.lastIndexOf('.'));
-    	
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: subclass package: " + ipPackage);
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: subclass name: " + ipClass);
-*/    	
+
     	// Check for Bluetooth availability
     	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
     	if (ba == null) {
@@ -50,22 +43,22 @@ public class GenericIPActivity extends Activity {
     	    finish();
     	    return;
     	}
-    	if (!ba.isEnabled()) {
-    	    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-    	    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-    	} else {
+    	if (ba.isEnabled()) {
     		bluetoothEnabled();
+    	} else {
+    	    final Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    	    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     	}
     	
     }
     
     private void bluetoothEnabled() {
-    	Intent newIntent = new Intent();
+    	final Intent newIntent = new Intent();
     	newIntent.setClassName(this, ipClass);
     	//newIntent.setComponent( new ComponentName( ipPackage, ipClass ) );
     	
     	if (thisIntent.hasExtra( BtAPI.EXTRA_IP_BUNDLE )) {
-    		Bundle b = thisIntent.getBundleExtra( BtAPI.EXTRA_IP_BUNDLE );
+    		final Bundle b = thisIntent.getBundleExtra( BtAPI.EXTRA_IP_BUNDLE );
         	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Received bundle (Size "+b.size()+": "+b.keySet()+")");
     		newIntent.replaceExtras( b );
     	}
@@ -95,7 +88,7 @@ public class GenericIPActivity extends Activity {
 	    	} else if (resultCode == RESULT_OK) {
 	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: OK)");
 	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned MAC " + data.getStringExtra( BtAPI.EXTRA_IP_MAC ));
+	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned MAC " + data.getStringExtra( BtAPI.EXTRA_BT_MAC ));
 	        	setResult( RESULT_OK, data );
 	    	} else {
 	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");

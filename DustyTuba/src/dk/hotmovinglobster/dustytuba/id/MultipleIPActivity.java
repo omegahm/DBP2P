@@ -22,10 +22,11 @@ public class MultipleIPActivity extends Activity {
 		
 		providers = intent.getStringArrayExtra( BtAPI.EXTRA_IP_PROVIDERS );
 		providerNames = new String[ providers.length ];
-		for (int i = 0; i < providers.length; i++ )
+		for (int i = 0; i < providers.length; i++ ) {
 			providerNames[i] = BtAPI.stringToIdProviderName( this, providers[i] );
+		}
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle( BtAPI.res( this, "string", "dustytuba_select_identity_provider" ) );
 		builder.setItems( providerNames, new DialogInterface.OnClickListener() {
 		    public void onClick(DialogInterface dialog, int item) {
@@ -41,7 +42,7 @@ public class MultipleIPActivity extends Activity {
 				finish();
 			}
 		});
-		AlertDialog alert = builder.create();
+		final AlertDialog alert = builder.create();
 		
 		alert.show();
 	}

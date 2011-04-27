@@ -18,7 +18,7 @@ public class BtAPI {
 	 */
 	public static final int REQUESTCODE_IDENTITY_PROVIDER = 0;
 	public static final int REQUESTCODE_SETUP_BT = 1;
-	public static final int REQUESTCODE_DUSTYTUBA = 2; // TODO: Idealy this will be the only one we use
+	public static final int REQUESTCODE_DUSTYTUBA = 2; // TODO: Ideally this will be the only one we use
 	
 	/**
 	 * Gets an intent to setup a bluetooth connection.
@@ -29,7 +29,7 @@ public class BtAPI {
 	 * @param idProvider A string deciding which identity provider to use
 	 * @return The Intent to pass on to startActivityForResult
 	 */
-	public static Intent getIntent(Context context, String idProvider) {
+	public static Intent getIntent(final Context context, final String idProvider) {
 		return getIntent( context, idProvider, null );
 	}
 	
@@ -43,20 +43,24 @@ public class BtAPI {
 	 * @param extras Extra data to bundle along with the intent
 	 * @return The Intent to pass on to startActivityForResult
 	 */
-	public static Intent getIntent(Context context, String idProvider, Bundle extras) {
-		Class<?> cls = stringToIdProviderClass(idProvider);
-		
-		// TODO: More sensible, maybe throw an exception
-		if ( cls == null )
-			return null;
+	public static Intent getIntent(final Context context, final String idProvider, final Bundle extras) {
+		final Class<?> cls = stringToIdProviderClass(idProvider);
 		
 		Intent intent = new Intent(context, GenericIPActivity.class);
-		
-		if ( extras != null )
-			intent.putExtra(EXTRA_IP_BUNDLE, extras);
-		intent.putExtra(EXTRA_IP_CLASS, cls.getCanonicalName());
+
+		if ( cls == null ) {
+			// TODO: More sensible, maybe throw an exception
+			return null;
+		} else {
+			intent = new Intent(context, GenericIPActivity.class);
+			if ( extras != null ) {
+				intent.putExtra(EXTRA_IP_BUNDLE, extras);
+			}
+			intent.putExtra(EXTRA_IP_CLASS, cls.getCanonicalName());
+		}
 		
 		return intent;
+		
 	}
 	
 	// Please note that the string values here also refer to resource strings in
@@ -71,25 +75,38 @@ public class BtAPI {
 	 * Find the identity providor given a string name
 	 * 
 	 * @param idProvider A string name of an identity providor
-	 * @return The identity providor class
+	 * @return The identity providor class or null if none is found
 	 */
-	private static Class<?> stringToIdProviderClass(String idProvider) {
-		if (idProvider.equals(IDENTITY_PROVIDER_BUMP)) 
-			return BumpIPActivity.class;
-		else if (idProvider.equals(IDENTITY_PROVIDER_FAKE)) 
-			return FakeIPActivity.class;
-		else if (idProvider.equals(IDENTITY_PROVIDER_MANUAL)) 
-			return ManualIPActivity.class;
-		else if (idProvider.equals(IDENTITY_PROVIDER_MULTIPLE)) 
-			return MultipleIPActivity.class;
-		else 
-			return null;
+	private static Class<?> stringToIdProviderClass(final String idProvider) {
+		Class<?> result;
+		
+		if (idProvider.equals(IDENTITY_PROVIDER_BUMP)) {
+			result = BumpIPActivity.class;
+		} else if (idProvider.equals(IDENTITY_PROVIDER_FAKE)) { 
+			result = FakeIPActivity.class;
+		} else if (idProvider.equals(IDENTITY_PROVIDER_MANUAL)) { 
+			result = ManualIPActivity.class;
+		} else if (idProvider.equals(IDENTITY_PROVIDER_MULTIPLE)) { 
+			result = MultipleIPActivity.class;
+		} else {
+			result = null;
+		}
+			
+		return result;
 	}
 	
-	public static String stringToIdProviderName(Context context, String idProvider) {
+	/**
+	 * Get the nice localized name of an identity provider
+	 * 
+	 * @param context The context used to retrieve string resources
+	 * @param idProvider The identity provider
+	 * @return A string containing the localized name
+	 */
+	public static String stringToIdProviderName(final Context context, final String idProvider) {
 		int resource = res( context, "string", "dustytuba_identity_provider_" + idProvider );
-		if (resource == 0)
+		if (resource == 0) {
 			resource = res( context, "string", "dustytuba_identity_provider_unknown" );
+		}
 		
 		return context.getResources().getString( resource );
 	}
@@ -111,26 +128,52 @@ public class BtAPI {
 		END_OTHER_USER_LOST  /** remote user was lost */ // TODO: Remove (Bump has two connections to central server. We don't, so doesn't apply)
 	}
 	
+	/**
+	 * Used internally for bundling the class of an identity provider
+	 */
 	public static final String EXTRA_IP_CLASS     = "ip_class";
+	/**
+	 * Used internally for sending a Bundle to the actual identity provider
+	 */
 	public static final String EXTRA_IP_BUNDLE    = "ip_bundle";
+	/**
+	 * Used internally for sending a MAC address to and from identity providers
+	 */
 	public static final String EXTRA_IP_MAC       = "ip_mac";
+	/**
+	 * Used with the Multiple Identity Provider to limit the available providers
+	 * 
+	 * Value must be a string array
+	 */
 	public static final String EXTRA_IP_PROVIDERS = "ip_providers";
+	
+	/**
+	 * Used for returning the bluetooth MAC address of the other device to the application
+	 */
 	public static final String EXTRA_BT_MAC       = "bt_mac";
 	
+	/**
+	 * Used for returning the bluetooth connection object to the application
+	 * 
+	 * Value is of type dk.hotmovinglobster.dustytyba.api.BluetoothConnector
+	 */
 	public static final String EXTRA_BT_CONNECTION = "bt_connection";
 	
+	/**
+	 * The tag used for logging messages to Logcat.
+	 */
 	public static final String LOG_TAG = "DustyTuba";
 	
 	/**
-	 * Get a ressource identifier from the application
+	 * Get a resource identifier from the application
 	 * 
 	 * @param context A Context of the application package using this class.
-	 * @param type Ressource type to find
-	 * @param name Name of ressource to find
-	 * @return The ressource identifier
+	 * @param type Resource type to find
+	 * @param name Name of resource to find
+	 * @return The resource identifier
 	 */
-	public static int res(Context context, String type, String name) {
-		String pkg = context.getApplicationInfo().packageName;
+	public static int res(final Context context, final String type, final String name) {
+		final String pkg = context.getApplicationInfo().packageName;
 		return context.getResources().getIdentifier(name, type, pkg);
 	}
 	

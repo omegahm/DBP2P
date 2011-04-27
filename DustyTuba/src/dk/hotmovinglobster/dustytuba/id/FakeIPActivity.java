@@ -20,10 +20,10 @@ public class FakeIPActivity extends Activity {
     	super.onCreate(savedInstanceState);
     	Log.i(BtAPI.LOG_TAG, "FakeIPActivity: Created");
 
-    	Intent thisIntent = getIntent();
+    	final Intent thisIntent = getIntent();
     	Log.i(BtAPI.LOG_TAG, "FakeIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
     	// Get data
-        Bundle extras = thisIntent.getExtras();
+        final Bundle extras = thisIntent.getExtras();
         String mac = extras.getString(BtAPI.EXTRA_IP_MAC);
         
     	Log.i(BtAPI.LOG_TAG, "FakeIPActivity: Received MAC Address: " + mac);
@@ -40,7 +40,7 @@ public class FakeIPActivity extends Activity {
         }
         
     	// Return data
-    	Intent data = new Intent();
+    	final Intent data = new Intent();
         data.putExtra(BtAPI.EXTRA_IP_MAC,mac);
     	setResult(RESULT_OK, data);
     	
