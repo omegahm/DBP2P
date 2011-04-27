@@ -124,7 +124,7 @@ public class GenericIPActivity extends Activity {
 
 	private void startBT(String other_mac) {
 		// FIXME: HACK: Not the proper way to go about this, but it will do for now...
-		Intent i = new Intent(getApplicationContext(), BluetoothConnector.class);
+		Intent i = new Intent(GenericIPActivity.this, BluetoothConnector.class);
 		boolean isServer = false; // try to connect as client in addition to being a server
 		String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
 		String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
