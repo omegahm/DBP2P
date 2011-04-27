@@ -3,6 +3,7 @@ package dk.hotmovinglobster.dustytuba.id;
 import dk.hotmovinglobster.dustytuba.api.BtAPI;
 import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,15 +17,21 @@ import android.util.Log;
  * @author Jesper
  */
 public class GenericIPActivity extends Activity {
+	
+	private static final int REQUEST_ENABLE_BT = 100;
+	private static final int REQUEST_IDENTITY_PROVIDER = 101;
+	
+	private Intent thisIntent;
+	private String ipClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Created");
-    	Intent thisIntent = getIntent();
+    	thisIntent = getIntent();
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
     	
-    	String ipClass = thisIntent.getStringExtra( BtAPI.EXTRA_IP_CLASS );
+    	ipClass = thisIntent.getStringExtra( BtAPI.EXTRA_IP_CLASS );
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Received '" + ipClass + "' as subclass");
 /*    	
     	// Name of package of the identity provider activity
@@ -36,6 +43,23 @@ public class GenericIPActivity extends Activity {
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: subclass package: " + ipPackage);
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: subclass name: " + ipClass);
 */    	
+    	// Check for Bluetooth availability
+    	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
+    	if (ba == null) {
+    		setResult( BtAPI.BtConnectFailedReason.FAIL_BT_UNAVAILABLE );
+    	    finish();
+    	    return;
+    	}
+    	if (!ba.isEnabled()) {
+    	    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    	    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+    	} else {
+    		bluetoothEnabled();
+    	}
+    	
+    }
+    
+    private void bluetoothEnabled() {
     	Intent newIntent = new Intent();
     	newIntent.setClassName(this, ipClass);
     	//newIntent.setComponent( new ComponentName( ipPackage, ipClass ) );
@@ -47,29 +71,39 @@ public class GenericIPActivity extends Activity {
     	}
     	
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Starting subactivity");
-    	startActivityForResult(newIntent, 0);
+    	startActivityForResult(newIntent, REQUEST_IDENTITY_PROVIDER);
     	
-    }
-    
-    @Override
+	}
+
+	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 //    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: ");
     	// TODO: Move ID Provider + Setup BT to here from MainActivity
     	// TODO: For now implementing in MainActivity since that's easier
-    	if (resultCode == RESULT_CANCELED) {
-        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: cancel)");
-        	setResult( RESULT_CANCELED );
-    	} else if (resultCode == RESULT_OK) {
-        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: OK)");
-        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned MAC " + data.getStringExtra( BtAPI.EXTRA_IP_MAC ));
-        	setResult( RESULT_OK, data );
-    	} else {
-        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");
-    		setResult( resultCode );
-    	}    	
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Finishing");
-    	finish();
+    	if (requestCode == REQUEST_ENABLE_BT) {
+    		if (resultCode == RESULT_OK) {
+    			bluetoothEnabled();
+    		} else if (resultCode == RESULT_CANCELED) {
+    			setResult( BtAPI.BtConnectFailedReason.FAIL_USER_CANCELED );
+    			finish();
+    			return;
+    		}
+       	} else if (requestCode == REQUEST_IDENTITY_PROVIDER) {
+	    	if (resultCode == RESULT_CANCELED) {
+	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: cancel)");
+	        	setResult( RESULT_CANCELED );
+	    	} else if (resultCode == RESULT_OK) {
+	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: OK)");
+	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned MAC " + data.getStringExtra( BtAPI.EXTRA_IP_MAC ));
+	        	setResult( RESULT_OK, data );
+	    	} else {
+	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");
+	    		setResult( resultCode );
+	    	}    	
+	    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Finishing");
+	    	finish();
+       	}
     	
     }
 }

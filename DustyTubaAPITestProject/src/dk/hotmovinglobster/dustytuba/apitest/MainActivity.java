@@ -33,7 +33,7 @@ public class MainActivity extends Activity implements BtAPIListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+
         initializeButtons();
     }
 
@@ -41,8 +41,9 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaFakeAlice)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
-				i.putExtra(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+				Bundle b = new Bundle();
+				b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
 				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
 				chooseIDProvider("FAKE_ALICE"); // Choose for FULL
@@ -52,8 +53,9 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaFakeBob)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
-				i.putExtra(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
+				Bundle b = new Bundle();
+				b.putString(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
+				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
 				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
 				chooseIDProvider("FAKE_BOB"); // Choose for FULL
@@ -63,7 +65,7 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaManual)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, ManualIPActivity.class);
+				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Manual activity");
 				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
 				chooseIDProvider("MANUAL"); // Choose for FULL
@@ -73,10 +75,11 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaBump)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(MainActivity.this, BumpIPActivity.class);
+				Bundle b = new Bundle();
 				if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
-					i.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
-				i.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+					b.putString(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+				b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_BUMP);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
 				chooseIDProvider("BUMP");
@@ -180,6 +183,15 @@ public class MainActivity extends Activity implements BtAPIListener {
         		other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
 	        	((TextView) findViewById(R.id.lblMAC)).setText( other_mac );
 	        	break;
+    		case BtAPI.BtConnectFailedReason.FAIL_BT_UNAVAILABLE:
+            	Log.i(LOG_TAG, "MainActivity: Reason: Bluetooth unavailable (FAIL_BT_UNAVAILABLE)");
+            	break;
+    		case BtAPI.BtConnectFailedReason.FAIL_USER_CANCELED:
+            	Log.i(LOG_TAG, "MainActivity: Reason: User canceled (FAIL_USER_CANCELED)");
+            	break;
+    		case BtAPI.BtConnectFailedReason.FAIL_OTHER:
+            	Log.i(LOG_TAG, "MainActivity: Reason: Other (FAIL_OTHER)");
+            	break;
         	}
     		break;
     	case BtAPI.REQUESTCODE_SETUP_BT:
