@@ -1,12 +1,5 @@
 package dk.hotmovinglobster.dustytuba.apitest;
 
-import com.bumptech.bumpapi.BumpAPI;
-import dk.hotmovinglobster.dustytuba.api.BtAPI;
-import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
-import dk.hotmovinglobster.dustytuba.api.BtAPIListener;
-import dk.hotmovinglobster.dustytuba.api.BtConnection;
-import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
-import dk.hotmovinglobster.dustytuba.id.*;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
@@ -16,7 +9,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.bumptech.bumpapi.BumpAPI;
+
+import dk.hotmovinglobster.dustytuba.api.*;
+import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
+import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
+import dk.hotmovinglobster.dustytuba.id.*;
 
 public class MainActivity extends Activity implements BtAPIListener {
 	
@@ -84,6 +83,20 @@ public class MainActivity extends Activity implements BtAPIListener {
 			}
 		});
         
+        ((Button)findViewById(R.id.btnLaunchDustyTubaMultiple)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+				Bundle b = new Bundle();
+				b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
+
+				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Multiple activity");
+				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				chooseIDProvider("MULTIPLE");
+			}
+		});
+        
         ((Button)findViewById(R.id.btnSetupBT)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -131,6 +144,11 @@ public class MainActivity extends Activity implements BtAPIListener {
 					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_BUMP, b);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+				} else if (chosenIDProvider == "MULTIPLE" ) {
+					String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+					Bundle b = new Bundle();
+					b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
+					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
 				} else {
 					// TODO: Toast no ID chosen
 				}

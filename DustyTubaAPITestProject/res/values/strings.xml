@@ -10,4 +10,5 @@
     <string name="launch_dustytuba_bump">Bump!</string>
     <string name="launch_dustytuba_bt">Manual: Setup BT connection using MAC directly</string>
     <string name="launch_dustytuba_full">Full: Setup using chosen ID Provider</string>
+    <string name="launch_dustytuba_multi">Multi</string>
 </resources>
