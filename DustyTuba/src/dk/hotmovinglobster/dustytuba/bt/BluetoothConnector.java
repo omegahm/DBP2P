@@ -34,8 +34,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 /**
- * This is the main Activity that displays the current connection session.
- * TODO: Currently a debug connection dialog, we want a nicer one that looks more like a progress dialog that can be canceled!
+ * This is the Activity that sets up and starts the Bluetooth Connection.
  */
 public class BluetoothConnector extends Activity {
     // Debugging
@@ -96,8 +95,7 @@ public class BluetoothConnector extends Activity {
         mac = extras.getString(BT_CONN_DATA.MAC.name());
         uuid = extras.getString(BT_CONN_DATA.UUID.name());
         sdp_name = extras.getString(BT_CONN_DATA.SDP_NAME.name());
-        
-        
+         
         // Input Error handling (isServer defaults to False = try to connect as client, which is perfect)
         if (mac == null || uuid == null || sdp_name == null){
         	setResult(RESULT_CANCELED);
@@ -119,7 +117,7 @@ public class BluetoothConnector extends Activity {
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-        	setResult(BtAPI.BtConnectFailedReason.FAIL_BT_UNAVAILABLE);
+        	setResult(BtAPI.RESULT_BT_UNAVAILABLE);
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -328,14 +326,13 @@ public class BluetoothConnector extends Activity {
         switch (requestCode) {
         case REQUEST_ENABLE_BT:
             // When the request to enable Bluetooth returns (initated onStart)
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 // Bluetooth is now enabled, so set up a connection session
                 setupUI();
             } else {
                 // User did not enable Bluetooth or an error occured
                 Log.d(TAG, "BT not enabled");
-                // TODO: String
-                Toast.makeText(this, "BT not enabled", Toast.LENGTH_SHORT).show();
+                setResult(BtAPI.RESULT_BT_UNAVAILABLE);
                 finish();
             }
             break;

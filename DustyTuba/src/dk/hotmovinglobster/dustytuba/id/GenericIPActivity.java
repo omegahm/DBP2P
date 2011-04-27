@@ -1,6 +1,7 @@
 package dk.hotmovinglobster.dustytuba.id;
 
 import dk.hotmovinglobster.dustytuba.api.BtAPI;
+import dk.hotmovinglobster.dustytuba.api.BtConnection;
 import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -15,7 +16,14 @@ import android.util.Log;
  * with the key BtAPI.EXTRA_BT_MAC
  * and returns a bluetooth connection to this MAC address with the key
  * BtAPI.EXTRA_BT_CONNECTION
- * @author Jesper
+ * 
+ * Can return following result codes:
+ *
+ * RESULT_CANCELED Error API not used correctly (e.g. wrong class, invalid MAC) or ID provider failed
+ * RESULT_OK ID & BT ran successfully and returned active connection in data parcel
+ * RESULTCODE_BT_UNAVAILABLE Bluetooth not enabled
+ * RESULTCODE_FAILURE_CONNECT Cannot connect to specified device
+ * @author Jesper & Thomas
  */
 public class GenericIPActivity extends Activity {
 	
@@ -25,6 +33,8 @@ public class GenericIPActivity extends Activity {
 	private Intent thisIntent;
 	private String ipClass;
 
+	private static final String LOG_TAG = "APITest:GenericIPActivity: ";
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -39,7 +49,7 @@ public class GenericIPActivity extends Activity {
     	// Check for Bluetooth availability
     	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
     	if (ba == null) {
-    		setResult( BtAPI.BtConnectFailedReason.FAIL_BT_UNAVAILABLE );
+    		setResult( BtAPI.RESULT_BT_UNAVAILABLE );
     	    finish();
     	    return;
     	}
@@ -70,33 +80,55 @@ public class GenericIPActivity extends Activity {
 
 	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-//    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: ");
-    	// TODO: Move ID Provider + Setup BT to here from MainActivity
-    	// TODO: For now implementing in MainActivity since that's easier
-    	if (requestCode == REQUEST_ENABLE_BT) {
-    		if (resultCode == RESULT_OK) {
-    			bluetoothEnabled();
-    		} else if (resultCode == RESULT_CANCELED) {
-    			setResult( BtAPI.BtConnectFailedReason.FAIL_USER_CANCELED );
-    			finish();
-    			return;
-    		}
-       	} else if (requestCode == REQUEST_IDENTITY_PROVIDER) {
-	    	if (resultCode == RESULT_CANCELED) {
-	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: cancel)");
-	        	setResult( RESULT_CANCELED );
-	    	} else if (resultCode == RESULT_OK) {
-	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: OK)");
-	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned MAC " + data.getStringExtra( BtAPI.EXTRA_BT_MAC ));
-	        	setResult( RESULT_OK, data );
-	    	} else {
-	        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");
-	    		setResult( resultCode );
-	    	}    	
-	    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Finishing");
-	    	finish();
-       	}
-    	
+    	switch(requestCode){
+		case BtAPI.REQUEST_IDENTITY_PROVIDER:
+	    	Log.i(LOG_TAG, "Returned from BtAPI ID activity");
+	    	switch(resultCode){
+	    	case RESULT_CANCELED:
+	    		Log.i(LOG_TAG, "Reason: Cancelled");
+	        	setResult(RESULT_CANCELED);
+	        	finish();
+	    		break;
+			case RESULT_OK:
+	        	Log.i(LOG_TAG, "Reason: OK");
+	    		Log.i(LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+	    		String other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
+	    		// Identity received, start BT connection
+	    		startBT(other_mac);
+	        	break;
+	    	}
+			break;
+		case BtAPI.REQUEST_SETUP_BT:
+	    	Log.i(LOG_TAG, "Returned from BtAPI BT SETUP activity");
+	    	switch(resultCode){
+			case RESULT_OK:
+				Log.i(LOG_TAG, "Reason: OK");
+	    		Log.i(LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+				// Don't unparcel, just forward?
+				// BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
+	    		setResult(RESULT_OK,data);
+	        	break;
+	    	default:
+	    		Log.i(LOG_TAG, "Reason: " + resultCode);
+	        	setResult(resultCode);
+	    	}
+        	finish();
+    	}
     }
+
+	private void startBT(String other_mac) {
+		// FIXME: HACK: Not the proper way to go about this, but it will do for now...
+		Intent i = new Intent(GenericIPActivity.this, BluetoothConnector.class);
+		boolean isServer = false; // try to connect as client in addition to being a server
+		String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
+		String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
+		// Change to use BTAPI CONSTANTS
+		//b.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
+		i.putExtra(BluetoothConnector.BT_CONN_DATA.SERVER.name(), isServer);
+		i.putExtra(BluetoothConnector.BT_CONN_DATA.MAC.name(), other_mac);
+		i.putExtra(BluetoothConnector.BT_CONN_DATA.UUID.name(), BT_UUID);
+		i.putExtra(BluetoothConnector.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
+		Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
+		startActivityForResult(i, BtAPI.REQUEST_SETUP_BT);
+	}
 }
