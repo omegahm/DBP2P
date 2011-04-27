@@ -1,15 +1,15 @@
 package dk.hotmovinglobster.dustytuba.apitest;
 
 import com.bumptech.bumpapi.BumpAPI;
-import com.bumptech.bumpapi.BumpConnectFailedReason;
-
 import dk.hotmovinglobster.dustytuba.api.BtAPI;
+import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
+import dk.hotmovinglobster.dustytuba.api.BtAPIListener;
+import dk.hotmovinglobster.dustytuba.api.BtConnection;
 import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
-import dk.hotmovinglobster.dustytuba.id.GenericIPActivity;
+import dk.hotmovinglobster.dustytuba.id.*;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,16 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
-	
-	private Button btnLaunchDustyTubaFake;
-	private Button btnLaunchDustyTubaManual;
-	private Button btnLaunchDustyTubaBump;
+public class MainActivity extends Activity implements BtAPIListener {
 	
 	private static final String LOG_TAG = "APITest";
 	
 	protected static final String BUMP_API_DEV_KEY = "273a39bb29d342c2a9fcc2e61158cbba";
 	private String other_mac;
+
+	protected String chosenIDProvider = "NONE";
 	
 	protected static BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	
@@ -44,46 +42,45 @@ public class MainActivity extends Activity {
         ((Button)findViewById(R.id.btnLaunchDustyTubaFakeAlice)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Bundle b = new Bundle();
-				b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
-				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
+				i.putExtra(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-				startActivityForResult(i, BtAPI.RESULTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				chooseIDProvider("FAKE_ALICE"); // Choose for FULL
 			}
 		});
         
         ((Button)findViewById(R.id.btnLaunchDustyTubaFakeBob)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Bundle b = new Bundle();
-				b.putString(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
-				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
+				i.putExtra(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-				startActivityForResult(i, BtAPI.RESULTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				chooseIDProvider("FAKE_BOB"); // Choose for FULL
 			}
 		});
 
-		btnLaunchDustyTubaManual = (Button)findViewById(R.id.btnLaunchDustyTubaManual);
-        btnLaunchDustyTubaManual.setOnClickListener(new OnClickListener() {
+        ((Button)findViewById(R.id.btnLaunchDustyTubaManual)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
+				Intent i = new Intent(MainActivity.this, ManualIPActivity.class);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Manual activity");
-				startActivityForResult(i, BtAPI.RESULTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				chooseIDProvider("MANUAL"); // Choose for FULL
 			}
 		});
 
-		btnLaunchDustyTubaBump = (Button)findViewById(R.id.btnLaunchDustyTubaBump);
-        btnLaunchDustyTubaBump.setOnClickListener(new OnClickListener() {
+        ((Button)findViewById(R.id.btnLaunchDustyTubaBump)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Bundle b = new Bundle();
-				b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+				Intent i = new Intent(MainActivity.this, BumpIPActivity.class);
 				if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
-					b.putString(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
-				Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_BUMP, b);
+					i.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+				i.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
-				startActivityForResult(i, BtAPI.RESULTCODE_IDENTITY_PROVIDER);
+				startActivityForResult(i, BtAPI.REQUESTCODE_IDENTITY_PROVIDER);
+				chooseIDProvider("BUMP");
 			}
 		});
         
@@ -102,47 +99,112 @@ public class MainActivity extends Activity {
 				i.putExtra(BluetoothConnector.BT_CONN_DATA.UUID.name(), BT_UUID);
 				i.putExtra(BluetoothConnector.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
-				startActivityForResult(i, BtAPI.RESULTCODE_SETUP_BT);
+				startActivityForResult(i, BtAPI.REQUESTCODE_SETUP_BT);
+			}
+		});
+		
+		
+        ((Button)findViewById(R.id.btnDustyTuba)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (chosenIDProvider == "FAKE_ALICE"){
+					Bundle b = new Bundle();
+					b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
+					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+				} else if (chosenIDProvider == "FAKE_BOB"){
+					Bundle b = new Bundle();
+					b.putString(BtAPI.EXTRA_IP_MAC, "00:23:d4:34:45:d7"); // HTC Hero (Thomas) (BOB)
+					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
+					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+				} else if (chosenIDProvider == "MANUAL"){
+					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
+					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Manual activity");
+					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+				} else if (chosenIDProvider == "BUMP"){
+					Bundle b = new Bundle();
+					b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
+					if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
+						b.putString(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
+					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_BUMP, b);
+					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
+					startActivityForResult(i, BtAPI.REQUESTCODE_DUSTYTUBA);
+				} else {
+					// TODO: Toast no ID chosen
+				}
 			}
 		});
 	}
 	
-    @Override
+    protected void chooseIDProvider(String str) {
+		chosenIDProvider = str; // Choose for FULL
+		((TextView) findViewById(R.id.lblchosenID)).setText( str );
+	}
+
+	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+    	// TODO: Move ID Provider + Setup BT to GenericIPActivity (remove from here)
     	Log.i(LOG_TAG, "MainActivity: Returned from activity");
     	switch(requestCode){ // Use of switch rather than if/then/else ensures no duplicate result codes
-    	case BtAPI.RESULTCODE_IDENTITY_PROVIDER:
+    	case BtAPI.REQUESTCODE_IDENTITY_PROVIDER:
         	Log.i(LOG_TAG, "MainActivity: Returned from BtAPI ID activity");
-        	if (resultCode == RESULT_CANCELED ) {
-            	Log.i(LOG_TAG, "MainActivity: Reason: Cancelled");
-        	} else if (resultCode == RESULT_OK) {
+        	switch(resultCode){
+        	case RESULT_CANCELED:
+        		Log.i(LOG_TAG, "MainActivity: Reason: Cancelled");
+        		break;
+    		case RESULT_OK:
             	Log.i(LOG_TAG, "MainActivity: Reason: OK");
         		Log.i(LOG_TAG, "MainActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
         		other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
 	        	((TextView) findViewById(R.id.lblMAC)).setText( other_mac );
+	        	break;
         	}
-        	// TODO: Launch BT Setup automatically? For now just manual (TODO: perhaps enable button/label?)
     		break;
-    	case BtAPI.RESULTCODE_SETUP_BT:
+    	case BtAPI.REQUESTCODE_SETUP_BT:
         	Log.i(LOG_TAG, "MainActivity: Returned from BtAPI BT SETUP activity");
-        	if (resultCode == RESULT_CANCELED ) {
-            	Log.i(LOG_TAG, "MainActivity: Reason: Cancelled");
-        	} else if (resultCode == RESULT_OK) {
+        	switch(resultCode){
+        	case RESULT_CANCELED:
+        		Log.i(LOG_TAG, "MainActivity: Reason: Cancelled");
+        		break;
+    		case RESULT_OK:
+    			BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
+    			conn.setListener(this);
             	Log.i(LOG_TAG, "MainActivity: Reason: OK");
         		Log.i(LOG_TAG, "MainActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+	        	break;
         	}
-        	// TODO handle connection object
     		break;
-    	case BtAPI.RESULTCODE_ID_AND_SETUP:
+    	case BtAPI.REQUESTCODE_DUSTYTUBA:
         	Log.i(LOG_TAG, "MainActivity: Returned from BtAPI complete ID + SETUP activity");
-        	if (resultCode == RESULT_CANCELED ) {
-            	Log.i(LOG_TAG, "MainActivity: Reason: Cancelled");
-        	} else if (resultCode == RESULT_OK) {
+        	switch(resultCode){
+        	case RESULT_CANCELED:
+        		Log.i(LOG_TAG, "MainActivity: Reason: Cancelled");
+        		break;
+    		case RESULT_OK:
             	Log.i(LOG_TAG, "MainActivity: Reason: OK");
         		Log.i(LOG_TAG, "MainActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+        		other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
+	        	((TextView) findViewById(R.id.lblMAC)).setText( other_mac );
+	        	break;
         	}
-        	// TODO after other two parts are done
+        	// TODO Final usage of API (blocked: till other two parts are done)
     		break;
     	}
     }
+
+
+
+	@Override
+	public void btDataReceived(byte[] arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void btDisconnect(BtDisconnectReason arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

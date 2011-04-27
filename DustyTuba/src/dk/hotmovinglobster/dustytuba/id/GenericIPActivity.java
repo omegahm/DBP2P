@@ -1,6 +1,7 @@
 package dk.hotmovinglobster.dustytuba.id;
 
 import dk.hotmovinglobster.dustytuba.api.BtAPI;
+import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,7 +54,8 @@ public class GenericIPActivity extends Activity {
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 //    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: ");
-    	
+    	// TODO: Move ID Provider + Setup BT to here from MainActivity
+    	// TODO: For now implementing in MainActivity since that's easier
     	if (resultCode == RESULT_CANCELED) {
         	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: cancel)");
         	setResult( RESULT_CANCELED );
@@ -65,8 +67,7 @@ public class GenericIPActivity extends Activity {
     	} else {
         	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Subactivity returned (Result: "+resultCode+")");
     		setResult( resultCode );
-    	}
-    	
+    	}    	
     	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Finishing");
     	finish();
     	

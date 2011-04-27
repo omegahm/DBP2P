@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_id">Choose an Identity Provider</string>
+    <string name="label_id">Choose an Identity Provider (runs for Manual, chooses for Full)</string>
     <string name="label_connect_bt">Connect to Device:</string>
+    <string name="label_connect_full">Connect using this ID Provider:</string>
     <string name="app_name">API Test</string>
     <string name="launch_dustytuba_fake_alice">(Fake) Alice</string>
     <string name="launch_dustytuba_fake_bob">(Fake) Bob</string>
     <string name="launch_dustytuba_manual">Manual</string>
     <string name="launch_dustytuba_bump">Bump!</string>
-    <string name="launch_dustytuba_bt">Setup BT connection</string>
+    <string name="launch_dustytuba_bt">Manual: Setup BT connection using MAC directly</string>
+    <string name="launch_dustytuba_full">Full: Setup using chosen ID Provider</string>
 </resources>

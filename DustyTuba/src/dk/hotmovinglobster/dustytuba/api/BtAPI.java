@@ -16,9 +16,9 @@ public class BtAPI {
 	 * Hopefully we can get around this - and I think it's what Jesper has been trying to do with GenericIPActivity, but I'm not entirely sure.
 	 * If/when this succeeds, then this can be removed and relevant onActivityResult handling can be moved to API.
 	 */
-	public static final int RESULTCODE_IDENTITY_PROVIDER = 0;
-	public static final int RESULTCODE_SETUP_BT = 1;
-	public static final int RESULTCODE_ID_AND_SETUP = 2; // TODO: Idealy this will be the only one we use
+	public static final int REQUESTCODE_IDENTITY_PROVIDER = 0;
+	public static final int REQUESTCODE_SETUP_BT = 1;
+	public static final int REQUESTCODE_DUSTYTUBA = 2; // TODO: Idealy this will be the only one we use
 	
 	/**
 	 * Gets an intent to setup a bluetooth connection.
@@ -80,14 +80,11 @@ public class BtAPI {
 			return null;
 	}
 	
-	/**
-	 * A btConnectFailedReason is returned by the API when the user exits before connection has been established.
-	 */
-	public enum BtConnectFailedReason {
-		FAIL_NONE,           /** No failure */ // TODO: Do we need this?
-		FAIL_USER_CANCELED,  /** Local user quit the API */
-		FAIL_BT_UNAVAILABLE, /** Local user quit before network became available (e.g. cancelled enable BT dialog) */
-		FAIL_OTHER           /** Something wierd happened TODO: Remove? */
+	public class BtConnectFailedReason {
+		public static final int FAIL_NONE = 2;           /** No failure */ // TODO: Do we need this?
+		public static final int FAIL_USER_CANCELED = 3;  /** Local user quit the API */
+		public static final int FAIL_BT_UNAVAILABLE = 4; /** Local user quit before network became available (e.g. cancelled enable BT dialog) */
+		public static final int FAIL_OTHER = 5;          /** Something wierd happened TODO: Remove? */
 	}
 	
 	/**
