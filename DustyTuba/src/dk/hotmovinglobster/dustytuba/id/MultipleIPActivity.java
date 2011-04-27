@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+// FIXME: Does not return properly... might be the way we call it.
+
 public class MultipleIPActivity extends Activity {
 	
 	private String[] providers = {};
