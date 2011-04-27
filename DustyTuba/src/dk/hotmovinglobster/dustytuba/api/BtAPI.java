@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-/** Setups and hands off connection */
+/** 
+ * Setups and hands off connection 
+ */
 public class BtAPI {
 
-	/** FIXME
+	/* 
+	 * FIXME
 	 * This is only necessary provided we leave calling identity provider and subsequently bt provider to the implementing activity.
 	 * Hopefully we can get around this - and I think it's what Jesper has been trying to do with GenericIPActivity, but I'm not entirely sure.
 	 * If/when this succeeds, then this can be removed and relevant onActivityResult handling can be moved to API.
@@ -56,8 +59,8 @@ public class BtAPI {
 		return intent;
 	}
 	
-	public static final String IDENTITY_PROVIDER_BUMP = "bump";
-	public static final String IDENTITY_PROVIDER_FAKE = "fake";
+	public static final String IDENTITY_PROVIDER_BUMP   = "bump";
+	public static final String IDENTITY_PROVIDER_FAKE   = "fake";
 	public static final String IDENTITY_PROVIDER_MANUAL = "manual";
 	
 	/**
@@ -81,38 +84,38 @@ public class BtAPI {
 	 * A btConnectFailedReason is returned by the API when the user exits before connection has been established.
 	 */
 	public enum BtConnectFailedReason {
-		FAIL_NONE, /** No failure */ // TODO: Do we need this?
-		FAIL_USER_CANCELED, /** Local user quit the API */
+		FAIL_NONE,           /** No failure */ // TODO: Do we need this?
+		FAIL_USER_CANCELED,  /** Local user quit the API */
 		FAIL_BT_UNAVAILABLE, /** Local user quit before network became available (e.g. cancelled enable BT dialog) */
-		FAIL_OTHER /** Something wierd happened TODO: Remove? */
+		FAIL_OTHER           /** Something wierd happened TODO: Remove? */
 	}
 	
 	/**
 	 * A BtDisconnectReason is returned by the API when the user exits after connection has been established.
 	 */
 	public enum BtDisconnectReason {
-		END_USER_QUIT, 	/** local user quit cleanly */
-		END_LOST_NET, /** connection to the server was lost */
+		END_USER_QUIT, 	     /** local user quit cleanly */
+		END_LOST_NET,        /** connection to the server was lost */
 		END_OTHER_USER_QUIT, /** remote user quit cleanly */
-		END_OTHER_USER_LOST /** remote user was lost */ // TODO: Remove (Bump has two connections to central server. We don't, so doesn't apply)
+		END_OTHER_USER_LOST  /** remote user was lost */ // TODO: Remove (Bump has two connections to central server. We don't, so doesn't apply)
 	}
 	
-	public static final String EXTRA_IP_CLASS = "ip_class";
+	public static final String EXTRA_IP_CLASS  = "ip_class";
 	public static final String EXTRA_IP_BUNDLE = "ip_bundle";
-	public static final String EXTRA_IP_MAC = "ip_mac";
-	public static final String EXTRA_BT_MAC = "bt_mac";
+	public static final String EXTRA_IP_MAC    = "ip_mac";
+	public static final String EXTRA_BT_MAC    = "bt_mac";
 	
 	public static final String EXTRA_BT_CONNECTION = "bt_connection";
 	
 	public static final String LOG_TAG = "DustyTuba";
 	
 	/**
-	 * Get res object from the application
+	 * Get a ressource identifier from the application
 	 * 
 	 * @param context A Context of the application package using this class.
 	 * @param type Ressource type to find
 	 * @param name Name of ressource to find
-	 * @return The ressource
+	 * @return The ressource identifier
 	 */
 	public static int res(Context context, String type, String name) {
 		String pkg = context.getApplicationInfo().packageName;
