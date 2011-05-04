@@ -11,6 +11,8 @@ import android.util.Log;
  * Identity provider that simply returns the MAC address you supply to it.
  * This enables you to use a MAC address obtained through other means.
  * 
+ * Supply the MAC address with the extra key BtAPI.EXTRA_IP_MAC
+ * 
  * @author Thomas
  */
 public class FakeIPActivity extends Activity {
@@ -28,6 +30,7 @@ public class FakeIPActivity extends Activity {
         
     	Log.i(BtAPI.LOG_TAG, "FakeIPActivity: Received MAC Address: " + mac);
     	
+    	// If none or invalid MAC address provided, simulate a canceled activity
         if (mac == null){
         	setResult(RESULT_CANCELED);
         	finish();
@@ -39,7 +42,7 @@ public class FakeIPActivity extends Activity {
         	}
         }
         
-    	// Return data
+    	// Return the provided MAC address
     	final Intent data = new Intent();
         data.putExtra(BtAPI.EXTRA_IP_MAC,mac);
     	setResult(RESULT_OK, data);
