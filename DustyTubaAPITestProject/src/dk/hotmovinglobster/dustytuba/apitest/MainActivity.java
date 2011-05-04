@@ -17,6 +17,7 @@ import dk.hotmovinglobster.dustytuba.api.*;
 import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
 import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import dk.hotmovinglobster.dustytuba.id.*;
+import dk.hotmovinglobster.dustytuba.tools.ByteArrayTools;
 
 public class MainActivity extends Activity implements BtAPIListener {
 	
@@ -42,7 +43,8 @@ public class MainActivity extends Activity implements BtAPIListener {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(MainActivity.this, FakeIPActivity.class);
-				i.putExtra(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+//				i.putExtra(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+				i.putExtra(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:8d"); // HTC Desire (Jesper) (ALICE)
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
 				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
 				chooseIDProvider("FAKE_ALICE"); // Choose for FULL
@@ -73,12 +75,14 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaBump)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				/*
 				Intent i = new Intent(MainActivity.this, BumpIPActivity.class);
 				if (mBluetoothAdapter != null && mBluetoothAdapter.getName() != null)
 					i.putExtra(BumpAPI.EXTRA_USER_NAME, mBluetoothAdapter.getName());
 				i.putExtra(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
 				Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 				startActivityForResult(i, BtAPI.REQUEST_IDENTITY_PROVIDER);
+				*/
 				chooseIDProvider("BUMP");
 			}
 		});
@@ -124,7 +128,8 @@ public class MainActivity extends Activity implements BtAPIListener {
 			public void onClick(View v) {
 				if ("FAKE_ALICE".equals(chosenIDProvider)){
 					Bundle b = new Bundle();
-					b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+//					b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:67"); // HTC Desire (Thomas) (ALICE)
+					b.putString(BtAPI.EXTRA_IP_MAC, "90:21:55:a1:a5:8d"); // HTC Desire (Thomas) (ALICE)
 					Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
 					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
@@ -216,10 +221,12 @@ public class MainActivity extends Activity implements BtAPIListener {
         		// TODO: temporary debugging - to be removed: we won't get this back
         		//other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
 	        	//((TextView) findViewById(R.id.lblMAC)).setText( other_mac );
-	        	BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
+	        	BtConnection conn = BtConnection.getConnection();
     			conn.setListener(this);
     			// Final usage of API:
     			// TODO: Start a timer that repeatedly sends a message every 5th second
+    			Toast.makeText(this, "Other MAC Address: " + data.getStringExtra(BtAPI.EXTRA_BT_MAC), Toast.LENGTH_LONG).show();
+    			conn.send(ByteArrayTools.toByta("Yahooo!"));
 	        	break;
         	case BtAPI.RESULT_BT_UNAVAILABLE:
 	        	Toast.makeText(MainActivity.this, "ERROR: "
@@ -237,6 +244,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 
 	@Override
 	public void btDataReceived(byte[] dataRead) {
+		Log.i(LOG_TAG, "Received from BTCONN: " + ByteArrayTools.toString(dataRead));
         // TODO: are we handling buffer correctly earlier, so this is OK?
         String readMessage = new String(dataRead);
         if (readMessage != null && !"".equals(readMessage)){
@@ -248,6 +256,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 
 	@Override
 	public void btDisconnect(BtDisconnectReason reason) {
+		Log.i(LOG_TAG, "BT Disconnected!");
 		Toast.makeText(MainActivity.this, "BT disconnected!", Toast.LENGTH_SHORT).show();
 		switch(reason){
 		case END_USER_QUIT:

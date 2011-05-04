@@ -43,10 +43,14 @@ public class BluetoothConnector extends Activity {
     
 	/* This Intent: Extras ( use with .name() )*/
     public enum BT_CONN_DATA {
-		SERVER,  /** Act as server (listen w/ BluetoothServerSocket)? */
-		MAC, 	 /** MAC to establish connection to */
-		UUID,    /** Application specific UUID */
-		SDP_NAME /** Application specific name (for SDP)*/
+    	/** Act as server (listen w/ BluetoothServerSocket)? */
+    	SERVER,
+    	/** MAC to establish connection to */
+		MAC, 	 
+		/** Application specific UUID */
+		UUID,    
+		/** Application specific name (for SDP)*/
+		SDP_NAME 
 	}
 
     // Message types sent from the BluetoothConnectionService Handler
