@@ -8,6 +8,7 @@ import dk.hotmovinglobster.dustytuba.tools.ByteArrayTools;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -68,7 +69,7 @@ public class BtConnection {
 	 * @param l The listener to set 
 	 */
 	public void setListener(BtAPIListener l) {
-		mListener = l;
+		setListener(l, new Handler());
 	}
 	
 	/** 
@@ -77,8 +78,7 @@ public class BtConnection {
 	 * @param handler A handler to which the calls will be made 
 	 */
 	public void setListener(BtAPIListener l, Handler handler) {
-		// TODO: Handle handler :)
-		setListener(l);
+		mListener = l;
 		mHandler = handler;
 	}
 	
@@ -98,6 +98,9 @@ public class BtConnection {
 	public void disconnect(){}
 	
 	private class BluetoothThread extends Thread {
+		public BluetoothThread() {
+		}
+		
 	    public void run() {
 	        byte[] buffer = new byte[1024];  // buffer store for the stream
 	        int bytes; // bytes returned from read()

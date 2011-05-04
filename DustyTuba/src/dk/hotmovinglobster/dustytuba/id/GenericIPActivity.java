@@ -172,6 +172,7 @@ public class GenericIPActivity extends Activity {
 		BtConnection.setConnection(btConn);
 
 		if (btConn != null) {
+			btConn.startListening();
 			final Intent i = new Intent();
 			i.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
 			setResult(RESULT_OK, i);

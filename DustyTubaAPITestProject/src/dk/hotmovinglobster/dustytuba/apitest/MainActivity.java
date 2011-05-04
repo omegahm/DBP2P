@@ -248,8 +248,8 @@ public class MainActivity extends Activity implements BtAPIListener {
         // TODO: are we handling buffer correctly earlier, so this is OK?
         String readMessage = new String(dataRead);
         if (readMessage != null && !"".equals(readMessage)){
-            Toast.makeText(MainActivity.this, "RCV: "
-                    + readMessage, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "RCV: "
+            //        + readMessage, Toast.LENGTH_SHORT).show();
             //conn.sendMessage(("This is a reply to: " + readMessage).getBytes());
         }
 	}
