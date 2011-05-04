@@ -70,13 +70,14 @@ public class BtAPI {
 	public static final String IDENTITY_PROVIDER_BUMP   = "bump";
 	public static final String IDENTITY_PROVIDER_FAKE   = "fake";
 	public static final String IDENTITY_PROVIDER_MANUAL = "manual";
+	public static final String IDENTITY_PROVIDER_PAIRED = "paired";
 	public static final String IDENTITY_PROVIDER_MULTIPLE = "multiple";
 	
 	/**
-	 * Find the identity providor given a string name
+	 * Find the identity provider given a string name
 	 * 
-	 * @param idProvider A string name of an identity providor
-	 * @return The identity providor class or null if none is found
+	 * @param idProvider A string name of an identity provider
+	 * @return The identity provider class or null if none is found
 	 */
 	private static Class<?> stringToIdProviderClass(final String idProvider) {
 		Class<?> result;
@@ -87,6 +88,8 @@ public class BtAPI {
 			result = FakeIPActivity.class;
 		} else if (idProvider.equals(IDENTITY_PROVIDER_MANUAL)) { 
 			result = ManualIPActivity.class;
+		} else if (idProvider.equals(IDENTITY_PROVIDER_PAIRED)) { 
+			result = PairedIPActivity.class;
 		} else if (idProvider.equals(IDENTITY_PROVIDER_MULTIPLE)) { 
 			result = MultipleIPActivity.class;
 		} else {
