@@ -49,20 +49,18 @@ public class BtAPI {
 	public static Intent getIntent(final Context context, final String idProvider, final Bundle extras) {
 		final Class<?> cls = stringToIdProviderClass(idProvider);
 		
-		Intent intent = new Intent(context, GenericIPActivity.class);
-
 		if ( cls == null ) {
 			// TODO: More sensible, maybe throw an exception
 			return null;
 		} else {
-			intent = new Intent(context, GenericIPActivity.class);
+			Intent intent = new Intent(context, GenericIPActivity.class);
 			if ( extras != null ) {
 				intent.putExtra(EXTRA_IP_BUNDLE, extras);
 			}
 			intent.putExtra(EXTRA_IP_CLASS, cls.getCanonicalName());
+
+			return intent;
 		}
-		
-		return intent;
 		
 	}
 	
