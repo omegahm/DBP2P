@@ -18,6 +18,8 @@
         	android:configChanges="keyboardHidden|orientation"/>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity"></activity>
         <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity"></activity>
+        <activity android:name="dk.hotmovinglobster.dustytuba.id.PairedIPActivity" android:theme="@android:style/Theme.Dialog"></activity>
+        
         <activity android:name="dk.hotmovinglobster.dustytuba.id.MultipleIPActivity"></activity>
 		<activity android:name="com.bumptech.bumpapi.BumpAPI"
 			android:configChanges="keyboardHidden|orientation"

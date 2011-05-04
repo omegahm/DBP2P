@@ -90,7 +90,7 @@ public class MainActivity extends Activity implements BtAPIListener {
         ((Button)findViewById(R.id.btnLaunchDustyTubaMultiple)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+				String[] providers = {BtAPI.IDENTITY_PROVIDER_PAIRED, BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
 				Bundle b = new Bundle();
 				b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
 				b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
@@ -152,7 +152,7 @@ public class MainActivity extends Activity implements BtAPIListener {
 					Log.i(LOG_TAG, "MainActivity: Launching BtAPI Bump! activity");
 					startActivityForResult(i, BtAPI.REQUEST_DUSTYTUBA);
 				} else if (chosenIDProvider == "MULTIPLE" ) {
-					String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
+					String[] providers = {BtAPI.IDENTITY_PROVIDER_PAIRED, BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP};
 					Bundle b = new Bundle();
 					b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
 					b.putString(BumpAPI.EXTRA_API_KEY, BUMP_API_DEV_KEY);
