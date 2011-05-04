@@ -58,9 +58,9 @@ public class BtAPI {
 				intent.putExtra(EXTRA_IP_BUNDLE, extras);
 			}
 			intent.putExtra(EXTRA_IP_CLASS, cls.getCanonicalName());
+
+			return intent;
 		}
-		
-		return intent;
 		
 	}
 	
