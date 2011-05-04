@@ -291,9 +291,9 @@ public class BluetoothConnector extends Activity {
                 }
                 break;
             case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
+                //byte[] writeBuf = (byte[]) msg.obj;
                 // construct a string from the buffer
-                String writeMessage = new String(writeBuf);
+                //String writeMessage = new String(writeBuf);
                 //mConversationArrayAdapter.add("OUT:  " + writeMessage);
                 break;
             case MESSAGE_READ:

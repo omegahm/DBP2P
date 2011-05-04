@@ -62,6 +62,10 @@ public class GenericIPActivity extends Activity {
     	
     }
     
+    /**
+     * To be called when Bluetooth is enabled, either upon launch of the activity
+     * or when it has been manually enabled.
+     */
     private void bluetoothEnabled() {
     	final Intent newIntent = new Intent();
     	newIntent.setClassName(this, ipClass);
@@ -81,38 +85,38 @@ public class GenericIPActivity extends Activity {
 	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
     	switch(requestCode){
-		case BtAPI.REQUEST_IDENTITY_PROVIDER:
-	    	Log.i(LOG_TAG, "Returned from BtAPI ID activity");
-	    	switch(resultCode){
-	    	case RESULT_CANCELED:
-	    		Log.i(LOG_TAG, "Reason: Cancelled");
-	        	setResult(RESULT_CANCELED);
+			case BtAPI.REQUEST_IDENTITY_PROVIDER:
+		    	Log.i(LOG_TAG, "Returned from BtAPI ID activity");
+		    	switch(resultCode){
+			    	case RESULT_CANCELED:
+			    		Log.i(LOG_TAG, "Reason: Cancelled");
+			        	setResult(RESULT_CANCELED);
+			        	finish();
+			    		break;
+					case RESULT_OK:
+			        	Log.i(LOG_TAG, "Reason: OK");
+			    		Log.i(LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+			    		String other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
+			    		// Identity received, start BT connection
+			    		startBT(other_mac);
+			        	break;
+		    	}
+				break;
+			case BtAPI.REQUEST_SETUP_BT:
+		    	Log.i(LOG_TAG, "Returned from BtAPI BT SETUP activity");
+		    	switch(resultCode){
+					case RESULT_OK:
+						Log.i(LOG_TAG, "Reason: OK");
+			    		Log.i(LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+						// Don't unparcel, just forward?
+						// BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
+			    		setResult(RESULT_OK,data);
+			        	break;
+			    	default:
+			    		Log.i(LOG_TAG, "Reason: " + resultCode);
+			        	setResult(resultCode);
+		    	}
 	        	finish();
-	    		break;
-			case RESULT_OK:
-	        	Log.i(LOG_TAG, "Reason: OK");
-	    		Log.i(LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-	    		String other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
-	    		// Identity received, start BT connection
-	    		startBT(other_mac);
-	        	break;
-	    	}
-			break;
-		case BtAPI.REQUEST_SETUP_BT:
-	    	Log.i(LOG_TAG, "Returned from BtAPI BT SETUP activity");
-	    	switch(resultCode){
-			case RESULT_OK:
-				Log.i(LOG_TAG, "Reason: OK");
-	    		Log.i(LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-				// Don't unparcel, just forward?
-				// BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
-	    		setResult(RESULT_OK,data);
-	        	break;
-	    	default:
-	    		Log.i(LOG_TAG, "Reason: " + resultCode);
-	        	setResult(resultCode);
-	    	}
-        	finish();
     	}
     }
 
