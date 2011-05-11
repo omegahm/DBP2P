@@ -16,6 +16,8 @@
 \usepackage{amssymb}
 \usepackage{latexsym}
 
+\usepackage{booktabs}
+
 % For pretty URLs, see: http://en.wikibooks.org/wiki/LaTeX/Hyperlinks
 \usepackage{hyperref}
 
@@ -89,6 +91,50 @@ The Sprint Demo was given on May 18th. This document describes requirements 2-4 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Inspection}
+Our group was set to do code inspection of parts of the code from group Bravo, as well as they were set to do inspection of our code. This section covers the results of their inspection of our code.
+
+We asked the group to inspect the following files from the commit \href{https://github.com/omegahm/DBP2P/commit/https://github.com/omegahm/DBP2P/commit/5a08a6a2c3a4d11663ae10a8ee2b371f69f2eab9c3a4d11663ae10a8ee2b371f69f2eab9}{5a08a6a2...eab9} in the folder {\tt src/dk/hotmovinglobster/dustytyba}:
+
+\begin{itemize}
+\item {\tt api/BTAPI.java}
+\item {\tt api/BTAPIListener.java}
+\item {\tt api/BtConnection.java}
+\item {\tt id/GenericIPActivity.java}
+\item {\tt id/ManualIPActivity.java}
+\end{itemize}
+
+The results of the inspection are shown in table \ref{inspection-results} with Fagan (1976) error format (type/cause/severity). The three types are:
+
+\begin{description}
+\item{PR} Programming anomaly
+\item{LO} Logic
+\item{CO} Comment
+\end{description}
+
+\begin{table}
+\begin{tabular}{llrl}
+\toprule
+\ \  & {\bf Type} & {\bf Line(s)} & {\bf Description} \\
+\midrule
+\multicolumn{4}{l}{{\bf {\tt api/BtAPIListener.java}}} \\
+& {\tt PR/W/MIN} & 9 & The interface need not be abstract? \\
+\midrule
+\multicolumn{4}{l}{{\bf {\tt api/BtAPI.java}}} \\
+& {\tt LO/M/MIN} & N/A & Static variables are not only defined in the top \\
+\midrule
+\multicolumn{4}{l}{{\bf {\tt api/BTConnection.java}}} \\
+& {\tt LO/W/MAJ} & 28-34 & Getters and setters are bad for static variables \\
+& {\tt CO/W/MIN} & 38 & The comment says "for internal use", but the constructor is public \\
+& {\tt LO/M/MIN} & 51 & Missing catch of IOException \\
+& {\tt LO/E/MIN} & 104 & diconnect() does nothing \\
+& {\tt PR/W/MIN} & 111 & Magic constant 1024 for buffer \\
+\bottomrule
+\end{tabular}
+\caption{Results of the code inspection from group Bravo. Note that nothing were to report on code on in the {\tt id} folder.}
+\label{inspection-results}
+\end{table}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,7 +227,6 @@ Sprint Material needed to assess our progress include the following:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Sprint retrospective}
-
 
 
 \end{document}
