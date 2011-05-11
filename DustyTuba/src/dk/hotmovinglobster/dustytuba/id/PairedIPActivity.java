@@ -61,7 +61,7 @@ public class PairedIPActivity extends Activity {
 
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(BtAPI.res( this, "layout", "paired_list"));
+        setContentView(BtAPI.res( this, "layout", "dustytuba_paired_ip_list"));
 
         // Set result CANCELED incase the user backs out
         setResult(Activity.RESULT_CANCELED);
@@ -77,8 +77,8 @@ public class PairedIPActivity extends Activity {
 
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
-        mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, BtAPI.res( this, "layout", "paired_name"));
-        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, BtAPI.res( this, "layout", "paired_name"));
+        mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, BtAPI.res( this, "layout", "dustytuba_paired_ip_name"));
+        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, BtAPI.res( this, "layout", "dustytuba_paired_ip_name"));
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = (ListView) findViewById(BtAPI.res( this, "id", "paired_devices"));
@@ -163,7 +163,7 @@ public class PairedIPActivity extends Activity {
 
             // Create the result Intent and include the MAC address
             Intent intent = new Intent();
-            intent.putExtra(BtAPI.EXTRA_BT_MAC, address);
+            intent.putExtra(BtAPI.EXTRA_IP_MAC, address);
 
             // Set result and finish this Activity
             setResult(Activity.RESULT_OK, intent);

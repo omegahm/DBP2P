@@ -54,13 +54,12 @@ Now you must expand the Android manifest to include the activities provided and 
 
 \footnotesize
 \begin{verbatim}
-<!-- Reserved for future use: May replace all other activities when fully implemented -->
 <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
-<!-- Mandatory for API -->
-<activity android:name="dk.hotmovinglobster.dustytuba.bt.BluetoothConnector"></activity>
 <!-- Optional: Identity Providers, include one or more -->
 <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" />
 <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" />
+<activity android:name="dk.hotmovinglobster.dustytuba.id.MultipleIPActivity" />
+<activity android:name="dk.hotmovinglobster.dustytuba.id.PairedIPActivity" />
 <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
     android:configChanges="keyboardHidden|orientation"/>
 <!-- Optional: Additional activities required by BumpIPActivity -->
@@ -102,7 +101,7 @@ See appendix \ref{sample-manifest} for a complete sample manifest file.
 \label{stepthree}
 In order to call the library, you will use the \verb+BtAPI.getIntent()+ method (see section \ref{getIntent}) to generate an \verb+Intent+ which must be passed on to Android's \verb+startActivityForResult()+ method.
 
-When the activity contained in the \verb+Intent+ finishes, you must override the \verb+onActivityResult()+ method of your main activity to handle the result and extract the Bluetooth connection object.
+When the activity contained in the \verb+Intent+ finishes, you must override the \verb+onActivityResult()+ method of your main activity to handle the result and receive the Bluetooth connection object.
 
 To receive data from the other end of the Bluetooth connection, you need to have a class implement the \verb+BtAPIListener+ interface (usually this class would be your main activity).
 
@@ -125,8 +124,8 @@ protected void onActivityResult (int requestCode, int resultCode, Intent data) {
     if (resultCode == RESULT_CANCELED ) {
       // User canceled
     } else if (resultCode == RESULT_OK) {
-      BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
-    conn.setListener(this);
+      BtConnection conn = BtConnection.getConnection(); 
+      conn.setListener(this);
     }
   }
 }
@@ -194,6 +193,10 @@ startActivityForResult(i, REQUEST_DUSTYTUBA);
 \normalsize
 
 Parameters to the selected identity provider must also be provided in the \verb+Bundle+ as shown with the Bump\texttrademark{} API key.
+
+\paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_PAIRED}}
+provides the user with a selection of all devices which have previously been paired by bluetooth to the users device.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

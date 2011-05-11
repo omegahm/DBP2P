@@ -29,16 +29,10 @@ public class BluetoothConnectionManager {
 	private static final String LOG_TAG = "DustyTuba";
 	
 	private BtConnection mConnObject = null;
-/*	
-	public static BtConnection setupConnection(String mac, String uuid, String sdp_name) {
-		BluetoothConnectionManager bcm = new BluetoothConnectionManager(mac, uuid, sdp_name);
-		if (bcm.setupConnection()) {
-			return bcm.getConnectionObject();
-		} else {
-			return null;
-		}
-	}
-	*/
+	
+	private enum ConnectedAs { None, Client, Server };
+	private ConnectedAs connectedAs = ConnectedAs.None;
+
 	public BluetoothConnectionManager(String mac, String uuid, String sdp_name) {
 		this.mac = mac;
 		this.uuid = UUID.fromString(uuid);
@@ -69,8 +63,10 @@ public class BluetoothConnectionManager {
 	}
 	
 	private void manageConnectedServerSocket(BluetoothSocket socket) {
-		log_i("Server socket complete!");
-		mConnObject = new BtConnection(socket);
+		synchronized (this) {
+			log_i("Connected as server to " + socket.getRemoteDevice().getAddress());
+			mConnObject = new BtConnection(socket);
+		}
 	}
 	
 	private void connectToOtherDevice() {
@@ -81,20 +77,30 @@ public class BluetoothConnectionManager {
 	}
 
 	public void manageConnectedClientSocket(BluetoothSocket socket) {
-		log_i("Client socket complete!");
-		mConnObject = new BtConnection(socket);
+		synchronized (this) {
+			log_i("Connected as client to " + socket.getRemoteDevice().getAddress());
+			mConnObject = new BtConnection(socket);
+		}
 	}
 	
 	public BtConnection getConnectionObject() {
 		return mConnObject;
 	}
-
-	private void log_e(String msg) {
-		Log.e(LOG_TAG, "BCM ("+mBTAdapter.getAddress()+"): " + msg);
+	/*
+	private void log_v(String msg) {
+		Log.v(LOG_TAG, "BluetoothConnectionManager ("+mBTAdapter.getAddress()+"): " + msg);
 	}
 	
+	private void log_d(String msg) {
+		Log.d(LOG_TAG, "BluetoothConnectionManager ("+mBTAdapter.getAddress()+"): " + msg);
+	}
+	*/
 	private void log_i(String msg) {
-		Log.i(LOG_TAG, "BCM ("+mBTAdapter.getAddress()+"): " + msg);
+		Log.i(LOG_TAG, "BluetoothConnectionManager ("+mBTAdapter.getAddress()+"): " + msg);
+	}
+	
+	private void log_e(String msg) {
+		Log.e(LOG_TAG, "BluetoothConnectionManager ("+mBTAdapter.getAddress()+"): " + msg);
 	}
 	
 	private class AcceptThread extends Thread {
@@ -104,7 +110,7 @@ public class BluetoothConnectionManager {
 			try {
 				mBTServerSocket = mBTAdapter.listenUsingRfcommWithServiceRecord(sdp_name, uuid);
 			} catch (IOException e) {
-				log_e("BCM: AcceptThread(): IOException");
+				log_e("AcceptThread(): IOException");
 				e.printStackTrace();
 				return;
 			}
@@ -121,6 +127,12 @@ public class BluetoothConnectionManager {
 	            }
 	            // If a connection was accepted
 	            if (socket != null) {
+	            	synchronized(this) {
+	            		if (connectedAs == ConnectedAs.Client) {
+	            			return;
+	            		}
+	            		connectedAs = ConnectedAs.Server;
+	            	}
 	                // Do work to manage the connection (in a separate thread)
 	                manageConnectedServerSocket(socket);
 	                try {
@@ -173,7 +185,14 @@ public class BluetoothConnectionManager {
 	            return;
 	        }
 
+        	synchronized(this) {
+        		if (connectedAs == ConnectedAs.Server) {
+        			return;
+        		}
+        		connectedAs = ConnectedAs.Client;
+        	}
 	        // Do work to manage the connection (in a separate thread)
+        	
 	        manageConnectedClientSocket(mBTClientSocket);			
 		}
 
