@@ -35,7 +35,7 @@ This document outlines the three basic steps needed to incorporate the DustyTuba
 \section{Step one - Include necessary files}
 Firstly, you need to copy the three folders (\verb+libs+, \verb+res+ and \verb+src+)-folder included in the archive to the root folder of the Android project in which you want to use the library.
 
-Secondly, you must include the libraries in the \verb+libs+ folder into your project. In Eclipse, this can be done by right-clicking your project and selecting ``Properties'', then selecting ``Java Build Path'', and in the tab ``Libraries'' clicking the ``Add JARs...'' button and selecting the two included {\tt .jar} files in the \verb+libs+ folder.
+Secondly, you must include the library in the \verb+libs+ folder into your project. In Eclipse, this can be done by right-clicking your project and selecting ``Properties'', then selecting ``Java Build Path'', and in the tab ``Libraries'' clicking the ``Add JARs...'' button and selecting the two included {\tt .jar} files in the \verb+libs+ folder.
 
 As is also described in the Bump\texttrademark{} documentation, you must import your project's \verb+R+ class in the {\tt com.bumptech.bumpapi.BumpResources} source file -- i.e. if your project has package name {\tt com.example.test}, you must insert the following line into the {\tt BumpResources.java} file:
 
@@ -79,7 +79,7 @@ The permissions to be declared goes in the main \verb+<manifest>+-element and ar
 <!-- Mandatory for API -->
 <uses-permission android:name="android.permission.BLUETOOTH" />
 <!-- Optional: BLUETOOTH_ADMIN needed for cancel discovery (powersave) -->
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:required="false"/>
 <!-- Optional: Additional permissions required by BumpIPActivity -->
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -195,7 +195,7 @@ startActivityForResult(i, REQUEST_DUSTYTUBA);
 Parameters to the selected identity provider must also be provided in the \verb+Bundle+ as shown with the Bump\texttrademark{} API key.
 
 \paragraph{{\tt BtAPI.IDENTITY\_PROVIDER\_PAIRED}}
-provides the user with a selection of all devices which have previously been paired by bluetooth to the users device.
+provides the user with a selection of all devices which have previously been paired by bluetooth to the users device. The user also has the option to scan for and connect to newly discovered nearby devices.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,20 +214,26 @@ provides the user with a selection of all devices which have previously been pai
   package="dk.hotmovinglobster.dustytuba.apitest"
   android:versionCode="1"
   android:versionName="1.0">
-  <uses-sdk android:minSdkVersion="4" />
+  <uses-sdk android:minSdkVersion="7" />
 
+  <!-- Sample App specific activities and permissions -->
   <activity android:name="dk.hotmovinglobster.dustytuba.bt.BluetoothConnector"></activity>
   <application android:icon="@drawable/icon" android:label="@string/app_name">
-    <activity android:name=".MainActivity"
-      android:label="@string/app_name">
+    <activity android:name=".MainActivity" android:label="@string/app_name">
     <intent-filter>
       <action android:name="android.intent.action.MAIN" />
       <category android:name="android.intent.category.LAUNCHER" />
     </intent-filter>
   </activity>
+  
+  <!-- Mandatory for API -->
   <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
+  <!-- Optional: Identity Providers, include one or more -->
   <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" />
   <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" />
+  <activity android:name="dk.hotmovinglobster.dustytuba.id.MultipleIPActivity" />
+  <activity android:name="dk.hotmovinglobster.dustytuba.id.PairedIPActivity" />
+  <!-- Optional: Additional activities required by BumpIPActivity -->
   <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
     android:configChanges="keyboardHidden|orientation"/>
   <activity android:name="com.bumptech.bumpapi.BumpAPI"
@@ -238,8 +244,11 @@ provides the user with a selection of all devices which have previously been pai
    android:theme="@style/BumpDialog" />
   </application>
   
+  <!-- Mandatory for API -->
   <uses-permission android:name="android.permission.BLUETOOTH" />
-  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
+  <!-- Optional: BLUETOOTH_ADMIN needed for cancel discovery (powersave) -->
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:required="false"/>
+  <!-- Optional: Additional permissions required by BumpIPActivity -->
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <uses-permission android:name="android.permission.INTERNET" />
