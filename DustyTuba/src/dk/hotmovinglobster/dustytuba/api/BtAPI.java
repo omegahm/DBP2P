@@ -1,9 +1,11 @@
 package dk.hotmovinglobster.dustytuba.api;
 
 import dk.hotmovinglobster.dustytuba.id.*;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 /** 
  * Setups and hands off connection 
@@ -79,7 +81,7 @@ public class BtAPI {
 	 * @param idProvider A string name of an identity provider
 	 * @return The identity provider class or null if none is found
 	 */
-	private static Class<?> stringToIdProviderClass(final String idProvider) {
+	public static Class<?> stringToIdProviderClass(final String idProvider) {
 		Class<?> result;
 		
 		if (idProvider.equals(IDENTITY_PROVIDER_BUMP)) {
@@ -171,7 +173,9 @@ public class BtAPI {
 	 */
 	public static int res(final Context context, final String type, final String name) {
 		final String pkg = context.getApplicationInfo().packageName;
-		return context.getResources().getIdentifier(name, type, pkg);
+		final int identifier = context.getResources().getIdentifier(name, type, pkg);
+		Log.v(LOG_TAG, "BtAPI.res: "+type+"."+name+": " + identifier);
+		return identifier;
 	}
 	
 	/**
@@ -179,9 +183,14 @@ public class BtAPI {
 	 * @return this device's Bluetooth MAC address
 	 */
 	public static String getBluetoothAddress() {
-		// TODO: Make good
-		return "00:00:00:00:00:00";
-		//return mBluetoothAdapter.getAddress(); // TODO: Requires BT activated...
+		// TODO: Handle bta == null if no bluetooth adapter on device (e.g. emulator)
+		BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
+		
+		if (bta.isEnabled()) {
+			return bta.getAddress(); // Requires BT activated...
+		} else {
+			return "00:00:00:00:00:00";
+		}
 	}
 
 }

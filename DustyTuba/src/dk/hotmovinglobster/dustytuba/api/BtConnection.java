@@ -88,7 +88,7 @@ public class BtConnection {
 	 */
 	public void send(final byte[] chunk)
 	{
-    	Log.i(BtAPI.LOG_TAG, "BtConnection: Asked to send "+chunk.length+" bytes ("+ByteArrayTools.toString(chunk)+")");
+    	Log.v(BtAPI.LOG_TAG, "BtConnection: Asked to send "+chunk.length+" bytes ("+ByteArrayTools.toString(chunk)+")");
 		mHandler.post(new Runnable() {
 			
 			@Override
@@ -96,6 +96,14 @@ public class BtConnection {
 				thread.write(chunk);
 			}
 		});
+	}
+	
+	/**
+	 * Send a string to the other user
+	 * @param str The string to send
+	 */
+	public void send(final String str) {
+		send( ByteArrayTools.toByta( str ) );
 	}
 	
 	/** 
@@ -114,14 +122,13 @@ public class BtConnection {
 	        // Keep listening to the InputStream until an exception occurs
 	        while (true) {
 	            try {
-	            	Log.i(BtAPI.LOG_TAG, "BtConnection: Reading from InputStream");
 	                // Read from the InputStream
 	                bytes = mInStream.read(buffer);
 	                byte[] result = new byte[bytes];
 	                for (int i = 0; i < bytes; i++) {
 	                	result[i] = buffer[i];
 	                }
-	                Log.i(BtAPI.LOG_TAG, "BtConnection: Read "+bytes+" bytes from InputStream ("+ByteArrayTools.toString(result)+")");
+	                Log.v(BtAPI.LOG_TAG, "BtConnection: Read "+bytes+" bytes from InputStream ("+ByteArrayTools.toString(result)+")");
 	                final byte[] finalResult = result;
 	                // Send the obtained bytes to the UI Activity
 	                mHandler.post(new Runnable() {

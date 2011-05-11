@@ -43,13 +43,13 @@ public class GenericIPActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Created");
+    	Log.d(BtAPI.LOG_TAG, "GenericIPActivity: Created");
     	thisIntent = getIntent();
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
+    	Log.v(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
 
     	// Get the class of the identity provider to use
     	ipClass = thisIntent.getStringExtra( BtAPI.EXTRA_IP_CLASS );
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Received '" + ipClass + "' as subclass");
+    	Log.v(BtAPI.LOG_TAG, "GenericIPActivity: Received '" + ipClass + "' as subclass");
 
     	// Check for Bluetooth availability
     	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
@@ -78,53 +78,37 @@ public class GenericIPActivity extends Activity {
     	
     	if (thisIntent.hasExtra( BtAPI.EXTRA_IP_BUNDLE )) {
     		final Bundle b = thisIntent.getBundleExtra( BtAPI.EXTRA_IP_BUNDLE );
-        	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Received bundle (Size "+b.size()+": "+b.keySet()+")");
+        	Log.d(BtAPI.LOG_TAG, "GenericIPActivity: Received bundle (Size "+b.size()+": "+b.keySet()+")");
     		newIntent.replaceExtras( b );
     	}
     	
-    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Starting subactivity");
+    	Log.i(BtAPI.LOG_TAG, "GenericIPActivity: Starting subactivity \""+ipClass+"\"");
     	startActivityForResult(newIntent, REQUEST_IDENTITY_PROVIDER);
     	
 	}
 
 	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-		Log.i(BtAPI.LOG_TAG, "GenericIPActivity: onActivityResult");
+		Log.d(BtAPI.LOG_TAG, "GenericIPActivity: onActivityResult");
     	switch(requestCode){
 			case REQUEST_IDENTITY_PROVIDER:
-		    	Log.i(BtAPI.LOG_TAG, "Returned from BtAPI ID activity");
+		    	Log.d(BtAPI.LOG_TAG, "GenericIPActivity: Returned from BtAPI ID activity");
 		    	switch(resultCode){
 			    	case RESULT_CANCELED:
-			    		Log.i(BtAPI.LOG_TAG, "Reason: Cancelled");
+			    		Log.v(BtAPI.LOG_TAG, "Reason: Cancelled");
 			        	setResult(RESULT_CANCELED);
 			        	finish();
 			    		break;
 					case RESULT_OK:
-			        	Log.i(BtAPI.LOG_TAG, "Reason: OK");
-			    		Log.i(BtAPI.LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+			        	Log.v(BtAPI.LOG_TAG, "Reason: OK");
+			    		Log.v(BtAPI.LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
 			    		String other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
+			    		Log.v(BtAPI.LOG_TAG, "Other MAC address: " + other_mac);
 			    		// Identity received, start BT connection
 			    		startBT(other_mac);
 			        	break;
 		    	}
 				break;
-				/*
-			case REQUEST_SETUP_BT:
-		    	Log.i(BtAPI.LOG_TAG, "Returned from BtAPI BT SETUP activity");
-		    	switch(resultCode){
-					case RESULT_OK:
-						Log.i(BtAPI.LOG_TAG, "Reason: OK");
-			    		Log.i(BtAPI.LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-						// Don't unparcel, just forward?
-						// BtConnection conn = (BtConnection)data.getParcelableExtra(BtAPI.EXTRA_BT_CONNECTION);
-			    		setResult(RESULT_OK,data);
-			        	break;
-			    	default:
-			    		Log.i(BtAPI.LOG_TAG, "Reason: " + resultCode);
-			        	setResult(resultCode);
-		    	}
-	        	finish();
-	        	break;*/
     	}
     }
 
@@ -146,7 +130,6 @@ public class GenericIPActivity extends Activity {
 		i.putExtra(BluetoothConnector.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
 		startActivityForResult(i, BtAPI.REQUEST_SETUP_BT);
 		*/
-		Log.i(BtAPI.LOG_TAG, "MainActivity: Launching BtAPI Fake activity");
 		
 		BluetoothConnectionManager bcm = new BluetoothConnectionManager(other_mac, BT_UUID, BT_SDP_NAME);
 		bcm.setupConnection();

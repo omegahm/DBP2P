@@ -42,12 +42,12 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-    	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: Created");
+    	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Created");
     	
     	res = getResources();
     	
     	Intent thisIntent = getIntent();
-    	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
+    	Log.v(BtAPI.LOG_TAG, "BumpIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
 
     	Intent i = new Intent( this, com.bumptech.bumpapi.BumpAPI.class );
     	i.replaceExtras( thisIntent.getExtras() );
@@ -63,29 +63,30 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
     	if (resultCode == RESULT_CANCELED) {
-        	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: cancel)");
+        	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: cancel)");
         	setResult( RESULT_CANCELED );
     	} else if (resultCode == RESULT_OK) {
-        	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: OK)");
-        	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
+        	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: OK)");
+        	Log.v(BtAPI.LOG_TAG, "BumpIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
 			bConn = data.getParcelableExtra(BumpAPI.EXTRA_CONNECTION);
 			bConn.setListener( this );
 			sendBluetoothInfo();
     	} else {
-        	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: "+resultCode+")");
+        	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: "+resultCode+")");
     		setResult( resultCode );
     	}
     	
-    	Log.i(BtAPI.LOG_TAG, "BumpIPActivity: Finishing");
-    	finish();
+//    	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Finishing");
+//    	finish();
     	
     }
     
 	/** REQ Called when the API connection terminates */
     @Override
 	public void bumpDisconnect(BumpDisconnectReason arg0) {
+    	Log.v(BtAPI.LOG_TAG, "BumpIPActivity: bumpDisconnect("+arg0.toString()+")");
 		// Toast.makeText(this, "Bump disconnected", Toast.LENGTH_LONG).show();
-		connectionSetupDialog.dismiss();
+		stopProgressDialog();
 	}
     
 	/** REQ Called when a chunk of data is received from the remote client */
@@ -159,7 +160,8 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
 
 	/** Send stuff (BT setup info) through Bump Connection */
     private void sendBluetoothInfo() {
-    	connectionSetupDialog = ProgressDialog.show(this, "", res.getString( BtAPI.res( this, "string", "dustytuba_setting_up_connection" ) ), true, true, this);
+		Log.v(BtAPI.LOG_TAG, "BumpIPActivity: sendBluetoothInfo(): Start");
+    	//connectionSetupDialog = ProgressDialog.show(this, "", res.getString( BtAPI.res( this, "string", "dustytuba_setting_up_connection" ) ), true, true, this);
     	ByteArrayList byl = new ByteArrayList();
     	byl.add( PROTOCOL_VERSION );
     	byl.addAll( ByteArrayTools.toByta( VERSION ) );
@@ -171,6 +173,7 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
 //    	byl.addAll( ByteArrayTools.toByta( getBluetoothName() ) );
 //    	byl.add( (byte)0 );
     	bConn.send( byl.toArray() );
+		Log.v(BtAPI.LOG_TAG, "BumpIPActivity: sendBluetoothInfo(): Sent ("+new String(byl.toArray())+")");
 //    	Log.i(TAG, "Sent bluetooth info" );
     }
     
@@ -181,6 +184,7 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
     /** Used for when a user cancels during progress dialog */
 	@Override
 	public void onCancel(DialogInterface dialog) {
+		Log.v(BtAPI.LOG_TAG, "BumpIPActivity: OnCancelListener.OnCancel()");
 		if ( dialog == connectionSetupDialog ) {
 			setResult(RESULT_CANCELED);
 			finish();
@@ -188,17 +192,26 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
 	}
 
 	private void otherVersionObtained() {
+		Log.v(BtAPI.LOG_TAG, "BumpIPActivity: otherVersionObtained(): " + otherVersion);
     	// Update main screen feedback
 		// TODO: Handle VERSION
     	// handleVersion(VERSION, otherVersion, res.getString( BtAPI.res( this, "string", "package_name" ) ) );
 	}
 	
 	private void otherBluetoothMACObtained() {
-		// TODO Auto-generated method stub
+		Log.v(BtAPI.LOG_TAG, "BumpIPActivity: otherBluetoothMACObtained(): " + otherBluetoothMAC);
     	Intent data = new Intent();
-        data.putExtra( BtAPI.EXTRA_IP_MAC, otherBluetoothMAC ); // TODO: grab from somewhere
+        data.putExtra( BtAPI.EXTRA_IP_MAC, otherBluetoothMAC );
 		setResult( RESULT_OK, data );
+		stopProgressDialog();
 		finish();
+	}
+	
+	private void stopProgressDialog() {
+		if (connectionSetupDialog != null && connectionSetupDialog.isShowing()) {
+			connectionSetupDialog.hide();
+		}
+
 	}
 
 }

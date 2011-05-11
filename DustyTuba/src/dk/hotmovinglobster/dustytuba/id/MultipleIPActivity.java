@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 // FIXME: Does not return properly... might be the way we call it.
@@ -27,12 +28,13 @@ public class MultipleIPActivity extends Activity {
 	 * List of nice names of identity providers
 	 */
 	private String[] providerNames = {};
+	private Intent intent;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		final Intent intent = getIntent();
+		intent = getIntent();
 		
 		// Populate string arrays
 		providers = intent.getStringArrayExtra( BtAPI.EXTRA_IP_PROVIDERS );
@@ -48,8 +50,8 @@ public class MultipleIPActivity extends Activity {
 			// When an identity provider is selected, the providers activity
 			// should be launched
 		    public void onClick(DialogInterface dialog, int item) {
-		    	Intent i = BtAPI.getIntent( MultipleIPActivity.this, providers[item], intent.getExtras() );
-		    	startActivityForResult( i, 0 );
+		    	Log.i(BtAPI.LOG_TAG, "MultipleIPActivity: Starting identity provider \""+providerNames[item]+"\"");
+		    	startIdentityProvider(providers[item]);
 		    }
 		});
 		
@@ -67,10 +69,29 @@ public class MultipleIPActivity extends Activity {
 		alert.show();
 	}
 	
+	private void startIdentityProvider(String provider) {
+		Intent i = new Intent( this, BtAPI.stringToIdProviderClass(provider) );
+		i.replaceExtras( intent );
+    	startActivityForResult( i, 0 );
+	}
+	
 	@Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 		// Upon return from the launched identity provider activity,
 		// the data should just be forwarded to GenericIPActivity
+		if (resultCode == RESULT_OK) {
+			Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, "+data.getExtras().keySet().toString()+")");
+		} else {
+			if (data == null) {
+				Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, null)");
+			} else {
+				if (data.getExtras() == null) {
+					Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, <Empty intent>)");
+				} else {
+					Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, "+data.getExtras().keySet().toString()+")");
+				}
+			}
+		}
 		setResult( resultCode, data );
 		finish();
 	}
