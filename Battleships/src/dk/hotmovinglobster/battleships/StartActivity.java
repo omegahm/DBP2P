@@ -9,8 +9,10 @@ public class StartActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        //super.onCreate(savedInstanceState);
+        //setContentView(new BattleGrid(this, Settings.GRID_WIDTH, Settings.GRID_HEIGHT));
         
+        super.onCreate(savedInstanceState);
         LinearLayout l = new LinearLayout(this);
         l.setOrientation( LinearLayout.VERTICAL );
         TextView t = new TextView(this);
