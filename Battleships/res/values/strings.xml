@@ -2,4 +2,10 @@
 <resources>
     <string name="hello">Hello World, StartActivity!</string>
     <string name="app_name">Battleships</string>
+    <string name="place_ships_please_place_ships">Please place your ships:</string>
+    <string name="place_ships_ships_remaining">Ships remaining:</string>
+    <string name="place_ships_remaining_ships_formatted">Single tile ships: %1$d</string>
+    <string name="place_ships_label">Place your ships!</string>
+    <string name="place_ships_all_ships_placed">All ships placed.\nWaiting for opponent...</string>
+    <string name="place_ships_warn_abort_wait">Do you wish to stop waiting for your opponent and exit the game?</string>
 </resources>

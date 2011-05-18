@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -40,13 +39,12 @@ public class BattleGrid extends View {
 	public enum TileType { EMPTY, SHIP, HIT, MISS };
 	private TileType[][] tiles;
 
-	private final Bitmap HitTile;
-	private final Bitmap MissTile;
-	private final Bitmap ShipTile;
-	private final Bitmap EmptyTile;
+	private Bitmap HitTile;
+	private Bitmap MissTile;
+	private Bitmap ShipTile;
 	
-	private final Paint TileBackground;
-	private final Paint TileBorder;
+	private Paint TileBackground;
+	private Paint TileBorder;
 	
 	
 	
@@ -57,15 +55,21 @@ public class BattleGrid extends View {
 		mColumns = columns;
 		mRows = rows;
 
+		loadGraphics();
+		initializeTiles();
+	}
+
+	private void loadGraphics() {
 		HitTile   = BitmapFactory.decodeResource(getResources(), R.drawable.battleship_hit);
 		MissTile  = BitmapFactory.decodeResource(getResources(), R.drawable.battleship_bullet);
 		ShipTile  = BitmapFactory.decodeResource(getResources(), R.drawable.battleship_ship);
-		EmptyTile = BitmapFactory.decodeResource(getResources(), R.drawable.tile_empty);
 		TileBackground = new Paint();
 		TileBackground.setColor( Color.WHITE );
 		TileBorder = new Paint();
 		TileBorder.setColor( Color.BLACK );
-		
+	}
+
+	private void initializeTiles() {
 		tiles = new TileType[mColumns][mRows];
 		for (int column=0; column<mColumns; column++) {
 			for (int row=0; row<mRows; row++) {
@@ -83,8 +87,10 @@ public class BattleGrid extends View {
 	}
 	
 	public void setTileType(int column, int row, TileType type) {
-		tiles[column][row] = type;
-		invalidate();
+		if (tiles[column][row] != type) {
+			tiles[column][row] = type;
+			invalidate();
+		}
 	}
 
 	public TileType getTileType(int column, int row) {
@@ -106,9 +112,6 @@ public class BattleGrid extends View {
 		}
 		setMeasuredDimension(maxSize, maxSize);
 		recalculateSizes();
-		Log.d(Settings.LOG_TAG, "onMeasure: wms: " + MeasureSpec.toString(widthMeasureSpec) + ", hms: " + MeasureSpec.toString(heightMeasureSpec) );
-		Log.d(Settings.LOG_TAG, "onMeasure: maxSize: " + maxSize);
-		Log.d(Settings.LOG_TAG, "onMeasure: w: " + getWidth() + ", h: " + getHeight());
 	}
 
 	private void recalculateSizes() {
@@ -118,8 +121,6 @@ public class BattleGrid extends View {
 
 	@Override
 	public void onDraw(Canvas c) {
-		Log.d(Settings.LOG_TAG, "onDraw: c.width: "+c.getWidth()+", c.height: " + c.getHeight() );
-		Log.d(Settings.LOG_TAG, "onDraw: mw: "+getMeasuredWidth()+", mh: " + getMeasuredHeight() );
 		
 		c.drawPaint(TileBorder);
 		//		c.drawPaint()
@@ -138,16 +139,16 @@ public class BattleGrid extends View {
 	
 	private Bitmap tileTypeToBitmap(TileType tt) {
 		switch(tt) {
-			case EMPTY:
-				return null;
 			case HIT:
 				return HitTile;
 			case MISS:
 				return MissTile;
 			case SHIP:
 				return ShipTile;
+			case EMPTY:
+			default:
+				return null;
 		}
-		return null;
 	}
 
 	/**
@@ -180,12 +181,10 @@ public class BattleGrid extends View {
 			Point tile = getTileWithPoint( (int)e.getX(), (int)e.getY() );
 			if ( tile != null ) {
 				if ( listener != null )
-					listener.OnTileHit( tile.x, tile.y );
+					listener.onTileHit( tile.x, tile.y );
 				return true;
 			}
 		}
 		return super.onTouchEvent(e);
-		// TODO Auto-generated method stub
-
 	}
 }
