@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!-- *********************************************************************** -->
+<!-- SPECIAL NOTES TO TRANSLATORS:  -->
+
+<!--   Background information: These phrases are from an iPhone app called "Bump" that lets two users connect to share contact information and photos by physically bumping their two phones together.  Before starting your translation, please watch this 30-second video so you understand what this means: http://bu.mp/videos.html -->
+
+<!--   How to treat the word "bump":  "Bump" is the name of the application and the name of our company, but it represents a physical action of bumping two phones together.  Please use the most appropriate word in your language to represent this, unless otherwise instructed. -->
+
+<!--   *Length of your tranlsations*:  Because these phrases will appear on a mobile phone, you must keep your translations short in length so they fit in the space provided.  Please try to keep your translations shorter-than or equal-to the length of the English phrase.  If you must alter the wording to achieve this, that is OK.  -->
+
+<!--   Special placeholders:  This file is read directly by the computer to generate the phrases in the application.  Some phrases contain special characters that represent various things.  For example, %s is used as a placeholder for another word, usually a person's name.  \n is sometimes used to represent a newline character.  If a special character placeholder appears in the English phrase, please use it in your translation in the appropriate place.  -->
+
+<!--   How to read this file:  Each phrase listed is shown in this format: "This is the English phrase" = "This is where you put your translation</string>  Please DO NOT ALTER THE LEFT HAND SIDE OF THE = sign IN ANY WAY.  You will place your translation in place of the English phrase on the RIGHT-HAND SIDE of the =.  For example, "This phrase is in English" = "This phrase is now in Chinese becuase I replaced the English phrase with my translation</string>  Above each phrase, we've explained exactly how this phrase is used and included any special instructions.  Please DO NOT tranlsation these instructions :) -->
+
+<!--   IF YOU HAVE ANY QUESTIONS WHATSOEVER, PLEASE EMAIL translations@bu.mp  or call 1-650-275-2867.  We will respond within minutes unless we are asleep.  Thanks!!! :)  -->
+
+<!-- *********************************************************************** -->
+
+
+<!-- Tell the user that the other user has canceled the bump connection and ask him to please try again.  The %s is a placeholder for a person's name.  Please use %s as a placeholder for the other user's name. "bump" is used as a noun here. -->
+<string name="bump_other_canceled">%s가 부딪치기를 취소하였습니다. 다시 시도하십시오.</string>
+
+<!-- This message tells the user that the application they are using does not have a valid key for the Bump API.  "Key" in this context means "permission" or "authorization".  Please leave "Bump API" in English.  -->
+<string name="bump_invalid_key">%s는 유효하지 않은 Bump API 키를 가지고 있습니다.</string>
+
+<!-- This message tells the user that the connection is almost complete and prompts him to bump his phone with the other user's phone again.  "bump" is used as a verb here. -->
+<string name="bump_again">거의 완료되었습니다. 다시 부딪치기를 해보십시오.</string>
+
+<!-- This prompts the user to bump his phone against the phone of another user to initiate a connection between their two phones. "Bump" is used as a verb here.  \n represents a newline character, so please make sure the translation includes this.  -->
+<string name="bump_to_connect">폰을 부딪쳐서\n접속해보십시오.</string>
+
+<!-- This message tells the user that the connection was successfully made using Bump. "Bump" is used as a noun here.  -->
+<string name="bump_successful">부딪치기를 성공했습니다!</string>
+
+<!-- This message tells the user that the this application cannot connect to the Bump service -->
+<string name="bump_cannot_connect">접속할 수 없습니다.</string>
+
+<!-- This prompt asks the user if he would like to connect with the other user.  "%s" is a placeholder for the other user's name.  Please use it in your translation. -->
+<string name="bump_confirm_connect">%s와 접속하시겠습니까?</string>
+
+<!-- This message tells the user that he is now connected to the other user.  "%s" is a placeholder for the other user's name.  Please use it in your translation.  -->
+<string name="bump_connected">%s에 접속되었습니다!</string>
+
+<!-- This message tells the user that the Bump service is currently trying to find a connection with another user.  -->
+<string name="bump_connecting">접속 중</string>
+
+<!-- This text appears on a button that allows the user to change his displayed name in the application.  Please pay special attention to keeping this text as short as possible while still conveying the meaning. -->
+<string name="bump_edit_name">이름 수정</string>
+
+<!-- This message is displayed to tell the user that the Network (the internet, the cellular network, etc) is not currently available. -->
+<string name="bump_no_network">네트워크 이용불가</string>
+
+<!-- This message prompts the user to check that his internet connection is working. -->
+<string name="bump_check_network">인터넷 연결을 확인하십시오.</string>
+
+<!-- This message asks the user to please wait while the Bump service is doing something. -->
+<string name="bump_please_wait">기다려 주십시오.</string>
+
+<!-- This message tells the user that the action he just tried to perform is not supported by this application. -->
+<string name="bump_unsupported">지원되지 않는 액션입니다. 다시 시도하십시오.</string>
+
+<!-- This message tells the user that the Bump service is waiting for the other user to do something. "%s" is a placeholder for the other user's name.  Please use it in your translation.  -->
+<string name="bump_waiting_for">%s를 기다리는 중입니다.</string>
+
+<!-- This message tells the user to please wait while the Bump service is initialized.  "Warming up" is an English slang for "initializing" or "getting ready".  The \n before "please" represents a newline character, please use it in your translation. -->
+<string name="bump_warming_up">준비 중-\n기다려 주십시오.</string>
+
+<!-- This message informs the user that he canceled the bump connection.  "bump" is used as a noun here.   -->
+<string name="bump_you_canceled">사용자가 부딪치기를 취소하였습니다.</string>
+
+<!-- *********************************** -->
+
+<!-- Tell the user that no match was found with another user and ask him to please try again -->
+<string name="bump_no_match">일치하는 사용자가 없습니다. 다시 시도하십시오.</string>
+
+<!-- This message is displayed if the user attempts to share an item with a user of a different app.  We tell the user he can only share with users of the Bump app.  Please leave "Bump App" in English. -->
+<string name="bump_only_share">Bump App만 공유할 수 있습니다.</string>
+
+<!-- Tell the user that the other user's version of the Bump app does not support a feature called "Bump-an-App".  "Bump-an-app" means "share an application by using the Bump application.  The '\' in "user\'s" is to allow the computer to display the apostrophe.  If your translation uses an apostrophe, please use "\'".  In this case, "Bump" refers to the name of our application, so please leave "Bump" in English.  If there is a good way to translation "Bump-an-app" while keeping the "Bump" part of it in English, feel free to do so.  Otherwise leave "Bump-an-App" in English too.  -->
+<string name="bump_app_unsupp">다른 사용자의 Bump 버전이 Bump-an-App을 지원하지 않습니다.</string>
+
+<!-- ************************************** -->
+
+<!-- Tell the user that the person they bumped with experienced  an error with their network communications and ask them to try again later when a better signal is available -->
+<string name="bump_other_error">다른 사용자에게 통신 에러가 발생하였습니다. 더 좋은 신호를 이용할 수 있을 때 재시도 하십시오.</string>
+
+<!-- Tell the user that the location of his iPod may be unknown and warm them that Bump may now work -->
+<string name="bump_no_location_ipod">이 iPod의 위치가 알려지지 않았습니다. 부딪히기가 작동하지 않을 수 있습니다.</string>
+
+<!-- Tell the user that the location of his iPhone may be unknown and warm them that Bump may now work -->
+<string name="bump_no_location_iphone">이 iPod의 위치가 알려지지 않았습니다. 부딪히기가 작동하지 않을 수 있습니다.</string>
+
+<!-- Tell the user that Bump is having trouble finding his location.  Ask them to turn on Location Services or connect both devices to the same Wifi network -->
+<string name="bump_bad_location">부딪히기가 귀하의 위치를 찾지 못하고 있습니다.\n\n위치 서비스를 켜고/또는 두 장치를 동일한 Wifi 핫스팟에 연결하십시오.</string>
+
+<!-- Tell the user that there was no matching device phone, meaning that he was the only person to bump -->
+<string name="bump_no_matches">귀하는 부딪히기를 할 유일한 사람이었습니다.</string>
+
+<!-- Tell the user that sometimes they have to bump twice to find a match -->
+<string name="bump_two_times">때때로 두 번의 부딪히기가 필요합니다.</string>
+
+<!-- Tell the user that his network connection may be too slow. -->
+<string name="bump_slow_network">부딪히기를 사용하기에 네트워크가 너무 느립니다.\n\n보다 나은 연결을 이용할 수 있을 때 재시도 하십시오.</string>
+
+<!-- Tell the user that his version of Bump does not support a feature called Bump-an-App. "Bump-an-app" means "share an application by using the Bump application. If there is a good way to translation "Bump-an-app" while keeping the "Bump" part of it in English, feel free to do so.  Otherwise leave "Bump-an-App" in English too.  -->
+<string name="bump_old_version">귀하의 버전은 Bump-an-App을 지원하지 않습니다. 업그레이드 하십시오.</string>
+
+<!-- This text appears on a small button, so it must be short -->
+<string name="bump_yes">예</string>
+
+<!-- This text appears on a small button, so it must be short -->
+<string name="bump_no">아니오</string>
+
+</resources>
