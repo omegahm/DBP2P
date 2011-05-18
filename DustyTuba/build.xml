@@ -91,7 +91,7 @@
 		<fail unless="mainproject">Please set mainproject=(path-to-project) in the local.properties file</fail>
 		<!--<java classname="dk.hotmovinglobster.dustytuba.antscripts.CreateResourcesFile" classpath="${build}\classes" />-->
 		<copy todir="${mainproject}">
-			<fileset dir="${dist}" />
+			<fileset dir="${dist}" excludes="src" />
 		</copy>
 	</target>
 	

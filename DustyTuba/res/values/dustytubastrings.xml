@@ -30,6 +30,7 @@
     <string name="dustytuba_identity_provider_paired">Paired Devices</string>
     <string name="dustytuba_identity_provider_multiple">Multiple</string>
     <string name="dustytuba_identity_provider_unknown">Unknown</string>
+    <string name="dustytuba_my_mac">My MAC: %s</string>
 
     <!-- PairedIPActivity -->
     <!-- Borrowed from BluetoothChat AOSP tutorial -->

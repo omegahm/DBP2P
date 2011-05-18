@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -37,6 +38,8 @@ public class ManualIPActivity extends Activity {
     	setContentView( BtAPI.res(this, "layout", "dustytuba_manual_ip_dialog" ) );
 
     	txtMAC = (EditText)findViewById( BtAPI.res(this, "id", "dustytuba_manual_txt_mac" ) );
+    	
+    	((TextView)findViewById( BtAPI.res(this, "id", "dustytuba_manual_my_mac") )).setText( String.format( BtAPI.res_string( this, "dustytuba_my_mac" ), BtAPI.getBluetoothAddress() ) );
 
     	Intent thisIntent = getIntent();
     	if (thisIntent.getExtras() != null) {

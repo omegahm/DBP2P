@@ -109,7 +109,22 @@ public class GenericIPActivity extends Activity {
 			        	break;
 		    	}
 				break;
+	    	case REQUEST_ENABLE_BT:
+	    		Log.d(BtAPI.LOG_TAG, "GenericIPActivity: Returned from bluetooth activation");
+		    	switch(resultCode){
+			    	case RESULT_CANCELED:
+			    		Log.v(BtAPI.LOG_TAG, "Result: Cancelled");
+			        	setResult(RESULT_CANCELED);
+			        	finish();
+			    		break;
+					case RESULT_OK:
+			        	Log.v(BtAPI.LOG_TAG, "Result: OK");
+			    		bluetoothEnabled();
+			        	break;
+		    	}
+				break;
     	}
+    		
     }
 
 	private void startBT(String other_mac) {

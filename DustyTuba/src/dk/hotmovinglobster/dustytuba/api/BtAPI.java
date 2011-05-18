@@ -178,6 +178,11 @@ public class BtAPI {
 		return identifier;
 	}
 	
+	public static String res_string(final Context context, final String name) {
+		int identifier = res(context, "string", name);
+		return context.getResources().getString( identifier );
+	}
+	
 	/**
 	 * Fetch the address of this Bluetooth adapter.
 	 * @return this device's Bluetooth MAC address
