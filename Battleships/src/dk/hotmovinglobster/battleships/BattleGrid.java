@@ -1,5 +1,8 @@
 package dk.hotmovinglobster.battleships;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,9 +95,32 @@ public class BattleGrid extends View {
 			invalidate();
 		}
 	}
+	
+	public void setTileType(Point p, TileType type) {
+		if (tiles[p.column][p.row] != type) {
+			tiles[p.column][p.row] = type;
+			invalidate();
+		}
+	}
 
 	public TileType getTileType(int column, int row) {
 		return tiles[column][row];
+	}
+	
+	public TileType getTileType(Point p) {
+		return tiles[p.column][p.row];
+	}
+	
+	public List<Point> getPointsWithType(TileType type) {
+		List<Point> result = new ArrayList<Point>();
+		for (int c = 0; c < mColumns; c++) {
+			for (int r = 0; r < mRows; r++) {
+				if (tiles[c][r] == type) {
+					result.add( new Point(c, r) );
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -181,10 +207,27 @@ public class BattleGrid extends View {
 			Point tile = getTileWithPoint( (int)e.getX(), (int)e.getY() );
 			if ( tile != null ) {
 				if ( listener != null )
-					listener.onTileHit( tile.x, tile.y );
+					listener.onTileHit( tile.column, tile.row );
 				return true;
 			}
 		}
 		return super.onTouchEvent(e);
+	}
+	
+	public static class Point {
+		
+		public final int column;
+		public final int row;
+		
+		public Point(int column, int row) {
+			this.column = column;
+			this.row = row;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("(%d, %d)", column, row);
+		}
+		
 	}
 }

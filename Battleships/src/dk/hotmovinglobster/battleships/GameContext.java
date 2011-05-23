@@ -20,5 +20,5 @@ public class GameContext {
 		GRID_ROWS = 6;
 		MAX_SHIPS = 5;
 	}
-
+	
 }

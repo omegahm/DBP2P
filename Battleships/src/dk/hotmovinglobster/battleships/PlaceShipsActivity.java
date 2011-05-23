@@ -1,6 +1,7 @@
 package dk.hotmovinglobster.battleships;
 
-import android.app.Activity;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -13,9 +14,11 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.BattleGrid.TileType;
+import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 
-public class PlaceShipsActivity extends Activity implements BattleGridListener {
+public class PlaceShipsActivity extends CommunicationProtocolActivity implements BattleGridListener {
 
 	private BattleGrid grid;
 	private TextView txt_ships_remaining;
@@ -27,16 +30,19 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 
 	private int ships_remaining;
 	
-	private Handler mHandler;
+	private boolean isReady = false;
+	private boolean opponentReady = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity.onCreate()");
 		assert( GameContext.singleton.Comm != null );
+		GameContext.singleton.Comm.setListener( this );
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.place_ships);
-		mHandler = new Handler();
+
+		new Handler();
 		res = getResources();
 
 		ships_remaining = GameContext.singleton.MAX_SHIPS;
@@ -58,16 +64,9 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 	}
 
 	private void updateShipsRemaining() {
-		int ships_on_grid = 0;
-		for (int column = 0; column<GameContext.singleton.GRID_COLUMNS; column++) {
-			for (int row = 0; row<GameContext.singleton.GRID_ROWS; row++) {
-				if (grid.getTileType(column, row) == TileType.SHIP) {
-					ships_on_grid++;
-				}
-			}
-		}
-
-		ships_remaining = GameContext.singleton.MAX_SHIPS - ships_on_grid;
+		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
+		
+		ships_remaining = GameContext.singleton.MAX_SHIPS - ships.size();
 		
 		updateShipsRemainingLabel();
 		
@@ -78,18 +77,18 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 
 	private void allShipsPlaced() {
 		Log.i(GameContext.LOG_TAG, "PlaceShipsActivity: All ships placed");
-		showWaitingDialog();
-		
-		// Simulate that opponent is ready after 5 seconds
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				opponentReady();
-			}
-		}, 5000);
+		isReady = true;
+		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
+		GameContext.singleton.Comm.sendShipsPlaced( ships );
+		if (opponentReady) {
+			bothReady();
+		} else {
+			showWaitingDialog();
+		}
 	}
 	
 	private void opponentReady() {
+		opponentReady = true;
 		Log.i(GameContext.LOG_TAG, "PlaceShipsActivity: Opponent ready");
 		if (dialog_abort_warn != null && dialog_abort_warn.isShowing()) {
 			dialog_abort_warn.dismiss();
@@ -97,7 +96,13 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 		if (dialog_waiting != null && dialog_waiting.isShowing()) {
 			dialog_waiting.dismiss();
 		}
-		Toast.makeText(this, "Opponent ready!", Toast.LENGTH_SHORT).show();
+		if (isReady) {
+			bothReady();
+		}
+	}
+
+	private void bothReady() {
+		Toast.makeText(this, "Both players ready!", Toast.LENGTH_SHORT).show();
 		finish();
 	}
 
@@ -135,5 +140,27 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 
 	private void updateShipsRemainingLabel() {
 		txt_ships_remaining.setText( res.getString( R.string.place_ships_remaining_ships_formatted, ships_remaining ) );
+	}
+	
+	@Override
+	public void communicationDisconnected() {
+		Toast.makeText(this, "Disconnected from opponent (HC)", Toast.LENGTH_LONG).show();
+		finish();
+	}
+	
+	@Override
+	public void communicationShipsPlaced(List<Point> ships) {
+		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity: Ships placed (amount: "+ships.size()+")");
+		String places = "";
+		for (Point p: ships) {
+			places += p + ", ";
+		}
+		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity: "+places);
+		opponentReady();
+	}
+
+	@Override
+	public void onBackPressed() {
+		GameContext.singleton.Comm.disconnect();
 	}
 }

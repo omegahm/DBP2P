@@ -56,6 +56,17 @@ public class ByteArrayList implements Serializable {
     System.arraycopy(array, 0, result, 0, size);
     return result;
   }
+  
+  /**
+   * Returns an array containing elements from index start to index end
+   * @param start Index of first element to include
+   * @param end Index of last element to include
+   */
+  public byte[] subArray(int start, int end) {
+    byte[] result = new byte[end-start+1];
+    System.arraycopy(array, start, result, 0, end-start+1);
+    return result;
+  }
 
   // ---------------------------------------------------------------- methods
 

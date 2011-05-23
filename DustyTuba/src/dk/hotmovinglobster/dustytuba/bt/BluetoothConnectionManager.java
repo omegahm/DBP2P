@@ -65,7 +65,7 @@ public class BluetoothConnectionManager {
 	private void manageConnectedServerSocket(BluetoothSocket socket) {
 		synchronized (this) {
 			log_i("Connected as server to " + socket.getRemoteDevice().getAddress());
-			mConnObject = new BtConnection(socket);
+			mConnObject = new BtConnection(socket, true);
 		}
 	}
 	
@@ -79,7 +79,7 @@ public class BluetoothConnectionManager {
 	public void manageConnectedClientSocket(BluetoothSocket socket) {
 		synchronized (this) {
 			log_i("Connected as client to " + socket.getRemoteDevice().getAddress());
-			mConnObject = new BtConnection(socket);
+			mConnObject = new BtConnection(socket, false);
 		}
 	}
 	
