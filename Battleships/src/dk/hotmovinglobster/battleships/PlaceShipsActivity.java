@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity.onCreate()");
 		assert( GameContext.singleton.Comm != null );
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.place_ships);
 		mHandler = new Handler();
 		res = getResources();

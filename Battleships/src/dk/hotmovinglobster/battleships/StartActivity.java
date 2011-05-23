@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -24,7 +25,9 @@ public class StartActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		Log.v(GameContext.LOG_TAG, "StartActivity.onCreate()");
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.start);
+		
 		
 		initializeButtons();
 	}
