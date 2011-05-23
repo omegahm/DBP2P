@@ -14,6 +14,8 @@
 		</activity>
 		<activity android:name=".PlaceShipsActivity" android:label="@string/place_ships_label"
 				  android:screenOrientation="portrait" />
+		<activity android:name=".LocalPlaceShipsActivity" android:label="@string/place_ships_label"
+				  android:screenOrientation="portrait" />
 
 		<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
 		<!-- Optional: Identity Providers, include one or more -->

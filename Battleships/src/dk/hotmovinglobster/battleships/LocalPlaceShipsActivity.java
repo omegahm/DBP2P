@@ -14,7 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import dk.hotmovinglobster.battleships.BattleGrid.TileType;
 
-public class PlaceShipsActivity extends Activity implements BattleGridListener {
+/**
+ * Only to be used for demo monday 23rd may 2011,
+ * dev continues on PlaceShipsActivity
+ * @author Jesper
+ *
+ */
+public class LocalPlaceShipsActivity extends Activity implements BattleGridListener {
 
 	private BattleGrid grid;
 	private TextView txt_ships_remaining;
@@ -30,8 +36,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity.onCreate()");
-		assert( GameContext.singleton.Comm != null );
+		Log.v(GameContext.LOG_TAG, "LocalPlaceShipsActivity.onCreate()");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.place_ships);
 		mHandler = new Handler();
@@ -48,7 +53,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 
 	@Override
 	public void onTileHit(int column, int row) {
-		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
+		Log.v(GameContext.LOG_TAG, "LocalPlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
 		if (ships_remaining > 0) {
 			grid.setTileType(column, row, TileType.SHIP);
 			updateShipsRemaining();
@@ -75,7 +80,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 	}
 
 	private void allShipsPlaced() {
-		Log.i(GameContext.LOG_TAG, "PlaceShipsActivity: All ships placed");
+		Log.i(GameContext.LOG_TAG, "LocalPlaceShipsActivity: All ships placed");
 		showWaitingDialog();
 		
 		// Simulate that opponent is ready after 5 seconds
@@ -88,7 +93,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 	}
 	
 	private void opponentReady() {
-		Log.i(GameContext.LOG_TAG, "PlaceShipsActivity: Opponent ready");
+		Log.i(GameContext.LOG_TAG, "LocalPlaceShipsActivity: Opponent ready");
 		if (dialog_abort_warn != null && dialog_abort_warn.isShowing()) {
 			dialog_abort_warn.dismiss();
 		}
@@ -106,7 +111,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 		        switch (which){
 		        case DialogInterface.BUTTON_POSITIVE:
 					dialog.dismiss();
-					PlaceShipsActivity.this.finish();
+					LocalPlaceShipsActivity.this.finish();
 		            break;
 
 		        case DialogInterface.BUTTON_NEGATIVE:
@@ -125,7 +130,7 @@ public class PlaceShipsActivity extends Activity implements BattleGridListener {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				dialog_waiting.dismiss();
-				dialog_abort_warn = new AlertDialog.Builder(PlaceShipsActivity.this).setMessage(R.string.place_ships_warn_abort_wait).
+				dialog_abort_warn = new AlertDialog.Builder(LocalPlaceShipsActivity.this).setMessage(R.string.place_ships_warn_abort_wait).
 				setPositiveButton(android.R.string.yes, dialog_click_listener).setNegativeButton(android.R.string.no, dialog_click_listener).show();
 			}
 		});
