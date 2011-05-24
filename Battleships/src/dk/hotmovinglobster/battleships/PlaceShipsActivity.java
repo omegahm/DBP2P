@@ -6,9 +6,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.widget.FrameLayout;
@@ -110,6 +110,7 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 		Log.i(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: All ships placed");
 		isReady = true;
 		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
+		BattleshipsApplication.context().myShips = ships;
 		BattleshipsApplication.context().Comm.sendShipsPlaced( ships );
 		if (opponentReady) {
 			bothReady();
@@ -133,7 +134,8 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	}
 
 	private void bothReady() {
-		Toast.makeText(this, "Both players ready!", Toast.LENGTH_SHORT).show();
+		Intent i = new Intent(this, GameActivity.class);
+		startActivity(i);
 		finish();
 	}
 	
@@ -187,11 +189,8 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	@Override
 	public void communicationShipsPlaced(List<Point> ships) {
 		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: Ships placed (amount: "+ships.size()+")");
-		String places = "";
-		for (Point p: ships) {
-			places += p + ", ";
-		}
-		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: "+places);
+		BattleshipsApplication.context().opponentShips = ships;
+		
 		opponentReady();
 	}
 

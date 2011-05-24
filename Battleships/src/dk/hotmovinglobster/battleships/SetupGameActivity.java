@@ -44,7 +44,7 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.setup_game);
-		int q = 0;
+
 		res = getResources();
 		setupComponents();
 
@@ -181,6 +181,13 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 	}
 
 	private void acceptRulesAndStart(int columns, int rows, int single_tile_ships) {
+		if (dialog_abort_warn != null && dialog_abort_warn.isShowing()) {
+			dialog_abort_warn.dismiss();
+		}
+		if (dialog_waiting != null && dialog_waiting.isShowing()) {
+			dialog_waiting.dismiss();
+		}
+
 		BattleshipsApplication.context().GRID_COLUMNS = columns;
 		BattleshipsApplication.context().GRID_ROWS  = rows;
 		BattleshipsApplication.context().MAX_SHIPS = single_tile_ships;
