@@ -228,5 +228,16 @@ public class BattleGrid extends View {
 			return String.format("(%d, %d)", column, row);
 		}
 		
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof Point) {
+				Point p = (Point)o;
+				if (p.column == this.column && p.row == this.row) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 	}
 }

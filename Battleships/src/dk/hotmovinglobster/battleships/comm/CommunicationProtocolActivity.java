@@ -19,5 +19,7 @@ public class CommunicationProtocolActivity extends Activity {
 	public void communicationShipsPlaced(List<Point> ships) {}
 	
 	public void communicationRulesReceived(int columns, int rows, int single_tile_ships) {}
+	
+	public void communicationShotFired(Point p) {}
 
 }

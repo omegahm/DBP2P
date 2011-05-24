@@ -24,7 +24,7 @@ import dk.hotmovinglobster.dustytuba.tools.ByteArrayTools;
 public class CommunicationProtocol implements BtAPIListener {
 
 	private enum STATE {
-		None, Rules, PlaceShips
+		None, Rules, PlaceShips, Shoot
 	};
 
 	private STATE mState;
@@ -52,6 +52,16 @@ public class CommunicationProtocol implements BtAPIListener {
 	 * In total (MAX_SHIPS * 8) + 1 bytes
 	 */
 	private static final byte PROTOCOL_SHIPS_PLACED = 2;
+	/**
+	 * Transmission of a shot fired
+	 * 
+	 * Transmission starts with PROTOCOL_SHOOT
+	 * followed by two 4-byte integers: Column no and row no
+	 * 
+	 * In total 9 bytes
+	 */
+	private static final byte PROTOCOL_SHOOT = 3;
+	
 	/**
 	 * Transmission of user quitting the game
 	 */
@@ -117,7 +127,20 @@ public class CommunicationProtocol implements BtAPIListener {
 		conn.send( byl.toArray() );
 		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendRules("+columns+", "+rows+", " + single_tile_ships + ")");
 	}
-	
+
+	/**
+	 * Send shot fired to the opponent
+	 * @param p A point to shoot at
+	 */
+	public void sendShotFired(Point p) {
+		ByteArrayList byl = new ByteArrayList();
+		byl.add( PROTOCOL_SHOOT );
+		byl.addAll( ByteArrayTools.toByta( p.column ) );
+		byl.addAll( ByteArrayTools.toByta( p.row    ) );
+		conn.send( byl.toArray() );
+		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendShotFired("+p.column+", "+p.row+")");
+	}
+
 	@Override
 	public void btDataReceived(byte[] arg0) {
 		Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Received chunk of data (size: " + arg0.length + "):");
@@ -137,6 +160,10 @@ public class CommunicationProtocol implements BtAPIListener {
 				case PROTOCOL_SHIPS_PLACED:
 					mState = STATE.PlaceShips;
 					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: New state: PlaceShips");
+					break;
+				case PROTOCOL_SHOOT:
+					mState = STATE.Shoot;
+					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: New state: Shoot");
 					break;
 				case PROTOCOL_QUIT:
 					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Opponent sent disconnect message");
@@ -187,6 +214,26 @@ public class CommunicationProtocol implements BtAPIListener {
 					if (mActivity != null) {
 						Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Sending ship placements to activity");
 						mActivity.communicationShipsPlaced(ships);
+					}
+					
+					mProtocolBuffer.clear();
+					
+					mState = STATE.None;
+				}
+				//////////////////////////////////////
+				////////////// SHOOT /////////////////
+				//////////////////////////////////////
+			} else if (mState == STATE.Shoot) {
+				if (mProtocolBuffer.size() == 8) {
+					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Shot fired!");
+
+					int column = ByteArrayTools.toInt( mProtocolBuffer.subArray(0, 3) );
+					int row    = ByteArrayTools.toInt( mProtocolBuffer.subArray(4, 7) );
+					
+					Point p = new Point(column, row);
+					
+					if (mActivity != null) {
+						mActivity.communicationShotFired(p);
 					}
 					
 					mProtocolBuffer.clear();
