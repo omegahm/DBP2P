@@ -7,11 +7,17 @@
     <string name="place_ships_remaining_ships_formatted">Single tile ships: %1$d</string>
     <string name="place_ships_label">Place your ships!</string>
     <string name="place_ships_all_ships_placed">All ships placed.\nWaiting for opponent...</string>
-    <string name="place_ships_warn_abort_wait">Do you wish to stop waiting for your opponent and exit the game?</string>
     <string name="pairing_info">If the phones are not paired already, then you will need to accept the pairing notification before you can connect to your opponent.</string>
     <string name="won">You won!</string>
     <string name="lost">You lost!</string>
     <string name="thankyou">Thank you for playing Battleships!</string>
     <string name="win">Congratulations! You defeated you opponent!</string>
     <string name="loose">You have been defeated!</string>
+    <string name="place_ships_warn_abort_wait">Do you wish to stop waiting for your opponent and exit the game?</string>
+    <string name="setup_game_grid_size">Grid size:</string>
+    <string name="setup_game_select_grid_size">Please select a grid size</string>
+    <string name="setup_game_waiting_for_host">Waiting for opponent to select rules...</string>
+    <string name="setup_game_amount_single_ships">Amount of single tile ships:</string>
+    <string name="setup_game_select_single_tile_ships">Please select amount of single tile ships</string>
+    <string name="setup_game_accept_rules">Accept rules</string>
 </resources>

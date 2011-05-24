@@ -95,6 +95,7 @@ public class BtConnection {
 	 */
 	public void send(final byte[] chunk)
 	{
+		
 		Log.v(BtAPI.LOG_TAG, "BtConnection: Asked to send "+chunk.length+" bytes ("+ByteArrayTools.toString(chunk)+")");
 		thread.write(chunk);
 	}
@@ -111,7 +112,9 @@ public class BtConnection {
 	 * Disconnect from the API service 
 	 */
 	public void disconnect() {
+		Log.v(BtAPI.LOG_TAG, "BtConnection: disconnect() called");
 		stopListening();
+		thread.cancel();
 		try {
 			mInStream.close();
 		} catch (IOException e) {
@@ -176,6 +179,14 @@ public class BtConnection {
 				} catch (IOException e) {
 					Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on BluetoothThread.write()");
 				}
+			}
+		}
+		
+		public void cancel() {
+			try {
+				mSocket.close();
+			} catch (IOException e) {
+				Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on BluetoothThread.cancel()");
 			}
 		}
 

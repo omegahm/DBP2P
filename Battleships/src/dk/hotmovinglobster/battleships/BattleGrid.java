@@ -5,12 +5,11 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -42,34 +41,22 @@ public class BattleGrid extends View {
 	public enum TileType { EMPTY, SHIP, HIT, MISS };
 	private TileType[][] tiles;
 
-	private Bitmap HitTile;
-	private Bitmap MissTile;
-	private Bitmap ShipTile;
-	
 	private Paint TileBackground;
 	private Paint TileBorder;
-	
-	
 	
 	private BattleGridListener listener;
 
 	public BattleGrid(Context context, int columns, int rows) {
 		super(context);
+		Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: constructor()");
 		mColumns = columns;
 		mRows = rows;
-
-		loadGraphics();
-		initializeTiles();
-	}
-
-	private void loadGraphics() {
-		HitTile   = BitmapFactory.decodeResource(getResources(), R.drawable.battleship_hit);
-		MissTile  = BitmapFactory.decodeResource(getResources(), R.drawable.battleship_bullet);
-		ShipTile  = BitmapFactory.decodeResource(getResources(), R.drawable.battleship_ship);
+		
 		TileBackground = new Paint();
 		TileBackground.setColor( Color.WHITE );
 		TileBorder = new Paint();
 		TileBorder.setColor( Color.BLACK );
+		initializeTiles();
 	}
 
 	private void initializeTiles() {
@@ -157,6 +144,7 @@ public class BattleGrid extends View {
 				c.drawRect(r, TileBackground);
 				Bitmap tile = tileTypeToBitmap( tiles[column][row] );
 				if (tile != null) {
+					
 					c.drawBitmap(tile, null, r, null);
 				}
 			}
@@ -166,11 +154,11 @@ public class BattleGrid extends View {
 	private Bitmap tileTypeToBitmap(TileType tt) {
 		switch(tt) {
 			case HIT:
-				return HitTile;
+				return BattleshipsApplication.resources().HitTile;
 			case MISS:
-				return MissTile;
+				return BattleshipsApplication.resources().MissTile;
 			case SHIP:
-				return ShipTile;
+				return BattleshipsApplication.resources().ShipTile;
 			case EMPTY:
 			default:
 				return null;

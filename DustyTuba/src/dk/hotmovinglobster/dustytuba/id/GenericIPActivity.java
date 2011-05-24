@@ -1,17 +1,15 @@
 package dk.hotmovinglobster.dustytuba.id;
 
-import dk.hotmovinglobster.dustytuba.api.BtAPI;
-import dk.hotmovinglobster.dustytuba.api.BtConnection;
-import dk.hotmovinglobster.dustytuba.bt.BluetoothConnectionManager;
-import dk.hotmovinglobster.dustytuba.bt.BluetoothConnector;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
+import dk.hotmovinglobster.dustytuba.api.BtAPI;
+import dk.hotmovinglobster.dustytuba.api.BtConnection;
+import dk.hotmovinglobster.dustytuba.bt.BluetoothConnectionManager;
 
 /**
  * Generic identity provider activity starter class.
@@ -127,13 +125,13 @@ public class GenericIPActivity extends Activity {
     		
     }
 
-	private void startBT(String other_mac) {
+	private void startBT(final String other_mac) {
 		final ProgressDialog dialog = ProgressDialog.show(this, "", 
                 getResources().getString( BtAPI.res(this, "string", "dustytuba_setting_up_connection") ), true);
 		dialog.show();
 		// FIXME: HACK: Not the proper way to go about this, but it will do for now...
-		String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
-		String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
+		final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
+		final String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
 		// Change to use BTAPI CONSTANTS
 		//b.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
 		/*
@@ -146,41 +144,48 @@ public class GenericIPActivity extends Activity {
 		startActivityForResult(i, BtAPI.REQUEST_SETUP_BT);
 		*/
 		
-		BluetoothConnectionManager bcm = new BluetoothConnectionManager(other_mac, BT_UUID, BT_SDP_NAME);
-		bcm.setupConnection();
-		
-		BtConnection btConn = null;
-		
-		final int pollInterval = 200;
-		final int pollTimeout = 5000;
-		int pollCount = 0;
-		
-		// Repeat until connection acquired or timeout time reached
-		while (btConn == null && pollCount * pollInterval < pollTimeout) {
-			try {
-				Thread.sleep(pollInterval);
-			} catch (InterruptedException e) {
-				break;
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				BluetoothConnectionManager bcm = new BluetoothConnectionManager(other_mac, BT_UUID, BT_SDP_NAME);
+				bcm.setupConnection();
+				
+				BtConnection btConn = null;
+				
+				final int pollInterval = 200;
+				final int pollTimeout = 5000;
+				int pollCount = 0;
+				
+				// Repeat until connection acquired or timeout time reached
+				while (btConn == null && pollCount * pollInterval < pollTimeout) {
+					try {
+						Thread.sleep(pollInterval);
+					} catch (InterruptedException e) {
+						break;
+					}
+					pollCount++;
+
+					btConn = bcm.getConnectionObject();
+				}
+				
+				BtConnection.setConnection(btConn);
+
+				if (btConn != null) {
+					btConn.startListening();
+					final Intent i = new Intent();
+					i.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
+					setResult(RESULT_OK, i);
+				} else {
+					setResult(RESULT_CANCELED);
+				}
+				
+				dialog.dismiss();
+				
+				finish();
+				
 			}
-			pollCount++;
-
-			btConn = bcm.getConnectionObject();
-		}
-		
-		BtConnection.setConnection(btConn);
-
-		if (btConn != null) {
-			btConn.startListening();
-			final Intent i = new Intent();
-			i.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
-			setResult(RESULT_OK, i);
-		} else {
-			setResult(RESULT_CANCELED);
-		}
-		
-		dialog.dismiss();
-		
-		finish();
+		}).start();
 		
 	}
 }

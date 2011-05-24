@@ -23,16 +23,51 @@ public class StartActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.v(GameContext.LOG_TAG, "StartActivity.onCreate()");
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onCreate()");
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.start);
 		
+		if ( BattleshipsApplication.context().Comm != null ) {
+			BattleshipsApplication.context().Comm.disconnect();
+		}
 		
 		initializeButtons();
 	}
-	
+/*
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onStart()");
+	}
+	@Override
+    protected void onRestart() {
+		super.onRestart();
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onRestart()");
+	}
+	@Override
+    protected void onResume() {
+		super.onResume();
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onResume()");
+	}
+	@Override
+    protected void onPause() {
+		super.onPause();
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onPause()");
+	}
+	@Override
+    protected void onStop() {
+		super.onStop();
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onStop()");
+	}
+	@Override
+    protected void onDestroy() {
+		super.onDestroy();
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onDestroy()");
+	}
+*/
 	private void initializeButtons() {
+		
 		((Button)findViewById(R.id.start_place_ships_activity)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -72,15 +107,26 @@ public class StartActivity extends Activity {
 		        startActivityForResult(i, REQUEST_DUSTYTUBA);
 		    }
 		});
+		
+		((Button)findViewById(R.id.start_btn_test)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(v.getContext(), TestActivity.class);
+				startActivityForResult(i, 0);
+			}
+		});
+
+	
+
 	}
 	
 	@Override
 	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		Log.v(BattleshipsApplication.LOG_TAG, "StartActivity: onActivityResult(): requestCode="+requestCode+", resultCode=" + resultCode);
 	    if (requestCode == REQUEST_DUSTYTUBA) {
 	        if (resultCode == RESULT_OK) {
-	            GameContext.singleton.Comm = new CommunicationProtocol(BtConnection.getConnection());
-	            Toast.makeText(this, "Connected to opponent, please place your ships (HC)", Toast.LENGTH_LONG).show();
-				Intent i = new Intent(this, PlaceShipsActivity.class);
+	            BattleshipsApplication.context().Comm = new CommunicationProtocol(BtConnection.getConnection());
+				Intent i = new Intent(this, SetupGameActivity.class);
 				startActivity(i);
 	        } else {
 	            Toast.makeText(this, "Failed to find opponent, please try again. (HC)",

@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
+import dk.hotmovinglobster.dustytuba.api.BtAPI;
 import dk.hotmovinglobster.dustytuba.api.BtConnection;
 
 /**
@@ -32,14 +33,19 @@ public class BluetoothConnectionManager {
 	
 	private enum ConnectedAs { None, Client, Server };
 	private ConnectedAs connectedAs = ConnectedAs.None;
+	
+	private AcceptThread acceptThread;
+	private ConnectThread connectThread;
 
 	public BluetoothConnectionManager(String mac, String uuid, String sdp_name) {
 		this.mac = mac;
 		this.uuid = UUID.fromString(uuid);
 		this.sdp_name = sdp_name;
+		
 	}
 	
 	public boolean setupConnection() {
+		Log.v(BtAPI.LOG_TAG, "BluetoothConnectionManager: setupConnection()");
 		mBTAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBTAdapter == null) {
 		    return false;
@@ -49,6 +55,10 @@ public class BluetoothConnectionManager {
 			return false;
 		}
 		
+		acceptThread  = new AcceptThread(); 
+		BluetoothDevice otherDevice = mBTAdapter.getRemoteDevice(mac);
+		connectThread = new ConnectThread(otherDevice); 
+
 		startListeningForConnection();
 		connectToOtherDevice();
 		
@@ -57,8 +67,8 @@ public class BluetoothConnectionManager {
 	}
 	
 	private void startListeningForConnection() {
-		AcceptThread a = new AcceptThread();
-		a.start();
+		Log.v(BtAPI.LOG_TAG, "BluetoothConnectionManager: startListeningForConnection()");
+		acceptThread.start();
 		
 	}
 	
@@ -70,10 +80,9 @@ public class BluetoothConnectionManager {
 	}
 	
 	private void connectToOtherDevice() {
-		BluetoothDevice otherDevice = mBTAdapter.getRemoteDevice(mac);
+		Log.v(BtAPI.LOG_TAG, "BluetoothConnectionManager: connectToOtherDevice()()");
 		
-		ConnectThread c = new ConnectThread(otherDevice);
-		c.start();
+		connectThread.start();
 	}
 
 	public void manageConnectedClientSocket(BluetoothSocket socket) {
@@ -125,31 +134,33 @@ public class BluetoothConnectionManager {
 	            } catch (IOException e) {
 	                break;
 	            }
-	            // If a connection was accepted
-	            if (socket != null) {
-	            	synchronized(this) {
-	            		if (connectedAs == ConnectedAs.Client) {
-	            			return;
-	            		}
-	            		connectedAs = ConnectedAs.Server;
-	            	}
-	                // Do work to manage the connection (in a separate thread)
-	                manageConnectedServerSocket(socket);
+            	synchronized(BluetoothConnectionManager.this) {
+		            // If a connection was accepted
+		            if (socket != null) {
+		        		if (connectedAs == ConnectedAs.None) {
+		        			connectThread.cancel();
+		            		connectedAs = ConnectedAs.Server;
+			                manageConnectedServerSocket(socket);
+		            	}
+		            }
+
 	                try {
 						mBTServerSocket.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log_e( "IOException on closing Bluetooth server socket" );
 					}
 	                break;
-	            }
-	        }
-	    }
+            	}
+            }
+        }
+	    
 		
 		public void cancel() {
 	        try {
 	            mBTServerSocket.close();
-	        } catch (IOException e) { }
+	        } catch (IOException e) {
+				log_e( "IOException on closing Bluetooth server socket" );
+	        }
 	    }
 	 }
 
@@ -178,28 +189,33 @@ public class BluetoothConnectionManager {
 	            // until it succeeds or throws an exception
 	            mBTClientSocket.connect();
 	        } catch (IOException connectException) {
+
 	            // Unable to connect; close the socket and get out
 	            try {
 	                mBTClientSocket.close();
-	            } catch (IOException closeException) { }
+	            } catch (IOException closeException) {
+					log_e( "IOException on closing Bluetooth client socket" );
+	            }
 	            return;
 	        }
 
-        	synchronized(this) {
-        		if (connectedAs == ConnectedAs.Server) {
-        			return;
+        	synchronized(BluetoothConnectionManager.this) {
+        		if (connectedAs == ConnectedAs.None) {
+        			acceptThread.cancel();
+        			connectedAs = ConnectedAs.Client;
+        			manageConnectedClientSocket(mBTClientSocket);			
         		}
-        		connectedAs = ConnectedAs.Client;
         	}
 	        // Do work to manage the connection (in a separate thread)
         	
-	        manageConnectedClientSocket(mBTClientSocket);			
 		}
 
 		public void cancel() {
 	        try {
 	            mBTClientSocket.close();
-	        } catch (IOException e) { }
+	        } catch (IOException e) {
+				log_e( "IOException on closing Bluetooth client socket" );
+	        }
 	    }
 	}
 

@@ -1,6 +1,5 @@
 package dk.hotmovinglobster.dustytuba.id;
 
-import dk.hotmovinglobster.dustytuba.api.BtAPI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,7 +7,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+import dk.hotmovinglobster.dustytuba.api.BtAPI;
 
 // FIXME: Does not return properly... might be the way we call it.
 

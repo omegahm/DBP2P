@@ -3,12 +3,11 @@
 	package="dk.hotmovinglobster.battleships" android:versionCode="1"
 	android:versionName="1.0">
 	<uses-sdk android:minSdkVersion="7" />
-
 	<!-- Battleship images based on original work by Mary Zimmerman.
     <div xmlns:cc="http://creativecommons.org/ns#" about="http://mardenz.blogspot.com/"><a rel="cc:attributionURL" property="cc:attributionName" href="http://mardenz.blogspot.com/www.mardenz.blogspot.com">Mary Zimmerman</a> / <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">CC BY-SA 3.0</a></div>
     -->
 
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name="BattleshipsApplication">
 		<activity android:name=".StartActivity" android:label="@string/app_name"
 		          android:screenOrientation="portrait">
 			<intent-filter>
@@ -16,9 +15,11 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".PlaceShipsActivity" android:label="@string/place_ships_label"
-				  android:screenOrientation="portrait" />
+		<activity android:name=".SetupGameActivity" android:screenOrientation="portrait" />
+		<activity android:name=".PlaceShipsActivity" android:screenOrientation="portrait" />
 		<activity android:name=".LocalPlaceShipsActivity" android:label="@string/place_ships_label"
+				  android:screenOrientation="portrait" />
+		<activity android:name=".TestActivity" android:label="@string/place_ships_label"
 				  android:screenOrientation="portrait" />
 
 		<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
