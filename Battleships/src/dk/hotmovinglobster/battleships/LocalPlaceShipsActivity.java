@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -32,28 +31,56 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 
 	private int ships_remaining;
 	
-	private Handler mHandler;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.v(GameContext.LOG_TAG, "LocalPlaceShipsActivity.onCreate()");
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onCreate()");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.place_ships);
-		mHandler = new Handler();
 		res = getResources();
 
-		ships_remaining = GameContext.singleton.MAX_SHIPS;
+		ships_remaining = BattleshipsApplication.context().MAX_SHIPS;
 		txt_ships_remaining = (TextView) findViewById(R.id.place_ships_txt_ships_remaining);
 		updateShipsRemainingLabel();
 
-		grid = new BattleGrid(this, GameContext.singleton.GRID_COLUMNS, GameContext.singleton.GRID_ROWS);
+		grid = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
 		grid.setListener(this);
 		((FrameLayout) findViewById(R.id.place_ships_grid_frame)).addView(grid);
 	}
-
+/*
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onStart()");
+	}
+	@Override
+    protected void onRestart() {
+		super.onRestart();
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onRestart()");
+	}
+	@Override
+    protected void onResume() {
+		super.onResume();
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onResume()");
+	}
+	@Override
+    protected void onPause() {
+		super.onPause();
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onPause()");
+	}
+	@Override
+    protected void onStop() {
+		super.onStop();
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onStop()");
+	}
+	@Override
+    protected void onDestroy() {
+		super.onDestroy();
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: onDestroy()");
+	}
+	*/
 	@Override
 	public void onTileHit(int column, int row) {
-		Log.v(GameContext.LOG_TAG, "LocalPlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
 		if (ships_remaining > 0) {
 			grid.setTileType(column, row, TileType.SHIP);
 			updateShipsRemaining();
@@ -62,15 +89,15 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 
 	private void updateShipsRemaining() {
 		int ships_on_grid = 0;
-		for (int column = 0; column<GameContext.singleton.GRID_COLUMNS; column++) {
-			for (int row = 0; row<GameContext.singleton.GRID_ROWS; row++) {
+		for (int column = 0; column<BattleshipsApplication.context().GRID_COLUMNS; column++) {
+			for (int row = 0; row<BattleshipsApplication.context().GRID_ROWS; row++) {
 				if (grid.getTileType(column, row) == TileType.SHIP) {
 					ships_on_grid++;
 				}
 			}
 		}
 
-		ships_remaining = GameContext.singleton.MAX_SHIPS - ships_on_grid;
+		ships_remaining = BattleshipsApplication.context().MAX_SHIPS - ships_on_grid;
 		
 		updateShipsRemainingLabel();
 		
@@ -80,20 +107,14 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 	}
 
 	private void allShipsPlaced() {
-		Log.i(GameContext.LOG_TAG, "LocalPlaceShipsActivity: All ships placed");
+		Log.i(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: All ships placed");
 		showWaitingDialog();
 		
-		// Simulate that opponent is ready after 5 seconds
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				opponentReady();
-			}
-		}, 5000);
+		opponentReady();
 	}
 	
 	private void opponentReady() {
-		Log.i(GameContext.LOG_TAG, "LocalPlaceShipsActivity: Opponent ready");
+		Log.i(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity: Opponent ready");
 		if (dialog_abort_warn != null && dialog_abort_warn.isShowing()) {
 			dialog_abort_warn.dismiss();
 		}

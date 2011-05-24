@@ -35,28 +35,59 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity.onCreate()");
-		assert( GameContext.singleton.Comm != null );
-		GameContext.singleton.Comm.setListener( this );
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onCreate()");
+		assert( BattleshipsApplication.context().Comm != null );
+		BattleshipsApplication.context().Comm.setListeningActivity( this );
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.place_ships);
 
-		new Handler();
 		res = getResources();
 
-		ships_remaining = GameContext.singleton.MAX_SHIPS;
+		ships_remaining = BattleshipsApplication.context().MAX_SHIPS;
 		txt_ships_remaining = (TextView) findViewById(R.id.place_ships_txt_ships_remaining);
 		updateShipsRemainingLabel();
 
-		grid = new BattleGrid(this, GameContext.singleton.GRID_COLUMNS, GameContext.singleton.GRID_ROWS);
+		grid = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
 		grid.setListener(this);
 		((FrameLayout) findViewById(R.id.place_ships_grid_frame)).addView(grid);
 	}
-
+	/*
 	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onStart()");
+	}
+	@Override
+    protected void onRestart() {
+		super.onRestart();
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onRestart()");
+	}
+	@Override
+    protected void onResume() {
+		super.onResume();
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onResume()");
+	}
+	@Override
+    protected void onPause() {
+		super.onPause();
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onPause()");
+	}
+	@Override
+    protected void onStop() {
+		super.onStop();
+		BattleshipsApplication.context().Comm.setListeningActivity(null);
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onStop()");
+	}
+	@Override
+    protected void onDestroy() {
+		super.onDestroy();
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onDestroy()");
+	}
+*/
+    @Override
 	public void onTileHit(int column, int row) {
-		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
 		if (ships_remaining > 0) {
 			grid.setTileType(column, row, TileType.SHIP);
 			updateShipsRemaining();
@@ -66,7 +97,7 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	private void updateShipsRemaining() {
 		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
 		
-		ships_remaining = GameContext.singleton.MAX_SHIPS - ships.size();
+		ships_remaining = BattleshipsApplication.context().MAX_SHIPS - ships.size();
 		
 		updateShipsRemainingLabel();
 		
@@ -76,10 +107,10 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	}
 
 	private void allShipsPlaced() {
-		Log.i(GameContext.LOG_TAG, "PlaceShipsActivity: All ships placed");
+		Log.i(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: All ships placed");
 		isReady = true;
 		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
-		GameContext.singleton.Comm.sendShipsPlaced( ships );
+		BattleshipsApplication.context().Comm.sendShipsPlaced( ships );
 		if (opponentReady) {
 			bothReady();
 		} else {
@@ -89,7 +120,7 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	
 	private void opponentReady() {
 		opponentReady = true;
-		Log.i(GameContext.LOG_TAG, "PlaceShipsActivity: Opponent ready");
+		Log.i(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: Opponent ready");
 		if (dialog_abort_warn != null && dialog_abort_warn.isShowing()) {
 			dialog_abort_warn.dismiss();
 		}
@@ -105,13 +136,14 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 		Toast.makeText(this, "Both players ready!", Toast.LENGTH_SHORT).show();
 		finish();
 	}
-
-	private void showWaitingDialog() {
+	
+	private void showAbortDialog() {
 		final DialogInterface.OnClickListener dialog_click_listener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 		        switch (which){
 		        case DialogInterface.BUTTON_POSITIVE:
+		        	BattleshipsApplication.context().Comm.disconnect();
 					dialog.dismiss();
 					PlaceShipsActivity.this.finish();
 		            break;
@@ -123,6 +155,11 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 		    }
 		};
 		
+		dialog_abort_warn = new AlertDialog.Builder(PlaceShipsActivity.this).setMessage(R.string.place_ships_warn_abort_wait).
+		setPositiveButton(android.R.string.yes, dialog_click_listener).setNegativeButton(android.R.string.no, dialog_click_listener).show();
+	}
+
+	private void showWaitingDialog() {
 		dialog_waiting = new ProgressDialog(this);
 		dialog_waiting.setIndeterminate(true);
 		dialog_waiting.setMessage(res.getString(R.string.place_ships_all_ships_placed));
@@ -132,8 +169,7 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				dialog_waiting.dismiss();
-				dialog_abort_warn = new AlertDialog.Builder(PlaceShipsActivity.this).setMessage(R.string.place_ships_warn_abort_wait).
-				setPositiveButton(android.R.string.yes, dialog_click_listener).setNegativeButton(android.R.string.no, dialog_click_listener).show();
+				showAbortDialog();
 			}
 		});
 	}
@@ -150,17 +186,17 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	
 	@Override
 	public void communicationShipsPlaced(List<Point> ships) {
-		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity: Ships placed (amount: "+ships.size()+")");
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: Ships placed (amount: "+ships.size()+")");
 		String places = "";
 		for (Point p: ships) {
 			places += p + ", ";
 		}
-		Log.v(GameContext.LOG_TAG, "PlaceShipsActivity: "+places);
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: "+places);
 		opponentReady();
 	}
 
 	@Override
 	public void onBackPressed() {
-		GameContext.singleton.Comm.disconnect();
+		showAbortDialog();
 	}
 }
