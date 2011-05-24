@@ -13,9 +13,6 @@
 			android:text="@string/place_ships_please_place_ships"
 			android:layout_marginBottom="10dp" android:textColor="@color/navy_brown"
 			android:textSize="20dp"></TextView>
-		<FrameLayout android:id="@+id/place_ships_grid_frame"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginBottom="10dp"></FrameLayout>
 		<TextView android:layout_marginTop="5dp"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:id="@+id/place_ships_lbl_ships_remaining" android:text="@string/place_ships_ships_remaining"
@@ -25,5 +22,8 @@
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:text="@string/place_ships_remaining_ships_formatted"
 			android:textColor="@color/navy_brown" android:textSize="20dp"></TextView>
+		<FrameLayout android:id="@+id/place_ships_grid_frame"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginBottom="10dp"></FrameLayout>
 	</LinearLayout>
 </FrameLayout>
