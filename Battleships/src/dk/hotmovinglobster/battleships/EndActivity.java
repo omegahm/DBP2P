@@ -30,6 +30,7 @@ public class EndActivity extends CommunicationProtocolActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.v(BattleshipsApplication.LOG_TAG, "EndActivity.onCreate()");
+		// Commented out, since while debugging we haven't got any Comm setup
 		//BattleshipsApplication.context().Comm.setListeningActivity( this );
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -58,7 +59,7 @@ public class EndActivity extends CommunicationProtocolActivity {
 			iv.setImageResource(R.drawable.ship_trans);
 		} else {
 			tv.setText(getString(R.string.loose));
-			iv.setImageResource(R.drawable.battleship_hit);
+			iv.setImageResource(R.drawable.battleship_hit_large);
 		}
 		//@id/win_or_loose_text
 		//@id/end_ship

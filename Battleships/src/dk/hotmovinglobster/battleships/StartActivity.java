@@ -103,7 +103,8 @@ public class StartActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(v.getContext(), EndActivity.class);
-				startActivityForResult(i, 0);
+				i.putExtra(BattleshipsApplication.EXTRA_END_WINNER, false);
+				startActivity(i);
 			}
 		});
 	}
