@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/horizon">
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content" 
+	    android:id="@+id/win_or_loose_text"
+	   	android:text="@string/win"
+	    android:textSize="30dp"
+	    android:background="#00000000"
+	    android:textColor="#ff333333"
+	    android:gravity="center"/>
+	<ImageView android:layout_height="wrap_content" android:id="@+id/imageView1" android:layout_width="wrap_content" android:layout_weight="1" android:src="@drawable/ship_trans" android:layout_gravity="center" android:scaleType="centerInside"></ImageView>
+	<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="fill_parent">
+	    <Button android:textSize="20dp" android:text="Play again" android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_weight="1"></Button>
+	    <Button android:textSize="20dp" android:text="New opponent" android:id="@+id/button2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_weight="1"></Button>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_gravity="center">
+        <Button android:textSize="20dp" android:layout_gravity="center" android:text="Exit" android:layout_width="wrap_content" android:id="@+id/btn_end_exit" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+    </LinearLayout>
+</LinearLayout>
