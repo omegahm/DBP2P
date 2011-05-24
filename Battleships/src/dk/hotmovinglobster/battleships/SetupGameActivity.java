@@ -171,7 +171,7 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 
 	@Override
 	public void communicationDisconnected() {
-		Toast.makeText(this, "Disconnected from opponent (HC)", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, getString(R.string.bt_disconnnected), Toast.LENGTH_LONG).show();
 		finish();
 	}
 	

@@ -17,9 +17,11 @@
 		</activity>
 		<activity android:name=".SetupGameActivity" android:screenOrientation="portrait" />
 		<activity android:name=".PlaceShipsActivity" android:screenOrientation="portrait" />
-		<activity android:name=".LocalPlaceShipsActivity" android:label="@string/place_ships_label"
+		<activity android:name=".LocalPlaceShipsActivity"
 				  android:screenOrientation="portrait" />
-		<activity android:name=".TestActivity" android:label="@string/place_ships_label"
+		<activity android:name=".TestActivity"
+				  android:screenOrientation="portrait" />
+		<activity android:name=".EndActivity"
 				  android:screenOrientation="portrait" />
 
 		<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />

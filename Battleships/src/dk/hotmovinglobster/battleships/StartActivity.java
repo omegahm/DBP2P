@@ -68,15 +68,6 @@ public class StartActivity extends Activity {
 */
 	private void initializeButtons() {
 		
-		((Button)findViewById(R.id.start_place_ships_activity)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(v.getContext(), LocalPlaceShipsActivity.class);
-				startActivityForResult(i, 0);
-			}
-		});
-
-	
 		((Button)findViewById(R.id.start_btn_find_opponent)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -111,13 +102,10 @@ public class StartActivity extends Activity {
 		((Button)findViewById(R.id.start_btn_test)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(v.getContext(), TestActivity.class);
+				Intent i = new Intent(v.getContext(), EndActivity.class);
 				startActivityForResult(i, 0);
 			}
 		});
-
-	
-
 	}
 	
 	@Override
