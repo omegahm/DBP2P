@@ -120,6 +120,4 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		showAbortDialog();
 	}
 	
-
-
 }

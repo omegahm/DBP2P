@@ -54,8 +54,10 @@ public class BattleGrid extends View {
 		
 		TileBackground = new Paint();
 		TileBackground.setColor( Color.WHITE );
+		TileBackground.setAlpha(160);
 		TileBorder = new Paint();
 		TileBorder.setColor( Color.BLACK );
+		TileBorder.setAlpha(160);
 		initializeTiles();
 	}
 
@@ -134,14 +136,22 @@ public class BattleGrid extends View {
 
 	@Override
 	public void onDraw(Canvas c) {
+		int width  = getMeasuredWidth();
+		int height = getMeasuredHeight();
 		
-		c.drawPaint(TileBorder);
-		//		c.drawPaint()
-
+		//c.drawPaint(TileBackground);
+		
+		for (int col = 1; col < mColumns; col++ ) {
+			c.drawLine(0, col*mTileWidth, height, col*mTileWidth, TileBorder);
+		}
+		for (int row = 1; row < mRows; row++ ) {
+			c.drawLine(row*mTileHeight, 0, row*mTileHeight, width, TileBorder);
+		}
+		
 		for (int column=0; column<mColumns; column++) {
 			for (int row=0; row<mRows; row++) {
 				Rect r = getTileRect(column, row);
-				c.drawRect(r, TileBackground);
+				//c.drawRect(r, TileBackground);
 				Bitmap tile = tileTypeToBitmap( tiles[column][row] );
 				if (tile != null) {
 					
@@ -149,6 +159,7 @@ public class BattleGrid extends View {
 				}
 			}
 		}
+		
 	}
 	
 	private Bitmap tileTypeToBitmap(TileType tt) {

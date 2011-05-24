@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent" android:background="@drawable/horizon" android:orientation="vertical"> 
-    <ImageView android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center" android:src="@drawable/select_rules"></ImageView>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/setup_game_grid_size" android:textSize="20dp" android:textColor="@color/navy_brown"></TextView>
-    <Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/setup_game_grid_size" android:prompt="@string/setup_game_select_grid_size"></Spinner>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20dp" android:textColor="@color/navy_brown" android:text="@string/setup_game_amount_single_ships"></TextView>
-    <Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/setup_game_single_tile_ships" android:prompt="@string/setup_game_select_single_tile_ships"></Spinner>
-    <Button android:id="@+id/setup_game_btn_ok" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal|bottom" android:text="@string/setup_game_accept_rules" android:textSize="20dp"></Button>
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/horizon">
+	<ImageView android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:src="@drawable/ship_trans"
+		android:layout_gravity="center" android:scaleType="centerInside"></ImageView>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:background="@color/background_overlay_dark">
+		<ImageView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:layout_gravity="center"
+			android:src="@drawable/select_rules"></ImageView>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/setup_game_grid_size"
+			android:textSize="20dp" android:textColor="@color/navy_brown"></TextView>
+		<Spinner android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/setup_game_grid_size"
+			android:prompt="@string/setup_game_select_grid_size"></Spinner>
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:textSize="20dp"
+			android:textColor="@color/navy_brown" android:text="@string/setup_game_amount_single_ships"></TextView>
+		<Spinner android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/setup_game_single_tile_ships"
+			android:prompt="@string/setup_game_select_single_tile_ships"></Spinner>
+		<Button android:id="@+id/setup_game_btn_ok"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal|bottom" android:text="@string/setup_game_accept_rules"
+			android:textSize="20dp"></Button>
+	</LinearLayout>
+</FrameLayout>

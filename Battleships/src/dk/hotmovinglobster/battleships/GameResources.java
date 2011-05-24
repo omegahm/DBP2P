@@ -11,6 +11,8 @@ public class GameResources {
 	public final Bitmap HitTile;
 	public final Bitmap MissTile;
 	public final Bitmap ShipTile;
+	
+	public final Bitmap GridBackground = null;
 
 	
 	private final Context mContext;
