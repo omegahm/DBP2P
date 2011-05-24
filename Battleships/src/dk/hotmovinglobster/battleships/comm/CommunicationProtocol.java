@@ -6,7 +6,6 @@ import java.util.List;
 import android.util.Log;
 import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.BattleshipsApplication;
-import dk.hotmovinglobster.battleships.GameContext;
 import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
 import dk.hotmovinglobster.dustytuba.api.BtAPIListener;
 import dk.hotmovinglobster.dustytuba.api.BtConnection;

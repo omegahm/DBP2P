@@ -1,5 +1,9 @@
 package dk.hotmovinglobster.battleships;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.comm.CommunicationProtocol;
 
 public class GameContext {
@@ -10,6 +14,9 @@ public class GameContext {
 	public int MAX_SHIPS;
 	
 	public CommunicationProtocol Comm;
+	
+	public List<Point> myShips = new ArrayList<Point>();
+	public List<Point> opponentShips = new ArrayList<Point>();
 	
 	public GameContext() {
 		GRID_COLUMNS = 6;

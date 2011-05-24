@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 public class GameResources {
@@ -16,8 +15,6 @@ public class GameResources {
 	
 	private final Context mContext;
 	private final Resources res;
-	
-	private BitmapFactory.Options bfOptions;
 	
 	public GameResources(Context context) {
 		Log.v(BattleshipsApplication.LOG_TAG, "GameResources: constructor");

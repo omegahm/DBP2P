@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" android:orientation="vertical" background="@drawable/horizon">
+    <ImageView android:id="@+id/game_image_header" android:layout_width="wrap_content" android:layout_height="wrap_content" src="@drawable/attack"></ImageView>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/place_ships_lbl_ships_remaining" android:text="@string/place_ships_ships_remaining" android:layout_marginBottom="5dp"></TextView>
+    <TextView android:id="@+id/game_txt_ships_remaining" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/place_ships_remaining_ships_formatted"></TextView>
+    <FrameLayout android:id="@+id/game_grid_frame" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginBottom="10dp"></FrameLayout>
+</LinearLayout>
