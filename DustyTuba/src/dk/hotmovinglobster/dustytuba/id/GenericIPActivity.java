@@ -168,7 +168,7 @@ public class GenericIPActivity extends Activity {
 
 					btConn = bcm.getConnectionObject();
 				}
-				
+
 				BtConnection.setConnection(btConn);
 
 				if (btConn != null) {

@@ -40,7 +40,7 @@ public class BtConnection {
 	 * Instantiate a new Bluetooth Connection object. Only to be used internally
 	 * 
 	 */
-	public BtConnection (BluetoothSocket socket, boolean isServer){
+	public BtConnection(BluetoothSocket socket, boolean isServer) {
 		mSocket = socket;
 		InputStream tmpIn = null;
 		OutputStream tmpOut = null;
@@ -51,7 +51,8 @@ public class BtConnection {
 		try {
 			tmpIn = socket.getInputStream();
 			tmpOut = socket.getOutputStream();
-		} catch (IOException e) { }
+		} catch (IOException e) {
+		}
 
 		mInStream = tmpIn;
 		mOutStream = tmpOut;
@@ -60,56 +61,66 @@ public class BtConnection {
 	}
 
 	public void startListening() {
-		synchronized(thread) {
+		synchronized (thread) {
 			thread.start();
 		}
 	}
 
 	public void stopListening() {
-		synchronized(thread) {
+		synchronized (thread) {
 			thread.stop();
 		}
 	}
 
-	/** 
+	/**
 	 * Sets the btAPIListener for this connection
-	 * @param l The listener to set 
+	 * 
+	 * @param l
+	 *            The listener to set
 	 */
 	public void setListener(BtAPIListener l) {
 		setListener(l, new Handler());
 	}
 
-	/** 
-	 * Sets the btAPIListener for this connection defining a Handler on which the calls will be made
-	 * @param l The listener to set
-	 * @param handler A handler to which the calls will be made 
+	/**
+	 * Sets the btAPIListener for this connection defining a Handler on which
+	 * the calls will be made
+	 * 
+	 * @param l
+	 *            The listener to set
+	 * @param handler
+	 *            A handler to which the calls will be made
 	 */
 	public void setListener(BtAPIListener l, Handler handler) {
 		mListener = l;
 		mHandler = handler;
 	}
 
-	/** 
+	/**
 	 * Send a chunk to the other user
-	 * @param chunk The data to send
+	 * 
+	 * @param chunk
+	 *            The data to send
 	 */
-	public void send(final byte[] chunk)
-	{
-		
-		Log.v(BtAPI.LOG_TAG, "BtConnection: Asked to send "+chunk.length+" bytes ("+ByteArrayTools.toString(chunk)+")");
+	public void send(final byte[] chunk) {
+
+		Log.v(BtAPI.LOG_TAG, "BtConnection: Asked to send " + chunk.length
+				+ " bytes (" + ByteArrayTools.toString(chunk) + ")");
 		thread.write(chunk);
 	}
 
 	/**
 	 * Send a string to the other user
-	 * @param str The string to send
+	 * 
+	 * @param str
+	 *            The string to send
 	 */
 	public void send(final String str) {
-		send( ByteArrayTools.toByta( str ) );
+		send(ByteArrayTools.toByta(str));
 	}
 
-	/** 
-	 * Disconnect from the API service 
+	/**
+	 * Disconnect from the API service
 	 */
 	public void disconnect() {
 		Log.v(BtAPI.LOG_TAG, "BtConnection: disconnect() called");
@@ -118,20 +129,22 @@ public class BtConnection {
 		try {
 			mInStream.close();
 		} catch (IOException e) {
-			Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on closing mInStream");
+			Log.w(BtAPI.LOG_TAG,
+					"BtConnection: IOException on closing mInStream");
 		}
 		try {
 			mOutStream.close();
 		} catch (IOException e) {
-			Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on closing mOutStream");
+			Log.w(BtAPI.LOG_TAG,
+					"BtConnection: IOException on closing mOutStream");
 		}
 		try {
 			mSocket.close();
 		} catch (IOException e) {
 			Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on closing mSocket");
 		}
-		if ( mListener != null ) {
-			mListener.btDisconnect( BtDisconnectReason.END_USER_QUIT );
+		if (mListener != null) {
+			mListener.btDisconnect(BtDisconnectReason.END_USER_QUIT);
 		}
 
 	}
@@ -141,7 +154,7 @@ public class BtConnection {
 		}
 
 		public void run() {
-			byte[] buffer = new byte[1024];  // buffer store for the stream
+			byte[] buffer = new byte[1024]; // buffer store for the stream
 			int bytes; // bytes returned from read()
 
 			// Keep listening to the InputStream until an exception occurs
@@ -153,7 +166,10 @@ public class BtConnection {
 					for (int i = 0; i < bytes; i++) {
 						result[i] = buffer[i];
 					}
-					Log.v(BtAPI.LOG_TAG, "BtConnection: Read "+bytes+" bytes from InputStream ("+ByteArrayTools.toString(result)+")");
+					Log.v(BtAPI.LOG_TAG,
+							"BtConnection: Read " + bytes
+									+ " bytes from InputStream ("
+									+ ByteArrayTools.toString(result) + ")");
 					final byte[] finalResult = result;
 					// Send the obtained bytes to the UI Activity
 					mHandler.post(new Runnable() {
@@ -173,23 +189,32 @@ public class BtConnection {
 
 		/* Call this from the main Activity to send data to the remote device */
 		public void write(byte[] bytes) {
-			synchronized(this) {
+			synchronized (this) {
 				try {
 					mOutStream.write(bytes);
 				} catch (IOException e) {
-					Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on BluetoothThread.write()");
+					Log.w(BtAPI.LOG_TAG,
+							"BtConnection: IOException on BluetoothThread.write()");
 				}
 			}
 		}
-		
+
 		public void cancel() {
 			try {
 				mSocket.close();
 			} catch (IOException e) {
-				Log.w(BtAPI.LOG_TAG, "BtConnection: IOException on BluetoothThread.cancel()");
+				Log.w(BtAPI.LOG_TAG,
+						"BtConnection: IOException on BluetoothThread.cancel()");
 			}
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return "DustyTuba Bluetooth Connection to "
+				+ mSocket.getRemoteDevice().getName() + " ("
+				+ mSocket.getRemoteDevice().getAddress() + ")";
 	}
 
 }

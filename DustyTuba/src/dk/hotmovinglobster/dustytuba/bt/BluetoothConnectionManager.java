@@ -69,13 +69,16 @@ public class BluetoothConnectionManager {
 	private void startListeningForConnection() {
 		Log.v(BtAPI.LOG_TAG, "BluetoothConnectionManager: startListeningForConnection()");
 		acceptThread.start();
-		
 	}
 	
 	private void manageConnectedServerSocket(BluetoothSocket socket) {
 		synchronized (this) {
-			log_i("Connected as server to " + socket.getRemoteDevice().getAddress());
-			mConnObject = new BtConnection(socket, true);
+    		if (connectedAs == ConnectedAs.None) {
+    			connectThread.cancel();
+        		connectedAs = ConnectedAs.Server;
+        		log_i("Connected as server to " + socket.getRemoteDevice().getAddress());
+        		mConnObject = new BtConnection(socket, true);
+    		}
 		}
 	}
 	
@@ -87,8 +90,12 @@ public class BluetoothConnectionManager {
 
 	public void manageConnectedClientSocket(BluetoothSocket socket) {
 		synchronized (this) {
-			log_i("Connected as client to " + socket.getRemoteDevice().getAddress());
-			mConnObject = new BtConnection(socket, false);
+    		if (connectedAs == ConnectedAs.None) {
+    			acceptThread.cancel();
+    			connectedAs = ConnectedAs.Client;
+				log_i("Connected as client to " + socket.getRemoteDevice().getAddress());
+				mConnObject = new BtConnection(socket, false);
+    		}
 		}
 	}
 	
@@ -134,23 +141,18 @@ public class BluetoothConnectionManager {
 	            } catch (IOException e) {
 	                break;
 	            }
-            	synchronized(BluetoothConnectionManager.this) {
-		            // If a connection was accepted
-		            if (socket != null) {
-		        		if (connectedAs == ConnectedAs.None) {
-		        			connectThread.cancel();
-		            		connectedAs = ConnectedAs.Server;
-			                manageConnectedServerSocket(socket);
-		            	}
-		            }
+	            
+	            // If a connection was accepted
+	            if (socket != null) {
+	                manageConnectedServerSocket(socket);
+	            }
 
-	                try {
-						mBTServerSocket.close();
-					} catch (IOException e) {
-						log_e( "IOException on closing Bluetooth server socket" );
-					}
-	                break;
-            	}
+                try {
+					mBTServerSocket.close();
+				} catch (IOException e) {
+					log_e( "IOException on closing Bluetooth server socket" );
+				}
+                break;
             }
         }
 	    
@@ -199,23 +201,13 @@ public class BluetoothConnectionManager {
 	            return;
 	        }
 
-        	synchronized(BluetoothConnectionManager.this) {
-        		if (connectedAs == ConnectedAs.None) {
-        			acceptThread.cancel();
-        			connectedAs = ConnectedAs.Client;
-        			manageConnectedClientSocket(mBTClientSocket);			
-        		}
-        	}
+   			manageConnectedClientSocket(mBTClientSocket);			
 	        // Do work to manage the connection (in a separate thread)
         	
 		}
 
 		public void cancel() {
-	        try {
-	            mBTClientSocket.close();
-	        } catch (IOException e) {
-				log_e( "IOException on closing Bluetooth client socket" );
-	        }
+        	Log.v(BtAPI.LOG_TAG, "BluetoothConnectionManager::ConnectThread: cancel()");
 	    }
 	}
 
