@@ -109,9 +109,8 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	}
 
 	@Override
-	public void onTileHit(int column, int row) {
+	public void onSingleTileHit(Point point) {
 		if (attacking) {
-			Point point = new Point(column, row);
 			TileType tt = opponentGrid.getTileType(point);
 			if (tt == TileType.EMPTY) {
 				boolean hit = false;
@@ -202,6 +201,17 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	@Override
 	public void onBackPressed() {
 		showAbortDialog();
+	}
+
+	@Override
+	public boolean allowMultiSelectionBetween(Point tile1, Point tile2) {
+		return false;
+	}
+
+	@Override
+	public void onMultiTileHit(Point tile1, Point tile2) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

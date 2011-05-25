@@ -86,10 +86,10 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	}
 */
     @Override
-	public void onTileHit(int column, int row) {
-		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
+	public void onSingleTileHit(Point p) {
+		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity.onTileHit(" + p.column + ", " + p.row + ")");
 		if (ships_remaining > 0) {
-			grid.setTileType(column, row, TileType.SHIP);
+			grid.setTileType(p, TileType.SHIP);
 			updateShipsRemaining();
 		}
 	}
@@ -197,5 +197,15 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	@Override
 	public void onBackPressed() {
 		showAbortDialog();
+	}
+	@Override
+	public boolean allowMultiSelectionBetween(Point tile1, Point tile2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public void onMultiTileHit(Point tile1, Point tile2) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -25,5 +25,9 @@
 		<FrameLayout android:id="@+id/place_ships_grid_frame"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginBottom="10dp"></FrameLayout>
+		<Button android:id="@+id/place_ships_btn_undo"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="@string/place_ships_undo" android:textColor="@color/navy_brown"
+			android:textSize="20dp" />
 	</LinearLayout>
 </FrameLayout>

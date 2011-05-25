@@ -8,9 +8,13 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.BattleGrid.TileType;
 
 /**
@@ -45,6 +49,13 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 		grid = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
 		grid.setListener(this);
 		((FrameLayout) findViewById(R.id.place_ships_grid_frame)).addView(grid);
+		
+		((Button)findViewById(R.id.place_ships_btn_undo)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				grid.undo();
+			}
+		});
 	}
 /*
 	@Override
@@ -79,10 +90,10 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 	}
 	*/
 	@Override
-	public void onTileHit(int column, int row) {
-		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity.onTileHit(" + column + ", " + row + ")");
+	public void onSingleTileHit(Point p) {
+		Log.v(BattleshipsApplication.LOG_TAG, "LocalPlaceShipsActivity.onTileHit(" + p.column + ", " + p.row + ")");
 		if (ships_remaining > 0) {
-			grid.setTileType(column, row, TileType.SHIP);
+			grid.setTileType(p, TileType.SHIP);
 			updateShipsRemaining();
 		}
 	}
@@ -159,5 +170,36 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 
 	private void updateShipsRemainingLabel() {
 		txt_ships_remaining.setText( res.getString( R.string.place_ships_remaining_ships_formatted, ships_remaining ) );
+	}
+	@Override
+	public boolean allowMultiSelectionBetween(Point tile1, Point tile2) {
+		if (tile1.equals(tile2))  {
+			return true;
+		}
+		
+		for ( Point p: tile1.pointsInStraightLineTo( tile2 ) ) {
+			if ( grid.getTileType( p ) != TileType.EMPTY ) {
+				return false;
+			}
+		}
+
+		return tile1.lengthTo(tile2) <= 5;
+	}
+	@Override
+	public void onMultiTileHit(Point tile1, Point tile2) {
+		
+		Log.v(BattleshipsApplication.LOG_TAG, "Hit tiles ("+tile1.lengthTo(tile2)+"): " + tile1.pointsInStraightLineTo(tile2));
+		
+		TileType firstTileType = grid.getTileType( tile1 );
+		
+		if ( tile1.equals(tile2) && firstTileType != TileType.EMPTY) {
+			if ( firstTileType == TileType.SHIP ) {
+				grid.setTileType( tile1, TileType.HIT );
+			}
+		} else {
+			grid.placeShipInTiles( tile1.pointsInStraightLineTo( tile2 ), BattleshipsApplication.resources().getBattleship( tile1.lengthTo( tile2 ) ) );
+		}
+		// TODO Auto-generated method stub
+		
 	}
 }

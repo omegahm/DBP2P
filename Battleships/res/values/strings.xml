@@ -19,4 +19,5 @@
     <string name="setup_game_select_single_tile_ships">Please select amount of single tile ships</string>
     <string name="setup_game_accept_rules">Accept rules</string>
     <string name="bt_disconnnected">Connection to opponent lost.</string>
+    <string name="place_ships_undo">Undo</string>
 </resources>

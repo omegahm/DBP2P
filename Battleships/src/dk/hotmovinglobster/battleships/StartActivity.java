@@ -102,7 +102,7 @@ public class StartActivity extends Activity {
 		((Button)findViewById(R.id.start_btn_test)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(v.getContext(), EndActivity.class);
+				Intent i = new Intent(v.getContext(), LocalPlaceShipsActivity.class);
 				i.putExtra(BattleshipsApplication.EXTRA_END_WINNER, false);
 				startActivity(i);
 			}

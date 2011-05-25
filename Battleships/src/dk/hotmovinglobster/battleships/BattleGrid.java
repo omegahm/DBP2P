@@ -2,6 +2,7 @@ package dk.hotmovinglobster.battleships;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,11 +41,38 @@ public class BattleGrid extends View {
 	
 	public enum TileType { EMPTY, SHIP, HIT, MISS };
 	private TileType[][] tiles;
+	
+	private Bitmap[][] tileBitmaps;
+	private List<BattleshipPosition> battleshipPositions = new ArrayList<BattleshipPosition>();
 
 	private Paint TileBackground;
 	private Paint TileBorder;
+	private Paint TileHover;
 	
-	private BattleGridListener listener;
+	private BattleGridListener mListener;
+	
+	/**
+	 * The tile that the user pressed down last.
+	 * 
+	 * Used to keep track of dragging over multiple tiles
+	 */
+	private Point tileFirstPressed;
+	
+	/**
+	 * The tile that the user touched last.
+	 */
+	private Point tileLastTouched;
+	
+	/**
+	 * Did the mListener allow for multi selection between tileLastPressed
+	 * and tileLastTouched?
+	 */
+	private boolean listenerAllowedMultiSelection = false;
+	
+	/**
+	 * Allow for multiple tile selection
+	 */
+	private boolean allowMultiSelection = true;
 
 	public BattleGrid(Context context, int columns, int rows) {
 		super(context);
@@ -58,6 +86,9 @@ public class BattleGrid extends View {
 		TileBorder = new Paint();
 		TileBorder.setColor( Color.BLACK );
 		TileBorder.setAlpha(160);
+		TileHover = new Paint();
+		TileHover.setColor( Color.YELLOW );
+		TileHover.setAlpha(128);
 		initializeTiles();
 	}
 
@@ -68,16 +99,25 @@ public class BattleGrid extends View {
 				tiles[column][row] = TileType.EMPTY;
 			}
 		}
+		tileBitmaps = new Bitmap[mColumns][mRows];
 	}
 
 	public void setListener(BattleGridListener listener) {
-		this.listener = listener;
+		this.mListener = listener;
 	}
 
 	public BattleGridListener getListener() {
-		return listener;
+		return mListener;
 	}
 	
+	public void setAllowMultiSelection(boolean allowMultiSelection) {
+		this.allowMultiSelection = allowMultiSelection;
+	}
+
+	public boolean getAllowMultiSelection() {
+		return allowMultiSelection;
+	}
+
 	public void setTileType(int column, int row, TileType type) {
 		if (tiles[column][row] != type) {
 			tiles[column][row] = type;
@@ -111,7 +151,39 @@ public class BattleGrid extends View {
 		}
 		return result;
 	}
-
+	
+	public boolean undo() {
+		if (battleshipPositions.isEmpty()) {
+			return false;
+		}
+		BattleshipPosition bsp = battleshipPositions.get( battleshipPositions.size() - 1 );
+		battleshipPositions.remove( bsp );
+		
+		for (Point p: bsp.getPosition()) {
+			tiles[p.column][p.row] = TileType.EMPTY;
+			tileBitmaps[p.column][p.row] = null;
+		}
+		
+		invalidate();
+		return true;
+	}
+	
+	public void placeShipInTiles(List<Point> position, Battleship ship) {
+		BattleshipPosition bsp = new BattleshipPosition(ship, position);
+		battleshipPositions.add( bsp );
+		
+		List<Bitmap> bitmaps = bsp.getTileBitmaps();
+		
+		for (int i = 0; i < bsp.getPosition().size(); i++ ) {
+			Point p = bsp.getPosition().get( i );
+			Bitmap bmp = bitmaps.get( i );
+			tileBitmaps[p.column][p.row] = bmp;
+			tiles[p.column][p.row] = TileType.SHIP;
+		}
+		
+		invalidate();
+	}
+	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int maxSize = 0;
@@ -150,30 +222,52 @@ public class BattleGrid extends View {
 		
 		for (int column=0; column<mColumns; column++) {
 			for (int row=0; row<mRows; row++) {
+				Point tile = new Point(column, row);
 				Rect r = getTileRect(column, row);
+				TileType type = getTileType(tile);
 				//c.drawRect(r, TileBackground);
-				Bitmap tile = tileTypeToBitmap( tiles[column][row] );
-				if (tile != null) {
+				
+				boolean drawHover = false;
+				
+				if (tileFirstPressed != null) {
 					
-					c.drawBitmap(tile, null, r, null);
+					if (allowMultiSelection) {
+
+						/* If there is a straight line between the tile first pressed
+						 * and the tile last touched, AND the current tile is in that
+						 * straight line, draw hover here as well */
+						
+						if (listenerAllowedMultiSelection && 
+							tile.isInStraightLineBetween(tileFirstPressed, tileLastTouched)) {
+							drawHover = true;
+						}
+					}
+					/* If multiselection is not allowed only draw hover
+					 * if touching the first tile pressed */
+					
+					else {
+//						if ( tile.equals( tileFirstPressed ) && tile.equals( tileLastTouched ) ) {
+						if ( tile.equals( tileLastTouched ) ) {
+							drawHover = true;
+						}
+					}
+					
+				}
+				
+				if (drawHover) {
+					c.drawRect( r, TileHover );
+				}
+				
+				Bitmap tileBitmap = tileBitmaps[column][row];
+				if (tileBitmap != null) {
+					c.drawBitmap(tileBitmap, null, r, null);
+				}
+				if (type == TileType.HIT) {
+					c.drawBitmap(BattleshipsApplication.resources().Explosion, null, r, null);
 				}
 			}
 		}
 		
-	}
-	
-	private Bitmap tileTypeToBitmap(TileType tt) {
-		switch(tt) {
-			case HIT:
-				return BattleshipsApplication.resources().HitTile;
-			case MISS:
-				return BattleshipsApplication.resources().MissTile;
-			case SHIP:
-				return BattleshipsApplication.resources().ShipTile;
-			case EMPTY:
-			default:
-				return null;
-		}
 	}
 
 	/**
@@ -202,13 +296,72 @@ public class BattleGrid extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e) {
+		int x = (int)e.getX();
+		int y = (int)e.getY();
+		Point tile = getTileWithPoint( x, y );
 		if (e.getAction() == MotionEvent.ACTION_DOWN) {
-			Point tile = getTileWithPoint( (int)e.getX(), (int)e.getY() );
+			Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_DOWN: " + tile);
 			if ( tile != null ) {
-				if ( listener != null )
-					listener.onTileHit( tile.column, tile.row );
+				tileFirstPressed = tile;
+				tileLastTouched = tile;
+				if (allowMultiSelection && mListener != null) {
+					listenerAllowedMultiSelection = mListener.allowMultiSelectionBetween(tile, tile);
+				}
+				postInvalidate();
 				return true;
 			}
+		} else if (e.getAction() == MotionEvent.ACTION_UP) {
+			Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_UP: " + tile);
+//			boolean cancelPress = false;
+			if ( tile != null && mListener != null ) {
+				if ( allowMultiSelection ) {
+					if ( listenerAllowedMultiSelection ) {
+						mListener.onMultiTileHit(tileFirstPressed, tileLastTouched);
+					}
+				} else {
+//					if ( tile.equals( tileFirstPressed ) ) {
+						mListener.onSingleTileHit( tileLastTouched );
+//					}
+				}
+//				cancelPress = true;
+			}/*
+			else {
+				// Check if we are outside of the grid or just hitting a tile border
+				if ( x <= 0 || x >= getMeasuredWidth() || y <= 0 || y >= getMeasuredHeight() ) {
+					cancelPress = true;
+				}
+			}*/
+			
+//			if (cancelPress) {
+			tileFirstPressed = null;
+			tileLastTouched = null;
+			postInvalidate();
+			return true;
+//			}
+		} else if (e.getAction() == MotionEvent.ACTION_CANCEL) {
+			Log.i(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_CANCEL");
+			tileFirstPressed = null;
+			tileLastTouched = null;
+			postInvalidate();
+			return true;
+		} else if (e.getAction() == MotionEvent.ACTION_OUTSIDE) {
+			Log.i(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_OUTSIDE");
+			tileFirstPressed = null;
+			tileLastTouched = null;
+			postInvalidate();
+			return true;
+		} else if (e.getAction() == MotionEvent.ACTION_MOVE) {
+			if ( tile != null && tileLastTouched != null && !tile.equals(tileLastTouched) ) {
+				tileLastTouched = tile;
+				if (allowMultiSelection && mListener != null && tileFirstPressed != null && tile.sharesColumnOrRowWith( tileFirstPressed )) {
+					Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: go ask listener for multi selection");
+					listenerAllowedMultiSelection = mListener.allowMultiSelectionBetween(tileFirstPressed, tileLastTouched);
+				} else {
+					listenerAllowedMultiSelection = false;
+				}
+				postInvalidate();
+			}
+			return true;
 		}
 		return super.onTouchEvent(e);
 	}
@@ -239,5 +392,187 @@ public class BattleGrid extends View {
 			return false;
 		}
 		
+		/**
+		 * Determines if the point is in a straight line between two other points
+		 */
+		public boolean isInStraightLineBetween(Point p1, Point p2) {
+			// Vertical line
+			if (p1.column == p2.column && p1.column == this.column) {
+				return between(this.row, p1.row, p2.row);
+			}
+			// Horizontal line
+			else if (p1.row == p2.row && p1.row == this.row) {
+				return between(this.column, p1.column, p2.column);
+			}
+			
+			else return false;
+		}
+		
+		/**
+		 * Returns the points in a straight line between the point and
+		 * the given point p.
+		 * 
+		 * If the points are not in a straight line, an empty list is returned.
+		 * 
+		 * Both end points are included, i.e. if the point is equal to p, a
+		 * list containing only the point is returned
+		 */
+		public List<Point> pointsInStraightLineTo(Point p) {
+			List<Point> result = new ArrayList<Point>();
+			// Vertical line
+			if (this.column == p.column) {
+				if (this.row < p.row) {
+					for (int r=this.row; r<=p.row; r++) {
+						result.add( new Point( this.column, r ) );
+					}
+				} else {
+					for (int r=this.row; r>=p.row; r--) {
+						result.add( new Point( this.column, r ) );
+					}
+				}
+			}
+			// Horizontal line
+			else if (this.row == p.row) {
+				if (this.column < p.column) {
+					for (int c=this.column; c<=p.column; c++) {
+						result.add( new Point( c, this.row ) );
+					}
+				} else {
+					for (int c=this.column; c>=p.column; c--) {
+						result.add( new Point( c, this.row ) );
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		/**
+		 * Determines if the point is in the same column or row as
+		 * the given point p
+		 */
+		public boolean sharesColumnOrRowWith(Point p) {
+			Log.d(BattleshipsApplication.LOG_TAG, "BattleGrid::Point: sharedColumn " + this + ", " + p + ", " +(this.column==p.column || this.row==p.row));
+			return (this.column==p.column || this.row==p.row);
+		}
+		
+		/**
+		 * Calculates distance to another point. Returns 1 for same point
+		 * 
+		 * Equals ( row difference + column difference + 1 )
+		 */
+		public int lengthTo(Point p) {
+			return java.lang.Math.abs( this.column - p.column ) +
+				   java.lang.Math.abs( this.row - p.row ) + 1;
+		}
+		
+		/**
+		 * Is i between a and b? (Both included)
+		 * @param i
+		 * @param a
+		 * @param b
+		 * @return
+		 */
+		private boolean between(int i, int a, int b) {
+			if (a>b)
+				return (i>=b && i<=a);
+			else
+				return (i>=a && i<=b);
+		}
+		
+	}
+	
+	private class BattleshipPosition {
+		
+		private final Battleship ship;
+		private final List<Point> position;
+		
+		private List<Bitmap> rotatedBitmaps;
+		
+		public static final int RIGHT = 0;
+		public static final int UP = 1;
+		public static final int LEFT = 2;
+		public static final int DOWN = 3;
+		private int orientation;
+		
+		public BattleshipPosition(Battleship ship, List<Point> position) {
+			this.ship = ship;
+			this.position = position;
+			assert(ship.getLength() == position.size());
+			decideOrientation();
+		}
+		
+		public Battleship getShip() {
+			return ship;
+		}
+		
+		public List<Point> getPosition() {
+			return position;
+		}
+		
+		public int getOrientation() {
+			return orientation;
+		}
+		
+		public List<Bitmap> getTileBitmaps() {
+			if (rotatedBitmaps == null) {
+				int length = ship.getLength();
+				rotatedBitmaps = new ArrayList<Bitmap>();
+				rotatedBitmaps.add( getRotatedBitmap(ship.getStartTile()) );
+				if (length == 1)
+					return rotatedBitmaps;
+				rotatedBitmaps.add( getRotatedBitmap(ship.getMiddleTile1()) );
+				if (length == 2)
+					return rotatedBitmaps;
+				rotatedBitmaps.add( getRotatedBitmap(ship.getMiddleTile2()) );
+				if (length == 3)
+					return rotatedBitmaps;
+				rotatedBitmaps.add( getRotatedBitmap(ship.getMiddleTile3()) );
+				if (length == 4)
+					return rotatedBitmaps;
+				rotatedBitmaps.add( getRotatedBitmap(ship.getEndTile()) );
+			}
+			return rotatedBitmaps;
+		}
+		
+		private Bitmap getRotatedBitmap(RotatableBitmap rbmp) {
+			switch(orientation) {
+				case UP:
+					return rbmp.getRotated90();
+				case LEFT:
+					return rbmp.getRotated180();
+				case DOWN:
+					return rbmp.getRotated270();
+				case RIGHT:
+					default:
+					return rbmp.getOriginal();
+			}
+		}
+		
+		private void decideOrientation() {
+			Point first = position.get( 0 );
+			Point last = position.get( position.size() - 1 );
+			
+			// horizontal
+			if (first.row == last.row) {
+				if (first.column < last.column) {
+					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Right");
+					orientation = RIGHT;
+				} else {
+					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Left");
+					orientation = LEFT;
+				}
+			}
+			// Else, assume vertital
+			else {
+				if (first.row <= last.row) {
+					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Up");
+					orientation = UP;
+				} else {
+					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Down");
+					orientation = DOWN;
+				}
+			}
+		}
 	}
 }

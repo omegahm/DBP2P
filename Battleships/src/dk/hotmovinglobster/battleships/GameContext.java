@@ -19,8 +19,8 @@ public class GameContext {
 	public List<Point> opponentShips = new ArrayList<Point>();
 	
 	public GameContext() {
-		GRID_COLUMNS = 6;
-		GRID_ROWS = 6;
+		GRID_COLUMNS = 8;
+		GRID_ROWS = 8;
 		MAX_SHIPS = 5;
 	}
 	
