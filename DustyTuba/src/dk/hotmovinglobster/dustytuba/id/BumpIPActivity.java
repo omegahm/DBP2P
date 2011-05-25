@@ -1,19 +1,22 @@
 package dk.hotmovinglobster.dustytuba.id;
 
-import com.bumptech.bumpapi.*;
-
-import dk.hotmovinglobster.dustytuba.api.BtAPI;
-import dk.hotmovinglobster.dustytuba.tools.ByteArrayList;
-import dk.hotmovinglobster.dustytuba.tools.ByteArrayTools;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.bumptech.bumpapi.BumpAPI;
+import com.bumptech.bumpapi.BumpAPIListener;
+import com.bumptech.bumpapi.BumpConnection;
+import com.bumptech.bumpapi.BumpDisconnectReason;
+
+import dk.hotmovinglobster.dustytuba.api.BtAPI;
+import dk.hotmovinglobster.dustytuba.tools.ByteArrayList;
+import dk.hotmovinglobster.dustytuba.tools.ByteArrayTools;
 
 public class BumpIPActivity extends Activity implements BumpAPIListener, OnCancelListener {
 
@@ -23,19 +26,17 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
 	private ByteArrayList protocolBuffer = new ByteArrayList(64);
 	private static final byte PROTOCOL_VERSION = 0;
 	private static final byte PROTOCOL_BLUETOOTH_MAC = 1;
-	private static final byte PROTOCOL_SERVER_RANDOM_NUMBER = 2;
+	//private static final byte PROTOCOL_SERVER_RANDOM_NUMBER = 2;
 	//private static final byte PROTOCOL_BLUETOOTH_NAME = 3;
 	// TODO: Decide whether we're using the BYTES or ENUM. No need for both?
 	
 	/* BUMP */
 	private int otherVersion = -1;
-	private java.util.Random rnd = new java.util.Random();
-//	private float serverRandomNumber = rnd.nextFloat();
-//	private float otherServerRandomNumber;
+
 	private BumpConnection bConn = null;
 	private ProgressDialog connectionSetupDialog;
 	
-	private Resources res;
+	//private Resources res;
 	private String otherBluetoothMAC;
 	
 	
@@ -44,13 +45,14 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
     	super.onCreate(savedInstanceState);
     	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Created");
     	
-    	res = getResources();
+    	//res = getResources();
     	
     	Intent thisIntent = getIntent();
     	Log.v(BtAPI.LOG_TAG, "BumpIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
 
     	Intent i = new Intent( this, com.bumptech.bumpapi.BumpAPI.class );
     	i.replaceExtras( thisIntent.getExtras() );
+    	i.putExtra(BumpAPI.EXTRA_USER_NAME, BtAPI.getBluetoothName());
     	startActivityForResult(i, 0);
     }
     
@@ -65,6 +67,7 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
     	if (resultCode == RESULT_CANCELED) {
         	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: cancel)");
         	setResult( RESULT_CANCELED );
+        	finish();
     	} else if (resultCode == RESULT_OK) {
         	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: OK)");
         	Log.v(BtAPI.LOG_TAG, "BumpIPActivity: with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
@@ -74,6 +77,7 @@ public class BumpIPActivity extends Activity implements BumpAPIListener, OnCance
     	} else {
         	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Bump activity returned (Result: "+resultCode+")");
     		setResult( resultCode );
+    		finish();
     	}
     	
 //    	Log.d(BtAPI.LOG_TAG, "BumpIPActivity: Finishing");

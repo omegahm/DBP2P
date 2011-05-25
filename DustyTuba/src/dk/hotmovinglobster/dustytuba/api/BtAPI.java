@@ -1,11 +1,15 @@
 package dk.hotmovinglobster.dustytuba.api;
 
-import dk.hotmovinglobster.dustytuba.id.*;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import dk.hotmovinglobster.dustytuba.id.BumpIPActivity;
+import dk.hotmovinglobster.dustytuba.id.FakeIPActivity;
+import dk.hotmovinglobster.dustytuba.id.GenericIPActivity;
+import dk.hotmovinglobster.dustytuba.id.ManualIPActivity;
+import dk.hotmovinglobster.dustytuba.id.MultipleIPActivity;
+import dk.hotmovinglobster.dustytuba.id.PairedIPActivity;
 
 /** 
  * Setups and hands off connection 
@@ -174,7 +178,6 @@ public class BtAPI {
 	public static int res(final Context context, final String type, final String name) {
 		final String pkg = context.getApplicationInfo().packageName;
 		final int identifier = context.getResources().getIdentifier(name, type, pkg);
-		Log.v(LOG_TAG, "BtAPI.res: "+type+"."+name+": " + identifier);
 		return identifier;
 	}
 	
@@ -195,6 +198,21 @@ public class BtAPI {
 			return bta.getAddress(); // Requires BT activated...
 		} else {
 			return "00:00:00:00:00:00";
+		}
+	}
+
+	/**
+	 * Fetch the name of this Bluetooth adapter.
+	 * @return this device's Bluetooth name
+	 */
+	public static String getBluetoothName() {
+		// TODO: Handle bta == null if no bluetooth adapter on device (e.g. emulator)
+		BluetoothAdapter bta = BluetoothAdapter.getDefaultAdapter();
+		
+		if (bta.isEnabled()) {
+			return bta.getName(); // Requires BT activated...
+		} else {
+			return "Unknown";
 		}
 	}
 

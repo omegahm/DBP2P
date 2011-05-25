@@ -1,8 +1,5 @@
 package dk.hotmovinglobster.battleships;
 
-import java.util.List;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +13,6 @@ import android.widget.Toast;
 
 import com.bumptech.bumpapi.BumpAPI;
 
-import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.comm.CommunicationProtocol;
 import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 import dk.hotmovinglobster.dustytuba.api.BtAPI;

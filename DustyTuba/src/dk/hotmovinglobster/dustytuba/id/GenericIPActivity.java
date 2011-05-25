@@ -3,8 +3,11 @@ package dk.hotmovinglobster.dustytuba.id;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import dk.hotmovinglobster.dustytuba.api.BtAPI;
@@ -34,12 +37,17 @@ public class GenericIPActivity extends Activity {
 	
 	private Intent thisIntent;
 	private String ipClass;
+	
+	private Handler mHandler;
 
 //	private static final String LOG_TAG = "APITest:GenericIPActivity: ";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	
+    	mHandler = new Handler();
+    	
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
     	Log.d(BtAPI.LOG_TAG, "GenericIPActivity: Created");
     	thisIntent = getIntent();
@@ -100,10 +108,15 @@ public class GenericIPActivity extends Activity {
 					case RESULT_OK:
 			        	Log.v(BtAPI.LOG_TAG, "Reason: OK");
 			    		Log.v(BtAPI.LOG_TAG, "with data (Size "+data.getExtras().size()+": "+data.getExtras().keySet()+")");
-			    		String other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
+			    		final String other_mac = data.getStringExtra(BtAPI.EXTRA_IP_MAC);
 			    		Log.v(BtAPI.LOG_TAG, "Other MAC address: " + other_mac);
 			    		// Identity received, start BT connection
-			    		startBT(other_mac);
+			    		mHandler.post(new Runnable() {
+							@Override
+							public void run() {
+					    		startBT(other_mac);
+							}
+						});
 			        	break;
 		    	}
 				break;
@@ -128,6 +141,14 @@ public class GenericIPActivity extends Activity {
 	private void startBT(final String other_mac) {
 		final ProgressDialog dialog = ProgressDialog.show(this, "", 
                 getResources().getString( BtAPI.res(this, "string", "dustytuba_setting_up_connection") ), true);
+		dialog.setCancelable( true );
+		dialog.setOnCancelListener( new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				setResult(RESULT_CANCELED);
+				finish();				
+			}
+		});
 		dialog.show();
 		// FIXME: HACK: Not the proper way to go about this, but it will do for now...
 		final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
@@ -148,26 +169,35 @@ public class GenericIPActivity extends Activity {
 			
 			@Override
 			public void run() {
-				BluetoothConnectionManager bcm = new BluetoothConnectionManager(other_mac, BT_UUID, BT_SDP_NAME);
+				BluetoothConnectionManager bcm = new BluetoothConnectionManager(GenericIPActivity.this, other_mac, BT_UUID, BT_SDP_NAME);
 				bcm.setupConnection();
 				
 				BtConnection btConn = null;
 				
 				final int pollInterval = 200;
-				final int pollTimeout = 5000;
+//				final int pollTimeout = 5000;
 				int pollCount = 0;
 				
+				Log.v(BtAPI.LOG_TAG, "GenericIPActivity: Thread: Entering poll loop");
+				
 				// Repeat until connection acquired or timeout time reached
-				while (btConn == null && pollCount * pollInterval < pollTimeout) {
-					try {
+//				while ( !bcm.isDone() || pollCount * pollInterval < pollTimeout ) {
+				while ( !bcm.isDone() ) {
+										try {
+//						Log.v(BtAPI.LOG_TAG, "GenericIPActivity: Thread: In loop, about to sleep... (pollCount="+pollCount+")");
 						Thread.sleep(pollInterval);
+//						Log.v(BtAPI.LOG_TAG, "GenericIPActivity: Thread: In loop, sleep finished...");
 					} catch (InterruptedException e) {
+						Log.w(BtAPI.LOG_TAG, "GenericIPActivity: Thread: In loop, interrupted...");
 						break;
 					}
 					pollCount++;
 
-					btConn = bcm.getConnectionObject();
 				}
+
+				Log.v(BtAPI.LOG_TAG, "GenericIPActivity: Thread: Out of loop");
+
+				btConn = bcm.getConnectionObject();
 
 				BtConnection.setConnection(btConn);
 

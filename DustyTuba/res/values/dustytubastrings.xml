@@ -31,11 +31,15 @@
     <string name="dustytuba_identity_provider_multiple">Multiple</string>
     <string name="dustytuba_identity_provider_unknown">Unknown</string>
     <string name="dustytuba_my_mac">My MAC: %s</string>
+   
+    <string name="dustytuba_pairing_help">Since you haven\'t previously paired your device with the other device, you must do so now.\nIn order to do this, pull down the notification bar on the top of your screen, select the \'Pairing request\' item and follow the instructions on your screen</string>
+    <string name="dustytuba_pairing_failed_try_again">The attempt to pair your device with the other device failed.\nMaybe you didn\'t react fast enough.\nDo you want to try again?</string>
+	<string name="dustytuba_pairing_complete">The devices have been paired. You will now have to go back and reconnect.</string>
 
     <!-- PairedIPActivity -->
     <!-- Borrowed from BluetoothChat AOSP tutorial -->
-    <string name="scanning">scanning for devices...</string>
-    <string name="select_device">select a device to connect</string>
+    <string name="scanning">Scanning for devices...</string>
+    <string name="select_device">Select a device to connect</string>
     <string name="none_paired">No devices have been paired</string>
     <string name="none_found">No devices found</string>
     <string name="title_paired_devices">Paired Devices</string>

@@ -29,6 +29,8 @@ public class MultipleIPActivity extends Activity {
 	private String[] providerNames = {};
 	private Intent intent;
 	
+	private AlertDialog alert;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,7 +65,7 @@ public class MultipleIPActivity extends Activity {
 				finish();
 			}
 		});
-		final AlertDialog alert = builder.create();
+		alert = builder.create();
 		
 		alert.show();
 	}
@@ -80,19 +82,12 @@ public class MultipleIPActivity extends Activity {
 		// the data should just be forwarded to GenericIPActivity
 		if (resultCode == RESULT_OK) {
 			Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, "+data.getExtras().keySet().toString()+")");
+			setResult( resultCode, data );
+			finish();
 		} else {
-			if (data == null) {
-				Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, null)");
-			} else {
-				if (data.getExtras() == null) {
-					Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, <Empty intent>)");
-				} else {
-					Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", RESULT_OK, "+data.getExtras().keySet().toString()+")");
-				}
-			}
+			Log.v(BtAPI.LOG_TAG, "MultipleIPActivity: onActivityResult("+requestCode+", "+resultCode+", null)");
+			alert.show();
 		}
-		setResult( resultCode, data );
-		finish();
 	}
 	
 }

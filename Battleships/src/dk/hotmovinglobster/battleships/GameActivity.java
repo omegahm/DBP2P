@@ -27,6 +27,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 
 	private boolean attacking = true;
 
+	@SuppressWarnings("unused")
 	private AlertDialog dialog_abort_warn;
 	
 	private int myShipsLeft;
