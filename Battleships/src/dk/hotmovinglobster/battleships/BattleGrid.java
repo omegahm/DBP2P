@@ -272,7 +272,7 @@ public class BattleGrid extends View {
 							drawHover = true;
 						}
 					}
-					
+				int i = 1;	
 				}
 				
 				if (drawHover) {
@@ -285,7 +285,10 @@ public class BattleGrid extends View {
 				}
 				if (type == TileType.HIT) {
 					c.drawBitmap(BattleshipsApplication.resources().Explosion, null, r, null);
+				} else if (type == TileType.MISS) {
+					c.drawBitmap(BattleshipsApplication.resources().Hit, null, r, null);
 				}
+
 			}
 		}
 		

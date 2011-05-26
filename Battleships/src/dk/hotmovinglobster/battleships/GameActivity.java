@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Window;
 import android.widget.FrameLayout;
@@ -16,6 +17,7 @@ import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 
 public class GameActivity extends CommunicationProtocolActivity implements BattleGridListener {
 
+	private static final int HIT_VIBRATE_LENGTH = 200;
 	private static final int SWITCH_GRID_DELAY = 1500;
 	private BattleGrid myGrid;
 	private BattleGrid opponentGrid;
@@ -32,6 +34,8 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	
 	private int myShipsLeft;
 	private int opponentShipsLeft;
+	
+	private Vibrator mVibrator;
 
 	public void onCreate(Bundle savedInstanceState) {
 		Log.v(BattleshipsApplication.LOG_TAG, "GameActivity: onCreate()");
@@ -42,7 +46,13 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		setContentView(R.layout.game);
 		
 		// TODO: FIX
-		myShipsLeft = opponentShipsLeft = 5;
+		for (int i = 0; i < BattleshipsApplication.context().MAX_SHIPS.length; i++ ) {
+			myShipsLeft += i * BattleshipsApplication.context().MAX_SHIPS[i];
+		}
+		
+		opponentShipsLeft = myShipsLeft;
+
+		mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
 		setupGrids();
 
@@ -59,6 +69,10 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 
 		switchGrids();
 
+	}
+	
+	private void vibrate() {
+		mVibrator.vibrate(HIT_VIBRATE_LENGTH);
 	}
 
 	private void setupGrids() {
@@ -135,6 +149,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 					Log.v(BattleshipsApplication.LOG_TAG, "HIT!");
 					opponentGrid.setTileType(point, TileType.HIT);
 					opponentShipsLeft--;
+					vibrate();
 				} else {
 					Log.v(BattleshipsApplication.LOG_TAG, "MISS!");
 					opponentGrid.setTileType(point, TileType.MISS);
@@ -186,6 +201,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		} else if (tt == TileType.SHIP) {
 			myGrid.setTileType(p, TileType.HIT);
 			myShipsLeft--;
+			vibrate();
 		}
 		switchGrids(SWITCH_GRID_DELAY);
 		

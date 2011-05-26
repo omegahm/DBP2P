@@ -9,6 +9,7 @@ import android.util.Log;
 public class GameResources {
 	
 	public final Bitmap Explosion;
+	public final Bitmap Hit;
 	
 	public final RotatableBitmap GenericSingleTile;
 	public final RotatableBitmap GenericBackTile;
@@ -32,6 +33,7 @@ public class GameResources {
 		res = mContext.getResources();
 
 		Explosion = getBitmap(R.drawable.explosion);
+		Hit = getBitmap(R.drawable.explosion_blue);
 
 		GenericSingleTile = new RotatableBitmap( getBitmap(R.drawable.ship_generic_single) ); 
 		GenericBackTile = new RotatableBitmap( getBitmap(R.drawable.ship_generic_back) );
