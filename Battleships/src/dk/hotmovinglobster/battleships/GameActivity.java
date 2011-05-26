@@ -92,10 +92,10 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 				attacking = !attacking;
 				if (attacking) {
 					newGrid = opponentGrid;
-					headerImage = R.drawable.attack;
+					headerImage = R.drawable.header_attack;
 				} else {
 					newGrid = myGrid;
-					headerImage = R.drawable.defend;
+					headerImage = R.drawable.header_defend;
 				}
 
 				gridFrame.removeAllViews();

@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/horizon">
-    <ImageView android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center" android:src="@drawable/title"></ImageView>
+    <ImageView android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center" android:src="@drawable/header_title"></ImageView>
     <ImageView android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1" android:src="@drawable/ship_trans" android:layout_gravity="center" android:scaleType="centerInside"></ImageView>
     <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_gravity="center">
         <Button android:textSize="20dp" android:layout_gravity="center" android:text="@string/find_opponent" android:layout_width="wrap_content" android:id="@+id/start_btn_find_opponent" android:layout_height="wrap_content" android:layout_weight="1"></Button>

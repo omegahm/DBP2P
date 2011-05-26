@@ -507,6 +507,7 @@ public class BattleGrid extends View {
 			decideOrientation();
 		}
 		
+		@SuppressWarnings("unused")
 		public Battleship getShip() {
 			return ship;
 		}
@@ -515,6 +516,7 @@ public class BattleGrid extends View {
 			return position;
 		}
 		
+		@SuppressWarnings("unused")
 		public int getOrientation() {
 			return orientation;
 		}

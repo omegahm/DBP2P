@@ -55,7 +55,7 @@ public class EndActivity extends CommunicationProtocolActivity {
 			iv.setImageResource(R.drawable.ship_trans);
 		} else {
 			tv.setText(getString(R.string.loose));
-			iv.setImageResource(R.drawable.battleship_hit_large);
+			iv.setImageResource(R.drawable.ship_hit_trans);
 		}
 		//@id/win_or_loose_text
 		//@id/end_ship

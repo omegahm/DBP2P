@@ -8,10 +8,6 @@ import android.util.Log;
 
 public class GameResources {
 	
-	public final Bitmap HitTile;
-	public final Bitmap MissTile;
-	public final Bitmap ShipTile;
-	
 	public final Bitmap Explosion;
 	
 	public final RotatableBitmap GenericSingleTile;
@@ -35,10 +31,6 @@ public class GameResources {
 		mContext = context;
 		res = mContext.getResources();
 
-		HitTile   = getBitmap(R.drawable.battleship_hit);
-		MissTile  = getBitmap(R.drawable.battleship_bullet);
-		ShipTile  = getBitmap(R.drawable.battleship_ship);
-		
 		Explosion = getBitmap(R.drawable.explosion);
 
 		GenericSingleTile = new RotatableBitmap( getBitmap(R.drawable.ship_generic_single) ); 

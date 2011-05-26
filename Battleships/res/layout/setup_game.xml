@@ -10,7 +10,7 @@
 		android:background="@color/background_overlay_dark">
 		<ImageView android:layout_height="wrap_content"
 			android:layout_width="wrap_content" android:layout_gravity="center"
-			android:src="@drawable/select_rules"></ImageView>
+			android:src="@drawable/header_select_rules"></ImageView>
 		<TextView android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="@string/setup_game_grid_size"
 			android:textSize="20dp" android:textColor="@color/navy_brown"></TextView>

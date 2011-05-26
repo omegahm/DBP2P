@@ -10,7 +10,7 @@
 		android:background="@color/background_overlay_dark">
 		<ImageView android:id="@+id/game_image_header"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			src="@drawable/attack"></ImageView>
+			src="@drawable/header_attack"></ImageView>
 		<TextView android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/place_ships_lbl_ships_remaining"
 			android:text="@string/place_ships_ships_remaining"
