@@ -113,9 +113,9 @@ public class BluetoothConnectionManager extends BroadcastReceiver {
 			// Hits if no receiver was registered - ignore
 		}
 		acceptThread.cancel();
-		acceptThread.stop();
+//		acceptThread.stop();
 		connectThread.cancel();
-		connectThread.stop();
+//		connectThread.stop();
 		log_v("doneAndCleanUp() end");
 	}
 	

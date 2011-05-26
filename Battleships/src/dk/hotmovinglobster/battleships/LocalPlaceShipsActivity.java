@@ -41,12 +41,14 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.place_ships);
 		res = getResources();
+		
 
-		ships_remaining = BattleshipsApplication.context().MAX_SHIPS;
+		ships_remaining = 5;
 		txt_ships_remaining = (TextView) findViewById(R.id.place_ships_txt_ships_remaining);
 		updateShipsRemainingLabel();
 
 		grid = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
+		grid.setAllowMultiSelection( true );
 		grid.setListener(this);
 		((FrameLayout) findViewById(R.id.place_ships_grid_frame)).addView(grid);
 		
@@ -108,7 +110,7 @@ public class LocalPlaceShipsActivity extends Activity implements BattleGridListe
 			}
 		}
 
-		ships_remaining = BattleshipsApplication.context().MAX_SHIPS - ships_on_grid;
+		ships_remaining = 5 - ships_on_grid;
 		
 		updateShipsRemainingLabel();
 		

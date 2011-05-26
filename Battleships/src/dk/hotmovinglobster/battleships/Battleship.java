@@ -2,21 +2,24 @@ package dk.hotmovinglobster.battleships;
 
 public class Battleship {
 	
-	private RotatableBitmap startTile;
-	private RotatableBitmap middleTile1;
-	private RotatableBitmap middleTile2;
-	private RotatableBitmap middleTile3;
-	private RotatableBitmap endTile;
+	private final RotatableBitmap startTile;
+	private final RotatableBitmap middleTile1;
+	private final RotatableBitmap middleTile2;
+	private final RotatableBitmap middleTile3;
+	private final RotatableBitmap endTile;
 	
 	private int length;
 	
-	public Battleship( RotatableBitmap startTile, RotatableBitmap middleTile1, RotatableBitmap middleTile2, RotatableBitmap middleTile3, RotatableBitmap endTile ) {
+	private final String name;
+	
+	public Battleship( String name, RotatableBitmap startTile, RotatableBitmap middleTile1, RotatableBitmap middleTile2, RotatableBitmap middleTile3, RotatableBitmap endTile ) {
 		assert( startTile != null );
 		this.startTile = startTile;
 		this.middleTile1 = middleTile1;
 		this.middleTile2 = middleTile2;
 		this.middleTile3 = middleTile3;
 		this.endTile = endTile;
+		this.name = name;
 		
 		if (this.middleTile1 == null) {
 			length = 1;
@@ -29,6 +32,7 @@ public class Battleship {
 		} else {
 			length = 5;
 		}
+		
 	}
 	
 	public RotatableBitmap getStartTile() {
@@ -53,5 +57,10 @@ public class Battleship {
 
 	public int getLength() {
 		return length;
+	}
+	
+	@Override
+	public String toString() {
+		return "Battleship " + name + " ("+length+" tiles)";
 	}
 }

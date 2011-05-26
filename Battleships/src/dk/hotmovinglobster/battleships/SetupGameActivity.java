@@ -33,7 +33,7 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 	private int rules_rows = 4;
 	private int rules_single_tile_ships = 3;
 	
-	private String[] grid_sizes_array = { "4 x 4", "6 x 6", "8 x 8" };
+	private String[] grid_sizes_array = { "6 x 6", "8 x 8", "10 x 10" };
 	private String[] single_tile_ships_array = { "3", "4", "5", "6", "7", "8", "9", "10" };
 	
 	@Override
@@ -79,11 +79,11 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (position == 0) {
-					rules_columns = rules_rows = 4;
-				} else if (position == 1) {
 					rules_columns = rules_rows = 6;
-				} else if (position == 2) {
+				} else if (position == 1) {
 					rules_columns = rules_rows = 8;
+				} else if (position == 2) {
+					rules_columns = rules_rows = 10;
 				}
 			}
 			@Override
@@ -190,7 +190,7 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 
 		BattleshipsApplication.context().GRID_COLUMNS = columns;
 		BattleshipsApplication.context().GRID_ROWS  = rows;
-		BattleshipsApplication.context().MAX_SHIPS = single_tile_ships;
+		//BattleshipsApplication.context().MAX_SHIPS = single_tile_ships;
 		Intent i = new Intent(SetupGameActivity.this, PlaceShipsActivity.class);
 		startActivity(i);
 		finish();

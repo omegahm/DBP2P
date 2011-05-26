@@ -1,10 +1,13 @@
 package dk.hotmovinglobster.battleships.comm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.util.Log;
 import dk.hotmovinglobster.battleships.BattleGrid.Point;
+import dk.hotmovinglobster.battleships.Battleship;
+import dk.hotmovinglobster.battleships.BattleshipPosition;
 import dk.hotmovinglobster.battleships.BattleshipsApplication;
 import dk.hotmovinglobster.dustytuba.api.BtAPI.BtDisconnectReason;
 import dk.hotmovinglobster.dustytuba.api.BtAPIListener;
@@ -45,11 +48,12 @@ public class CommunicationProtocol implements BtAPIListener {
 	/**
 	 * Transmission of ships placed.
 	 * 
-	 * Transmission starts with PROTOCOL_SHIPS_PLACED,
-	 * followed by GameContext.MAX_SHIPS column/row pairs
-	 * each pair consisting of two 4-byte integers.
+	 * Transmission starts with PROTOCOL_SHIPS_PLACED, followed by a
+	 * 4-byte integer representing how many ship positions are to be transferred,
+	 * followed by, for each ship, two column/row pairs, each 2*4-byte integers
+	 * with start and end positions
 	 * 
-	 * In total (MAX_SHIPS * 8) + 1 bytes
+	 * Total transmission size dependent on the naval fleet size
 	 */
 	private static final byte PROTOCOL_SHIPS_PLACED = 2;
 	/**
@@ -67,6 +71,11 @@ public class CommunicationProtocol implements BtAPIListener {
 	 */
 	private static final byte PROTOCOL_QUIT = 120;
 	
+	/**
+	 * Used to save how many ships are expected in PLACE_SHIPS, 
+	 * or actually how many bytes (=ships*16)
+	 */
+	private int mBufferIntArg1 = -1;
 	private CommunicationProtocolActivity mActivity = null;
 
 	public CommunicationProtocol(BtConnection conn) {
@@ -100,12 +109,18 @@ public class CommunicationProtocol implements BtAPIListener {
 	 * Send a list of ships placed to the opponent
 	 * @param ships A list of Points (column/row pairs)
 	 */
-	public void sendShipsPlaced(List<Point> ships) {
+	public void sendShipsPlaced(List<BattleshipPosition> ships) {
 		ByteArrayList byl = new ByteArrayList();
 		byl.add( PROTOCOL_SHIPS_PLACED );
-		for (Point p: ships) {
-			byl.addAll( ByteArrayTools.toByta( p.column ) );
-			byl.addAll( ByteArrayTools.toByta( p.row    ) );
+		byl.addAll( ByteArrayTools.toByta( ships.size() ) );
+		
+		for (BattleshipPosition bsp: ships) {
+			Point pStart = bsp.getPosition().get( 0 );
+			Point pEnd = bsp.getPosition().get( bsp.getPosition().size() - 1 );
+			byl.addAll( ByteArrayTools.toByta( pStart.column ) );
+			byl.addAll( ByteArrayTools.toByta( pStart.row    ) );
+			byl.addAll( ByteArrayTools.toByta( pEnd.column ) );
+			byl.addAll( ByteArrayTools.toByta( pEnd.row    ) );
 		}
 		conn.send( byl.toArray() );
 		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendShipsPlaced("+ships.size()+" ships)");
@@ -197,18 +212,29 @@ public class CommunicationProtocol implements BtAPIListener {
 				/////////// PLACE SHIPS //////////////
 				//////////////////////////////////////
 			} else if (mState == STATE.PlaceShips) {
-				if (mProtocolBuffer.size() == BattleshipsApplication.context().MAX_SHIPS * 8) {
+				if (mBufferIntArg1 == -1) {
+					if (mProtocolBuffer.size() == 4) {
+						mBufferIntArg1 = 16 * ByteArrayTools.toInt( mProtocolBuffer.toArray() );
+						mProtocolBuffer.clear();
+					}
+				} else if ( mProtocolBuffer.size() == mBufferIntArg1 ) {
 					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: All ship placement data received");
 
-					// Each ship is a 4-byte column integer followed by a 4-byte row integer
-					int amount_ships = mProtocolBuffer.size() / 8;
+					// Each ship is two 8-byte column/row pairs
+					int amount_ships = mProtocolBuffer.size() / 16;
 					
-					List<Point> ships = new ArrayList<Point>(amount_ships);
+					List<BattleshipPosition> ships = new ArrayList<BattleshipPosition>(amount_ships);
+					
 
 					for (int i = 0; i < amount_ships; i++ ) {
-						int column = ByteArrayTools.toInt( mProtocolBuffer.subArray(i * 8    , i * 8 + 3) );
-						int row    = ByteArrayTools.toInt( mProtocolBuffer.subArray(i * 8 + 4, i * 8 + 7) );
-						ships.add( new Point(column, row ) );
+						int columnStart = ByteArrayTools.toInt( mProtocolBuffer.subArray(i * 16    ,  i * 16 + 3 ) );
+						int rowStart    = ByteArrayTools.toInt( mProtocolBuffer.subArray(i * 16 + 4,  i * 16 + 7 ) );
+						int columnEnd   = ByteArrayTools.toInt( mProtocolBuffer.subArray(i * 16 + 8,  i * 16 + 11) );
+						int rowEnd      = ByteArrayTools.toInt( mProtocolBuffer.subArray(i * 16 + 12, i * 16 + 15) );
+						Point pStart = new Point( columnStart, rowStart );
+						Point pEnd = new Point( columnEnd, rowEnd );
+						Battleship ship = BattleshipsApplication.resources().getBattleship( pStart.lengthTo( pEnd ) );
+						ships.add( new BattleshipPosition( ship, pStart.pointsInStraightLineTo( pEnd )  ) );
 					}
 					
 					if (mActivity != null) {
@@ -219,6 +245,7 @@ public class CommunicationProtocol implements BtAPIListener {
 					mProtocolBuffer.clear();
 					
 					mState = STATE.None;
+					mBufferIntArg1 = -1;
 				}
 				//////////////////////////////////////
 				////////////// SHOOT /////////////////

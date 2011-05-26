@@ -71,7 +71,9 @@ public class BattleGrid extends View {
 	/**
 	 * Allow for multiple tile selection
 	 */
-	private boolean allowMultiSelection = true;
+	private boolean allowMultiSelection = false;
+	
+	private boolean showShips = true;
 
 	public BattleGrid(Context context, int columns, int rows) {
 		super(context);
@@ -115,6 +117,14 @@ public class BattleGrid extends View {
 
 	public boolean getAllowMultiSelection() {
 		return allowMultiSelection;
+	}
+
+	public void setShowShips(boolean showShips) {
+		this.showShips = showShips;
+	}
+
+	public boolean getShowShips() {
+		return showShips;
 	}
 
 	public void setTileType(int column, int row, TileType type) {
@@ -171,6 +181,8 @@ public class BattleGrid extends View {
 		BattleshipPosition bsp = new BattleshipPosition(ship, position);
 		battleshipPositions.add( bsp );
 		
+		Log.d(BattleshipsApplication.LOG_TAG, "BattleGrid: Placing " + ship);
+		
 		List<Bitmap> bitmaps = bsp.getTileBitmaps();
 		
 		for (int i = 0; i < bsp.getPosition().size(); i++ ) {
@@ -181,6 +193,10 @@ public class BattleGrid extends View {
 		}
 		
 		invalidate();
+	}
+	
+	public List<BattleshipPosition> getBattleshipPositions() {
+		return battleshipPositions;
 	}
 	
 	@Override
@@ -264,7 +280,7 @@ public class BattleGrid extends View {
 				}
 				
 				Bitmap tileBitmap = tileBitmaps[column][row];
-				if (tileBitmap != null) {
+				if (tileBitmap != null && showShips) {
 					c.drawBitmap(tileBitmap, null, r, null);
 				}
 				if (type == TileType.HIT) {
@@ -305,7 +321,7 @@ public class BattleGrid extends View {
 		int y = (int)e.getY();
 		Point tile = getTileWithPoint( x, y );
 		if (e.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_DOWN: " + tile);
+//			Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_DOWN: " + tile);
 			if ( tile != null ) {
 				tileFirstPressed = tile;
 				tileLastTouched = tile;
@@ -316,41 +332,31 @@ public class BattleGrid extends View {
 				return true;
 			}
 		} else if (e.getAction() == MotionEvent.ACTION_UP) {
-			Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_UP: " + tile);
-//			boolean cancelPress = false;
+//			Log.v(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_UP: " + tile);
+
 			if ( tile != null && mListener != null ) {
 				if ( allowMultiSelection ) {
 					if ( listenerAllowedMultiSelection ) {
 						mListener.onMultiTileHit(tileFirstPressed, tileLastTouched);
 					}
 				} else {
-//					if ( tile.equals( tileFirstPressed ) ) {
-						mListener.onSingleTileHit( tileLastTouched );
-//					}
+					mListener.onSingleTileHit( tileLastTouched );
 				}
-//				cancelPress = true;
-			}/*
-			else {
-				// Check if we are outside of the grid or just hitting a tile border
-				if ( x <= 0 || x >= getMeasuredWidth() || y <= 0 || y >= getMeasuredHeight() ) {
-					cancelPress = true;
-				}
-			}*/
+			}
 			
-//			if (cancelPress) {
 			tileFirstPressed = null;
 			tileLastTouched = null;
 			postInvalidate();
 			return true;
 //			}
 		} else if (e.getAction() == MotionEvent.ACTION_CANCEL) {
-			Log.i(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_CANCEL");
+//			Log.i(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_CANCEL");
 			tileFirstPressed = null;
 			tileLastTouched = null;
 			postInvalidate();
 			return true;
 		} else if (e.getAction() == MotionEvent.ACTION_OUTSIDE) {
-			Log.i(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_OUTSIDE");
+//			Log.i(BattleshipsApplication.LOG_TAG, "BattleGrid: ACTION_OUTSIDE");
 			tileFirstPressed = null;
 			tileLastTouched = null;
 			postInvalidate();
@@ -485,101 +491,5 @@ public class BattleGrid extends View {
 				return (i>=a && i<=b);
 		}
 		
-	}
-	
-	private class BattleshipPosition {
-		
-		private final Battleship ship;
-		private final List<Point> position;
-		
-		private List<Bitmap> rotatedBitmaps;
-		
-		public static final int RIGHT = 0;
-		public static final int UP = 1;
-		public static final int LEFT = 2;
-		public static final int DOWN = 3;
-		private int orientation;
-		
-		public BattleshipPosition(Battleship ship, List<Point> position) {
-			this.ship = ship;
-			this.position = position;
-			assert(ship.getLength() == position.size());
-			decideOrientation();
-		}
-		
-		@SuppressWarnings("unused")
-		public Battleship getShip() {
-			return ship;
-		}
-		
-		public List<Point> getPosition() {
-			return position;
-		}
-		
-		@SuppressWarnings("unused")
-		public int getOrientation() {
-			return orientation;
-		}
-		
-		public List<Bitmap> getTileBitmaps() {
-			if (rotatedBitmaps == null) {
-				int length = ship.getLength();
-				rotatedBitmaps = new ArrayList<Bitmap>();
-				rotatedBitmaps.add( getRotatedBitmap(ship.getStartTile()) );
-				if (length == 1)
-					return rotatedBitmaps;
-				rotatedBitmaps.add( getRotatedBitmap(ship.getMiddleTile1()) );
-				if (length == 2)
-					return rotatedBitmaps;
-				rotatedBitmaps.add( getRotatedBitmap(ship.getMiddleTile2()) );
-				if (length == 3)
-					return rotatedBitmaps;
-				rotatedBitmaps.add( getRotatedBitmap(ship.getMiddleTile3()) );
-				if (length == 4)
-					return rotatedBitmaps;
-				rotatedBitmaps.add( getRotatedBitmap(ship.getEndTile()) );
-			}
-			return rotatedBitmaps;
-		}
-		
-		private Bitmap getRotatedBitmap(RotatableBitmap rbmp) {
-			switch(orientation) {
-				case UP:
-					return rbmp.getRotated90();
-				case LEFT:
-					return rbmp.getRotated180();
-				case DOWN:
-					return rbmp.getRotated270();
-				case RIGHT:
-					default:
-					return rbmp.getOriginal();
-			}
-		}
-		
-		private void decideOrientation() {
-			Point first = position.get( 0 );
-			Point last = position.get( position.size() - 1 );
-			
-			// horizontal
-			if (first.row == last.row) {
-				if (first.column < last.column) {
-					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Right");
-					orientation = RIGHT;
-				} else {
-					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Left");
-					orientation = LEFT;
-				}
-			}
-			// Else, assume vertital
-			else {
-				if (first.row <= last.row) {
-					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Up");
-					orientation = UP;
-				} else {
-					Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Down");
-					orientation = DOWN;
-				}
-			}
-		}
 	}
 }

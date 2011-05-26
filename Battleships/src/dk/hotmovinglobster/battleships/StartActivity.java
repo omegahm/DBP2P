@@ -88,10 +88,12 @@ public class StartActivity extends Activity {
 		        Bundle b = new Bundle();
 		        String other_mac;
 		        String my_mac = BtAPI.getBluetoothAddress();
-		        if (my_mac.equals( "00:23:D4:34:45:D7" )) { // Thomas' Hero
+//		        if (my_mac.equals( "00:23:D4:34:45:D7" )) { // Thomas' Hero
+		        if (my_mac.equals( "90:21:55:A1:A5:67" )) { // Thomas' Desire
 		        	other_mac = "90:21:55:A1:A5:8D";
 		        } else { // Jesper's Desire
-		        	other_mac = "00:23:D4:34:45:D7";
+//		        	other_mac = "00:23:D4:34:45:D7";
+		        	other_mac = "90:21:55:A1:A5:67";
 		        }
 		        b.putString(BtAPI.EXTRA_IP_MAC, other_mac);
 		        Intent i = BtAPI.getIntent(StartActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);

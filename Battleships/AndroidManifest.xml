@@ -25,12 +25,12 @@
 		<activity android:name=".EndActivity"
 				  android:screenOrientation="portrait" />
 
-		<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
+		<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" android:screenOrientation="portrait"  />
 		<!-- Optional: Identity Providers, include one or more -->
-		<activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" />
-		<activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" />
-		<activity android:name="dk.hotmovinglobster.dustytuba.id.MultipleIPActivity" />
-		<activity android:name="dk.hotmovinglobster.dustytuba.id.PairedIPActivity" />
+		<activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" android:screenOrientation="portrait"  />
+		<activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" android:screenOrientation="portrait"  />
+		<activity android:name="dk.hotmovinglobster.dustytuba.id.MultipleIPActivity" android:screenOrientation="portrait"  />
+		<activity android:name="dk.hotmovinglobster.dustytuba.id.PairedIPActivity" android:screenOrientation="portrait"  />
 		<activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
 			android:configChanges="keyboardHidden|orientation" />
 		<!-- Optional: Additional activities required by BumpIPActivity -->

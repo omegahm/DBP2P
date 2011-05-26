@@ -38,11 +38,13 @@ public class GameResources {
 		GenericMiddleTile = new RotatableBitmap( getBitmap(R.drawable.ship_generic_middle) );
 		GenericFrontTile = new RotatableBitmap( getBitmap(R.drawable.ship_generic_front) );
 		
-		ShipOne   = new Battleship(GenericSingleTile, null, null, null, null);
-		ShipTwo   = new Battleship(GenericBackTile, GenericFrontTile, null, null, null);
-		ShipThree = new Battleship(GenericBackTile, GenericMiddleTile, GenericFrontTile, null, null);
-		ShipFour  = new Battleship(GenericBackTile, GenericMiddleTile, GenericMiddleTile, GenericFrontTile, null);
-		ShipFive  = new Battleship(GenericBackTile, GenericMiddleTile, GenericMiddleTile, GenericMiddleTile, GenericFrontTile);
+		ShipOne   = new Battleship("Single tile ship", GenericSingleTile, null, null, null, null);
+		ShipTwo   = new Battleship("Double tile ship", GenericBackTile, GenericFrontTile, null, null, null);
+		ShipThree = new Battleship("Triple tile ship", GenericBackTile, GenericMiddleTile, GenericFrontTile, null, null);
+		ShipFour  = new Battleship("Quadruple tile ship", GenericBackTile, GenericMiddleTile, GenericMiddleTile, GenericFrontTile, null);
+		ShipFive  = new Battleship("Quintuple tile ship", GenericBackTile, GenericMiddleTile, GenericMiddleTile, GenericMiddleTile, GenericFrontTile);
+		
+		Log.d(BattleshipsApplication.LOG_TAG, "GameResources: Shiplengths: " + ShipOne.getLength() + ", " + ShipTwo.getLength() + ", " + ShipThree.getLength() + ", " + ShipFour.getLength() + ", " + ShipFive.getLength());
 	}
 	
 	public Battleship getBattleship(int length) {

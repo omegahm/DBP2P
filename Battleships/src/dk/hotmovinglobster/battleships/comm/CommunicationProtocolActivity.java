@@ -3,6 +3,7 @@ package dk.hotmovinglobster.battleships.comm;
 import java.util.List;
 
 import dk.hotmovinglobster.battleships.BattleGrid.Point;
+import dk.hotmovinglobster.battleships.BattleshipPosition;
 import android.app.Activity;
 
 /**
@@ -16,7 +17,7 @@ public class CommunicationProtocolActivity extends Activity {
 	
 	public void communicationDisconnected() {}
 	
-	public void communicationShipsPlaced(List<Point> ships) {}
+	public void communicationShipsPlaced(List<BattleshipPosition> ships) {}
 	
 	public void communicationRulesReceived(int columns, int rows, int single_tile_ships) {}
 	

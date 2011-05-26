@@ -1,5 +1,6 @@
 package dk.hotmovinglobster.battleships;
 
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -10,7 +11,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,14 +26,15 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 
 	private BattleGrid grid;
 	private TextView txt_ships_remaining;
-	
+
 	private ProgressDialog dialog_waiting;
 	private AlertDialog dialog_abort_warn;
 
 	private Resources res;
 
-	private int ships_remaining;
-	
+	private int[] shipsRemaining;
+	private int totalShipsRemaining;
+
 	private boolean isReady = false;
 	private boolean opponentReady = false;
 
@@ -44,13 +49,23 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 
 		res = getResources();
 
-		ships_remaining = BattleshipsApplication.context().MAX_SHIPS;
 		txt_ships_remaining = (TextView) findViewById(R.id.place_ships_txt_ships_remaining);
-		updateShipsRemainingLabel();
 
 		grid = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
+		grid.setAllowMultiSelection( true );
 		grid.setListener(this);
 		((FrameLayout) findViewById(R.id.place_ships_grid_frame)).addView(grid);
+
+		((Button)findViewById(R.id.place_ships_btn_undo)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				grid.undo();
+				updateShipsRemaining();
+			}
+		});
+
+		updateShipsRemaining();
+
 	}
 	/*
 	@Override
@@ -84,24 +99,49 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 		super.onDestroy();
 		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: onDestroy()");
 	}
-*/
-    @Override
+	 */
+	@Override
 	public void onSingleTileHit(Point p) {
 		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity.onTileHit(" + p.column + ", " + p.row + ")");
-		if (ships_remaining > 0) {
+		/*		
+		if (totalShipsRemaining() > 0) {
 			grid.setTileType(p, TileType.SHIP);
 			updateShipsRemaining();
 		}
+		 */
+	}
+
+	private int[] calculateShipsRemaining() {
+		int[] result = BattleshipsApplication.context().MAX_SHIPS.clone();
+		int length;
+		length = 0;
+//		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): " + Arrays.toString(result));
+
+		for (BattleshipPosition bsp: grid.getBattleshipPositions()) {
+			length = bsp.getShip().getLength();
+//			Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): loop " + length + ", " + result[length]);
+			result[length]--;
+			assert(result[length] >= 0);
+//			Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): l00p " + length + ", " + result[length]);
+		}
+
+//		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): end " + Arrays.toString(result));
+
+		return result;
 	}
 
 	private void updateShipsRemaining() {
-		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
-		
-		ships_remaining = BattleshipsApplication.context().MAX_SHIPS - ships.size();
-		
+		shipsRemaining = calculateShipsRemaining();
+		totalShipsRemaining = 0;
+		for (int i=0; i<shipsRemaining.length; i++) {
+			totalShipsRemaining += shipsRemaining[i];
+		}
+
 		updateShipsRemainingLabel();
-		
-		if (ships_remaining == 0) {
+
+		Log.d(BattleshipsApplication.LOG_TAG, "Ships remaining ("+totalShipsRemaining+"): " + Arrays.toString(shipsRemaining));
+
+		if (totalShipsRemaining == 0) {
 			allShipsPlaced();
 		}
 	}
@@ -109,7 +149,7 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	private void allShipsPlaced() {
 		Log.i(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: All ships placed");
 		isReady = true;
-		List<Point> ships = grid.getPointsWithType( TileType.SHIP );
+		List<BattleshipPosition> ships = grid.getBattleshipPositions();
 		BattleshipsApplication.context().myShips = ships;
 		BattleshipsApplication.context().Comm.sendShipsPlaced( ships );
 		if (opponentReady) {
@@ -118,7 +158,7 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 			showWaitingDialog();
 		}
 	}
-	
+
 	private void opponentReady() {
 		opponentReady = true;
 		Log.i(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: Opponent ready");
@@ -138,25 +178,25 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 		startActivity(i);
 		finish();
 	}
-	
+
 	private void showAbortDialog() {
 		final DialogInterface.OnClickListener dialog_click_listener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-		        switch (which){
-		        case DialogInterface.BUTTON_POSITIVE:
-		        	BattleshipsApplication.context().Comm.disconnect();
+				switch (which){
+				case DialogInterface.BUTTON_POSITIVE:
+					BattleshipsApplication.context().Comm.disconnect();
 					dialog.dismiss();
 					PlaceShipsActivity.this.finish();
-		            break;
+					break;
 
-		        case DialogInterface.BUTTON_NEGATIVE:
-		            showWaitingDialog();
-		            break;
-		        }		
-		    }
+				case DialogInterface.BUTTON_NEGATIVE:
+					showWaitingDialog();
+					break;
+				}		
+			}
 		};
-		
+
 		dialog_abort_warn = new AlertDialog.Builder(PlaceShipsActivity.this).setMessage(R.string.place_ships_warn_abort_wait).
 		setPositiveButton(android.R.string.yes, dialog_click_listener).setNegativeButton(android.R.string.no, dialog_click_listener).show();
 	}
@@ -177,20 +217,24 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	}
 
 	private void updateShipsRemainingLabel() {
-		txt_ships_remaining.setText( res.getString( R.string.place_ships_remaining_ships_formatted, ships_remaining ) );
+		String text = "2: " + shipsRemaining[2] + ", 3: " + shipsRemaining[3] + 
+		              ", 4: " + shipsRemaining[4] + ", 5: " + shipsRemaining[5];
+//		txt_ships_remaining.setText( res.getString( R.string.place_ships_remaining_ships_formatted, text ) );
+		txt_ships_remaining.setText( text );
+
 	}
-	
+
 	@Override
 	public void communicationDisconnected() {
 		Toast.makeText(this, "Disconnected from opponent (HC)", Toast.LENGTH_LONG).show();
 		finish();
 	}
-	
+
 	@Override
-	public void communicationShipsPlaced(List<Point> ships) {
+	public void communicationShipsPlaced(List<BattleshipPosition> ships) {
 		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: Ships placed (amount: "+ships.size()+")");
 		BattleshipsApplication.context().opponentShips = ships;
-		
+int i = 0;
 		opponentReady();
 	}
 
@@ -200,12 +244,23 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	}
 	@Override
 	public boolean allowMultiSelectionBetween(Point tile1, Point tile2) {
-		// TODO Auto-generated method stub
-		return false;
+		int length = tile1.lengthTo( tile2 );
+		if ( length > 5 )
+			return false;
+		for (Point p: tile1.pointsInStraightLineTo(tile2) ) {
+			if ( grid.getTileType(p) == TileType.SHIP) {
+				return false;
+			}
+		}
+		// Check if we the user needs to place any more ships of the given length
+		return shipsRemaining[ length ] >= 1;
 	}
+
 	@Override
 	public void onMultiTileHit(Point tile1, Point tile2) {
-		// TODO Auto-generated method stub
-		
+		assert( allowMultiSelectionBetween(tile1, tile2) );
+
+		grid.placeShipInTiles( tile1.pointsInStraightLineTo( tile2 ), BattleshipsApplication.resources().getBattleship( tile1.lengthTo( tile2 ) ) );
+		updateShipsRemaining();
 	}
 }

@@ -41,7 +41,8 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.game);
 		
-		myShipsLeft = opponentShipsLeft = BattleshipsApplication.context().MAX_SHIPS;
+		// TODO: FIX
+		myShipsLeft = opponentShipsLeft = 5;
 
 		setupGrids();
 
@@ -64,11 +65,20 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		myGrid       = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
 		opponentGrid = new BattleGrid(this, BattleshipsApplication.context().GRID_COLUMNS, BattleshipsApplication.context().GRID_ROWS);
 
+		myGrid.setAllowMultiSelection( false );
+		opponentGrid.setAllowMultiSelection( false );
+		
+		opponentGrid.setShowShips( true );
+		opponentGrid.setShowShips( false );
+		
 		myGrid.setListener( this );
 		opponentGrid.setListener( this );
 
-		for (Point p: BattleshipsApplication.context().myShips) {
-			myGrid.setTileType(p, TileType.SHIP);
+		for (BattleshipPosition bsp: BattleshipsApplication.context().myShips) {
+			myGrid.placeShipInTiles( bsp.getPosition(), bsp.getShip() );
+		}
+		for (BattleshipPosition bsp: BattleshipsApplication.context().opponentShips) {
+			opponentGrid.placeShipInTiles( bsp.getPosition(), bsp.getShip() );
 		}
 
 	}
@@ -112,18 +122,21 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	public void onSingleTileHit(Point point) {
 		if (attacking) {
 			TileType tt = opponentGrid.getTileType(point);
-			if (tt == TileType.EMPTY) {
+			Log.v(BattleshipsApplication.LOG_TAG, "Tiletype:  " + tt);
+			if ( tt == TileType.EMPTY || tt == TileType.SHIP ) {
 				boolean hit = false;
-				for (Point p: BattleshipsApplication.context().opponentShips) {
-					if (p.equals( point )) {
+				for (BattleshipPosition bsp: BattleshipsApplication.context().opponentShips) {
+					if (bsp.getPosition().contains( point ) ) {
 						hit = true;
 					}
 				}
 				
 				if (hit) {
+					Log.v(BattleshipsApplication.LOG_TAG, "HIT!");
 					opponentGrid.setTileType(point, TileType.HIT);
 					opponentShipsLeft--;
 				} else {
+					Log.v(BattleshipsApplication.LOG_TAG, "MISS!");
 					opponentGrid.setTileType(point, TileType.MISS);
 				}
 				
@@ -209,10 +222,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	}
 
 	@Override
-	public void onMultiTileHit(Point tile1, Point tile2) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onMultiTileHit(Point tile1, Point tile2) {}
 	
 	
 
