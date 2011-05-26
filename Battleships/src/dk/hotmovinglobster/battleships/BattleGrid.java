@@ -2,7 +2,6 @@ package dk.hotmovinglobster.battleships;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -202,8 +201,8 @@ public class BattleGrid extends View {
 	}
 
 	private void recalculateSizes() {
-		mTileWidth  = (int) java.lang.Math.floor( getMeasuredWidth()  / mColumns  );
-		mTileHeight = (int) java.lang.Math.floor( getMeasuredHeight() / mRows );
+		mTileWidth  = (int) java.lang.Math.floor( getMeasuredWidth()  / mColumns  ) - mTileBorder;
+		mTileHeight = (int) java.lang.Math.floor( getMeasuredHeight() / mRows ) - mTileBorder;
 	}
 
 	@Override
@@ -213,13 +212,19 @@ public class BattleGrid extends View {
 		
 		//c.drawPaint(TileBackground);
 		
+		///////////////////////////
+		//// DRAW TILE BORDERS ////
+		///////////////////////////
 		for (int col = 1; col < mColumns; col++ ) {
-			c.drawLine(0, col*mTileWidth, height, col*mTileWidth, TileBorder);
+			c.drawLine(0, col*(mTileWidth+mTileBorder), height, col*(mTileWidth+mTileBorder), TileBorder);
 		}
 		for (int row = 1; row < mRows; row++ ) {
-			c.drawLine(row*mTileHeight, 0, row*mTileHeight, width, TileBorder);
+			c.drawLine(row*(mTileHeight+mTileBorder), 0, row*(mTileHeight+mTileBorder), width, TileBorder);
 		}
 		
+		///////////////////////////
+		////// DRAW EACH TILE /////
+		///////////////////////////
 		for (int column=0; column<mColumns; column++) {
 			for (int row=0; row<mRows; row++) {
 				Point tile = new Point(column, row);
@@ -277,10 +282,10 @@ public class BattleGrid extends View {
 	 * @return 
 	 */
 	private Rect getTileRect(int column, int row) {
-		return new Rect( column * mTileWidth,
-				row * mTileHeight,
-				column * mTileWidth + mTileWidth - mTileBorder,
-				row * mTileHeight + mTileHeight - mTileBorder);
+		return new Rect( column * (mTileWidth+mTileBorder),
+				row * (mTileHeight+mTileBorder),
+				(column+1) * (mTileWidth+mTileBorder),
+				(row+1) * (mTileHeight+mTileBorder));
 	}
 
 	private Point getTileWithPoint(int x, int y) {
