@@ -16,19 +16,28 @@ Secondly, you must include the libraries in the libs folder into your project. I
 ## Modifying the manifest
 Now you must expand the Android manifest to include the activities provided and to use the permissions needed. The activities you must declare goes in the `<application>`-element and are the following:
 
-    <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity" />
-    <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity" /> 
-    <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity" /> 
+    <activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity"
+	      android:screenOrientation="portrait" />
+    <!-- Optional: Identity Providers, include one or more -->
+    <activity android:name="dk.hotmovinglobster.dustytuba.id.FakeIPActivity"
+              android:screenOrientation="portrait" />
+    <activity android:name="dk.hotmovinglobster.dustytuba.id.ManualIPActivity"
+              android:screenOrientation="portrait" />
+    <activity android:name="dk.hotmovinglobster.dustytuba.id.MultipleIPActivity"
+              android:screenOrientation="portrait" />
+    <activity android:name="dk.hotmovinglobster.dustytuba.id.PairedIPActivity"
+              android:screenOrientation="portrait" />
+    <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
+              android:configChanges="keyboardHidden|orientation" />
 
 If you want to use [Bump™](http://bu.mp) as an identity provider, you'll have to include the following in the `<application>`-element as well
 
-    <activity android:name="dk.hotmovinglobster.dustytuba.id.BumpIPActivity"
-              android:configChanges="keyboardHidden|orientation" /> 
+    <!-- Optional: Additional activities required by BumpIPActivity -->
     <activity android:name="com.bumptech.bumpapi.BumpAPI"
-              android:configChanges="keyboardHidden|orientation"
-              android:theme="@style/BumpDialog" /> 
+              android:configChanges="keyboardHidden|orientation" 
+              android:theme="@style/BumpDialog" />
     <activity android:name="com.bumptech.bumpapi.EditTextActivity"
-              android:configChanges="keyboardHidden|orientation"
+              android:configChanges="keyboardHidden|orientation" 
               android:theme="@style/BumpDialog" />
 
 The permissions to be declared goes in the main `<manifest>`-element and are the following:
