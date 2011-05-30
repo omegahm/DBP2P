@@ -22,5 +22,7 @@ public class CommunicationProtocolActivity extends Activity {
 	public void communicationRulesReceived(int game_type) {}
 	
 	public void communicationShotFired(Point p) {}
+	
+	public void communicationAuxilliaryMessage(byte message) {}
 
 }

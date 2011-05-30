@@ -21,6 +21,9 @@ public class EndActivity extends CommunicationProtocolActivity {
 	private TextView opponent_info;
 	private Button btn_play_again;
 	private ImageView header;
+	
+	private boolean opponentWantsPlayAgain = false;
+	private boolean userWantsPlayAgain = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -30,8 +33,8 @@ public class EndActivity extends CommunicationProtocolActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.end_screen);
-		int i = 0;
-    	// Get data
+
+		// Get data
     	final Intent thisIntent = getIntent();
         final Bundle extras = thisIntent.getExtras();
         boolean winner = extras.getBoolean(BattleshipsApplication.EXTRA_END_WINNER);
@@ -69,8 +72,13 @@ public class EndActivity extends CommunicationProtocolActivity {
 		btn_play_again.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(v.getContext(), LocalPlaceShipsActivity.class);
-				startActivity(i);
+				synchronized( this ) {
+					BattleshipsApplication.context().Comm.sendAuxilliaryMessage( CommunicationProtocol.PROTOCOL_PLAY_AGAIN );
+					userWantsPlayAgain = true;
+					if (opponentWantsPlayAgain) {
+						playAgain();
+					}
+				}
 			}
 		});
 
@@ -134,6 +142,26 @@ public class EndActivity extends CommunicationProtocolActivity {
 	
 	private void disconnectAndEndGame() {
 		BattleshipsApplication.context().Comm.disconnect();
+		finish();
+	}
+	
+	@Override
+	public void communicationAuxilliaryMessage(byte message) {
+		if ( message == CommunicationProtocol.PROTOCOL_PLAY_AGAIN ) {
+			synchronized( this ) {
+				if (userWantsPlayAgain) {
+					playAgain();
+				} else {
+					opponentWantsPlayAgain = true;
+					opponent_info.setText( R.string.end_opponent_wants_to_play_again );
+				}
+			}
+		}
+	}
+	
+	private void playAgain() {
+		Intent i = new Intent(this, SetupGameActivity.class);
+		startActivity(i);
 		finish();
 	}
 
