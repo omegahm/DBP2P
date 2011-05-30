@@ -30,6 +30,8 @@
 			android:screenOrientation="portrait" />
 		<activity android:name=".EndActivity"
 			android:screenOrientation="portrait" />
+		<activity android:name=".ViewGridActivity"
+			android:screenOrientation="portrait" />
 
 		<activity android:name="dk.hotmovinglobster.dustytuba.id.GenericIPActivity"
 			android:screenOrientation="portrait" />

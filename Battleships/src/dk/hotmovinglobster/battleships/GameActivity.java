@@ -211,6 +211,10 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	
 	private boolean checkIfGameComplete() {
 		if (myShipsLeft == 0 || opponentShipsLeft == 0) {
+			
+			BattleshipsApplication.context().myTileTypes = myGrid.getTileTypes();
+			BattleshipsApplication.context().opponentTileTypes = opponentGrid.getTileTypes();
+			
 			boolean won;
 			if (myShipsLeft == 0) {
 				won = false;

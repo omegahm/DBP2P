@@ -70,6 +70,11 @@ public class CommunicationProtocol implements BtAPIListener {
 	private static final byte PROTOCOL_QUIT = 120;
 	
 	/**
+	 * Indication that the user wants to play another game
+	 */
+	public static final byte PROTOCOL_PLAY_AGAIN = 100;
+	
+	/**
 	 * Used to save how many ships are expected in PLACE_SHIPS, 
 	 * or actually how many bytes (=ships*16)
 	 */
@@ -148,11 +153,18 @@ public class CommunicationProtocol implements BtAPIListener {
 		conn.send( byl.toArray() );
 		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendShotFired("+p.column+", "+p.row+")");
 	}
+	
+	/**
+	 * Send a single message without parameters, e.g. PROTOCOL_PLAY_AGAIN
+	 * @param message the message to send
+	 */
+	public void sendAuxilliaryMessage(byte message) {
+		conn.send( new byte[] { message } );
+		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendAuxilliaryMessage("+message+")");
+	}
 
 	@Override
 	public void btDataReceived(byte[] arg0) {
-		Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Received chunk of data (size: " + arg0.length + "):");
-		Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: " + arg0);
 		for (int i = 0; i < arg0.length; i++)
 			byteReceived(arg0[i]);
 	}
@@ -178,6 +190,10 @@ public class CommunicationProtocol implements BtAPIListener {
 					disconnect();
 					break;
 				default:
+					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Opponent sent auxilliary message: " + (int)b);
+					if (mActivity != null) {
+						mActivity.communicationAuxilliaryMessage( b );
+					}
 					break;
 			}
 		} else {

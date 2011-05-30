@@ -14,6 +14,13 @@
 		android:text=" " android:textSize="20dp" android:gravity="center" android:textColor="#ff000000"/>
 	<LinearLayout android:layout_height="wrap_content"
 		android:id="@+id/linearLayout1" android:layout_width="fill_parent">
+		<Button android:textSize="20dp" android:id="@+id/end_btn_view_my_ships" android:layout_width="wrap_content"
+			android:layout_weight="1" android:layout_height="wrap_content" android:layout_gravity="center" android:text="@string/end_view_my_ships"></Button>
+		<Button android:textSize="20dp" android:id="@+id/end_btn_view_opponents_ships" android:layout_width="wrap_content"
+			android:layout_weight="1" android:layout_height="wrap_content" android:layout_gravity="center" android:text="@string/end_view_opponents_ships"></Button>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:id="@+id/linearLayout2" android:layout_width="fill_parent">
 		<Button android:textSize="20dp" android:id="@+id/end_btn_play_again" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_gravity="center"
 			android:layout_weight="1" android:text="@string/end_play_again"></Button>

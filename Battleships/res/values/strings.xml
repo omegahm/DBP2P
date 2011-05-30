@@ -24,4 +24,6 @@
     <string name="end_play_again">Play again</string>
     <string name="end_opponent_disconnected">Opponent disconnected...</string>
     <string name="end_opponent_wants_to_play_again">Opponent wants to play again!</string>
+    <string name="end_view_my_ships">My ships</string>
+    <string name="end_view_opponents_ships">Opponent\'s ships</string>
 </resources>
