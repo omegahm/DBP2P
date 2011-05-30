@@ -189,7 +189,7 @@ public class CommunicationProtocol implements BtAPIListener {
 				if (mProtocolBuffer.size() == 4) {
 					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: All rules data received");
 
-					int game_type = ByteArrayTools.toInt( mProtocolBuffer.subArray(8, 11) );
+					int game_type = ByteArrayTools.toInt( mProtocolBuffer.subArray(0, 3) );
 					
 					if (mActivity != null) {
 						Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Sending rules to activity");

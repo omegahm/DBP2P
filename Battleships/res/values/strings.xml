@@ -20,4 +20,8 @@
     <string name="setup_game_accept_rules">Accept rules</string>
     <string name="bt_disconnnected">Connection to opponent lost.</string>
     <string name="place_ships_undo">Undo</string>
+    <string name="end_back_to_main">End game</string>
+    <string name="end_play_again">Play again</string>
+    <string name="end_opponent_disconnected">Opponent disconnected...</string>
+    <string name="end_opponent_wants_to_play_again">Opponent wants to play again!</string>
 </resources>

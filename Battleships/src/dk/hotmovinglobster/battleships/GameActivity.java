@@ -82,7 +82,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		myGrid.setAllowMultiSelection( false );
 		opponentGrid.setAllowMultiSelection( false );
 		
-		opponentGrid.setShowNonDestroyedShips( true );
+		myGrid.setAllowTouch(false);
 		opponentGrid.setShowNonDestroyedShips( false );
 		
 		myGrid.setListener( this );
@@ -116,6 +116,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 				attacking = !attacking;
 				if (attacking) {
 					newGrid = opponentGrid;
+					newGrid.setAllowTouch(true);
 					headerImage = R.drawable.header_attack;
 				} else {
 					newGrid = myGrid;
@@ -138,6 +139,7 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 			TileType tt = opponentGrid.getTileType(point);
 			Log.v(BattleshipsApplication.LOG_TAG, "Tiletype:  " + tt);
 			if ( tt == TileType.EMPTY || tt == TileType.SHIP ) {
+				opponentGrid.setAllowTouch(false);
 				boolean hit = false;
 				for (BattleshipPosition bsp: BattleshipsApplication.context().opponentShips) {
 					if (bsp.getPosition().contains( point ) ) {

@@ -2,27 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@drawable/horizon">
-	<TextView android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:id="@+id/end_win_or_loose_text"
-		android:text="@string/win" android:textSize="30dp" android:background="#00000000"
-		android:textColor="#ff333333" android:gravity="center" />
+		<ImageView android:id="@+id/end_image_header"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			src="@drawable/header_victory"></ImageView>
 	<ImageView android:layout_height="wrap_content" android:id="@+id/end_ship"
 		android:layout_width="wrap_content" android:layout_weight="1"
 		android:src="@drawable/ship_trans" android:layout_gravity="center"
 		android:scaleType="centerInside"></ImageView>
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:id="@+id/end_opponent_info" android:layout_marginBottom="5dp"
+		android:text=" " android:textSize="20dp" android:gravity="center" android:textColor="#ff000000"/>
 	<LinearLayout android:layout_height="wrap_content"
 		android:id="@+id/linearLayout1" android:layout_width="fill_parent">
-		<Button android:textSize="20dp" android:text="Play again"
-			android:id="@+id/btn_playagain" android:layout_width="wrap_content"
+		<Button android:textSize="20dp" android:id="@+id/end_btn_play_again" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_gravity="center"
-			android:layout_weight="1"></Button>
-	</LinearLayout>
-	<LinearLayout android:layout_height="wrap_content"
-		android:id="@+id/linearLayout2" android:layout_width="fill_parent">
-		<Button android:textSize="20dp" android:text="New opponent"
-			android:id="@+id/btn_newopponent" android:layout_width="wrap_content"
+			android:layout_weight="1" android:text="@string/end_play_again"></Button>
+		<Button android:textSize="20dp" android:id="@+id/end_btn_back_to_main" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_gravity="center"
-			android:layout_weight="1"></Button>
+			android:layout_weight="1" android:text="@string/end_back_to_main"></Button>
 	</LinearLayout>
 	<!-- <LinearLayout android:id="@+id/linearLayout3" android:layout_height="wrap_content" 
 		android:layout_width="fill_parent" android:layout_gravity="center"> <Button 
