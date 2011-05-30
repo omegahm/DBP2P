@@ -60,18 +60,6 @@ public class BtConnection {
 		thread = new BluetoothThread();
 	}
 
-	public void startListening() {
-		synchronized (thread) {
-			thread.start();
-		}
-	}
-
-	public void stopListening() {
-		synchronized (thread) {
-			thread.stop();
-		}
-	}
-
 	/**
 	 * Sets the btAPIListener for this connection
 	 * 
@@ -124,7 +112,6 @@ public class BtConnection {
 	 */
 	public void disconnect() {
 		Log.v(BtAPI.LOG_TAG, "BtConnection: disconnect() called");
-		stopListening();
 		thread.cancel();
 		try {
 			mInStream.close();
@@ -215,6 +202,13 @@ public class BtConnection {
 		return "DustyTuba Bluetooth Connection to "
 				+ mSocket.getRemoteDevice().getName() + " ("
 				+ mSocket.getRemoteDevice().getAddress() + ")";
+	}
+
+	public void startListening() {
+		synchronized(thread) {
+			thread.start();
+		}
+		
 	}
 
 }
