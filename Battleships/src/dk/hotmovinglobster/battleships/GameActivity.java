@@ -82,8 +82,8 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 		myGrid.setAllowMultiSelection( false );
 		opponentGrid.setAllowMultiSelection( false );
 		
-		opponentGrid.setShowShips( true );
-		opponentGrid.setShowShips( false );
+		opponentGrid.setShowNonDestroyedShips( true );
+		opponentGrid.setShowNonDestroyedShips( false );
 		
 		myGrid.setListener( this );
 		opponentGrid.setListener( this );

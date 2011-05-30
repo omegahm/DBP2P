@@ -73,7 +73,7 @@ public class BattleGrid extends View {
 	 */
 	private boolean allowMultiSelection = false;
 	
-	private boolean showShips = true;
+	private boolean showNonDestroyedShips = true;
 
 	public BattleGrid(Context context, int columns, int rows) {
 		super(context);
@@ -119,12 +119,12 @@ public class BattleGrid extends View {
 		return allowMultiSelection;
 	}
 
-	public void setShowShips(boolean showShips) {
-		this.showShips = showShips;
+	public void setShowNonDestroyedShips(boolean showShips) {
+		this.showNonDestroyedShips = showShips;
 	}
 
-	public boolean getShowShips() {
-		return showShips;
+	public boolean getShowNonDestroyedShips() {
+		return showNonDestroyedShips;
 	}
 
 	public void setTileType(int column, int row, TileType type) {
@@ -197,6 +197,24 @@ public class BattleGrid extends View {
 	
 	public List<BattleshipPosition> getBattleshipPositions() {
 		return battleshipPositions;
+	}
+	
+	private boolean isShipDestroyed(BattleshipPosition bsp) {
+		for (Point p: bsp.getPosition()) {
+			if (getTileType(p) != TileType.HIT) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private BattleshipPosition getShipInTile(Point p) {
+		for (BattleshipPosition bsp: battleshipPositions) {
+			if (bsp.getPosition().contains( p ) ) {
+				return bsp;
+			}
+		}
+		return null;
 	}
 	
 	@Override
@@ -280,8 +298,10 @@ public class BattleGrid extends View {
 				}
 				
 				Bitmap tileBitmap = tileBitmaps[column][row];
-				if (tileBitmap != null && showShips) {
-					c.drawBitmap(tileBitmap, null, r, null);
+				if (tileBitmap != null) {
+					if (showNonDestroyedShips || isShipDestroyed( getShipInTile(tile) ) ) {
+						c.drawBitmap(tileBitmap, null, r, null);
+					}
 				}
 				if (type == TileType.HIT) {
 					c.drawBitmap(BattleshipsApplication.resources().Explosion, null, r, null);
