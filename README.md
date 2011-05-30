@@ -7,7 +7,8 @@ The code behind a simple bluetooth connection can be cumbersome to setup.
 DustyTuba is here to ease this connection setup, and at the same time, offer other solutions to getting the identity of the actors in the bluetooth connection.
 
 ## Getting started is halfway done
-<center>![Copy folders](https://github.com/omegahm/DBP2P/raw/master/Documentation/copy-folders.png)</center>
+![Copy folders](https://github.com/omegahm/DBP2P/raw/master/Documentation/copy-folders.png)
+
 In order to use DustyTuba, you need to include the three folders: `libs`, `res`, and `src` into your own project.
 
 Secondly, you must include the libraries in the libs folder into your project. In Eclipse, this can be done by right-clicking your project and selecting `Properties`, then selecting `Java Build Path`, and in the tab `Libraries` clicking the `Add JARs...` button and selecting the two included .jar files in the libs folder.
@@ -73,7 +74,15 @@ DustyTuba comes fully equipped with four different identity providers:
 * Manual
  * Your users will need to input their partners MAC-address
 * Fake
- * Used for you while you test. Here you can provide a MAC-address directly in the code
+ * Used by you while you test. Here you can provide a MAC-address directly in the code
+
+## We made it simple to copy us
+Nobody wants to do stuff from scratch, so we created a dummy project to show the use of DustyTuba Bluetooth Library.
+But, nobody wants to view a boring dummy project, so we made a cool dummy project.
+
+The dummy project, which is actually a [Battleships](http://en.wikipedia.org/wiki/Battleships) game (cool, right?), is available in the [Battleships](https://github.com/omegahm/DBP2P/tree/master/Battleships)-folder.
+
+![Battleships](https://github.com/omegahm/DBP2P/raw/master/Battleships/res/drawable/icon.png)
 
 ## Documentation
 Please find our [documentation](https://github.com/omegahm/DBP2P/raw/master/Documentation/Documentation.pdf) document for a more detailed approach.
