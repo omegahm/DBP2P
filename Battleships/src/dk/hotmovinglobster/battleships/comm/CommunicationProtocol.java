@@ -1,7 +1,6 @@
 package dk.hotmovinglobster.battleships.comm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.util.Log;
@@ -39,10 +38,9 @@ public class CommunicationProtocol implements BtAPIListener {
 	 * Transmission of rules
 	 * 
 	 * Transmission starts with PROTOCOL_RULES,
-	 * followed by three 4-byte integers: Columns in grid, rows in grid
-	 * and amount of single tile ships
+	 * followed by a 4-byte integer indicating the game type
 	 * 
-	 * In total 13 bytes
+	 * In total 5 bytes
 	 */
 	private static final byte PROTOCOL_RULES = 1;
 	/**
@@ -128,19 +126,14 @@ public class CommunicationProtocol implements BtAPIListener {
 
 	/**
 	 * Sends the rules to the opponent
-	 * 
-	 * @param columns Columns in grid
-	 * @param rows Rows in grid
-	 * @param single_tile_ships Amount of single tile ships
+	 * @param game_type Amount of single tile ships
 	 */
-	public void sendRules(int columns, int rows, int single_tile_ships) {
+	public void sendRules(int game_type) {
 		ByteArrayList byl = new ByteArrayList();
 		byl.add( PROTOCOL_RULES );
-		byl.addAll( ByteArrayTools.toByta( columns ) );
-		byl.addAll( ByteArrayTools.toByta( rows ) );
-		byl.addAll( ByteArrayTools.toByta( single_tile_ships ) );
+		byl.addAll( ByteArrayTools.toByta( game_type ) );
 		conn.send( byl.toArray() );
-		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendRules("+columns+", "+rows+", " + single_tile_ships + ")");
+		Log.v( BattleshipsApplication.LOG_TAG, "CommunicationProtocol: SendRules("+ game_type + ")");
 	}
 
 	/**
@@ -193,16 +186,14 @@ public class CommunicationProtocol implements BtAPIListener {
 			////////////// RULES /////////////////
 			//////////////////////////////////////
 			if (mState == STATE.Rules) {
-				if (mProtocolBuffer.size() == 12) {
+				if (mProtocolBuffer.size() == 4) {
 					Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: All rules data received");
 
-					int columns           = ByteArrayTools.toInt( mProtocolBuffer.subArray(0, 3) );
-					int rows              = ByteArrayTools.toInt( mProtocolBuffer.subArray(4, 7) );
-					int single_tile_ships = ByteArrayTools.toInt( mProtocolBuffer.subArray(8, 11) );
+					int game_type = ByteArrayTools.toInt( mProtocolBuffer.subArray(8, 11) );
 					
 					if (mActivity != null) {
 						Log.v(BattleshipsApplication.LOG_TAG, "CommunicationProtocol: Sending rules to activity");
-						mActivity.communicationRulesReceived(columns, rows, single_tile_ships);
+						mActivity.communicationRulesReceived(game_type);
 					}
 					mProtocolBuffer.clear();
 					

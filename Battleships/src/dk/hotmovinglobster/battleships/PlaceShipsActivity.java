@@ -234,7 +234,6 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 	public void communicationShipsPlaced(List<BattleshipPosition> ships) {
 		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: Ships placed (amount: "+ships.size()+")");
 		BattleshipsApplication.context().opponentShips = ships;
-int i = 0;
 		opponentReady();
 	}
 

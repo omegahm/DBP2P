@@ -22,19 +22,19 @@ import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 public class SetupGameActivity extends CommunicationProtocolActivity {
 
 	private Spinner gridSizeSpinner;
-	private Spinner singleTileShipsSpinner;
 
 	private ProgressDialog dialog_waiting;
 	private AlertDialog dialog_abort_warn;
 	
 	private Resources res;
 	
-	private int rules_columns = 4;
-	private int rules_rows = 4;
-	private int rules_single_tile_ships = 3;
+	private int rules_game_type = 1;
 	
-	private String[] grid_sizes_array = { "6 x 6", "8 x 8", "10 x 10" };
-	private String[] single_tile_ships_array = { "3", "4", "5", "6", "7", "8", "9", "10" };
+	public static final int GAME_TYPE_SHORT = 0;
+	public static final int GAME_TYPE_MEDIUM = 1;
+	public static final int GAME_TYPE_LONG = 2;
+	
+	private String[] game_types_array = { "Short", "Medium", "Long" };
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,17 +61,17 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 		((Button)findViewById(R.id.setup_game_btn_ok)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				BattleshipsApplication.context().Comm.sendRules(rules_columns, rules_rows, rules_single_tile_ships);
-				acceptRulesAndStart(rules_columns, rules_rows, rules_single_tile_ships);
+				BattleshipsApplication.context().Comm.sendRules(rules_game_type);
+				acceptRulesAndStart(rules_game_type);
 			}
 		});
 		
 		///////////////////////////////////
-		/////// GRID SIZE SPINNER /////////
+		/////// GAME TYPE SPINNER /////////
 		///////////////////////////////////
-		gridSizeSpinner = (Spinner)findViewById(R.id.setup_game_grid_size);
+		gridSizeSpinner = (Spinner)findViewById(R.id.setup_game_game_type);
 		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, grid_sizes_array);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, game_types_array);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		gridSizeSpinner.setAdapter( adapter );
 		gridSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -79,11 +79,11 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (position == 0) {
-					rules_columns = rules_rows = 6;
+					rules_game_type = GAME_TYPE_SHORT;
 				} else if (position == 1) {
-					rules_columns = rules_rows = 8;
+					rules_game_type = GAME_TYPE_MEDIUM;
 				} else if (position == 2) {
-					rules_columns = rules_rows = 10;
+					rules_game_type = GAME_TYPE_LONG;
 				}
 			}
 			@Override
@@ -92,42 +92,6 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 		// Choose 6x6 grid as default
 		gridSizeSpinner.setSelection( 1 );
 		
-		///////////////////////////////////
-		//// SINGLE TILE SHIPS SPINNER ////
-		///////////////////////////////////
-		singleTileShipsSpinner = (Spinner)findViewById(R.id.setup_game_single_tile_ships);
-		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, single_tile_ships_array);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		singleTileShipsSpinner.setAdapter( adapter );
-		singleTileShipsSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				if (position == 0) {
-					rules_single_tile_ships = 3;
-				} else if (position == 1) {
-					rules_single_tile_ships = 4;
-				} else if (position == 2) {
-					rules_single_tile_ships = 5;
-				} else if (position == 3) {
-					rules_single_tile_ships = 6;
-				} else if (position == 4) {
-					rules_single_tile_ships = 7;
-				} else if (position == 5) {
-					rules_single_tile_ships = 8;
-				} else if (position == 6) {
-					rules_single_tile_ships = 9;
-				} else if (position == 7) {
-					rules_single_tile_ships = 10;
-				}
-			}
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {}
-		});
-		
-		// Choose 5 ships as default
-		singleTileShipsSpinner.setSelection( 2 );
-
 	}
 	
 	private void showWaitingDialog() {
@@ -176,11 +140,11 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 	}
 	
 	@Override
-	public void communicationRulesReceived(int columns, int rows, int single_tile_ships) {
-		acceptRulesAndStart(columns, rows, single_tile_ships);
+	public void communicationRulesReceived(int game_type) {
+		acceptRulesAndStart(game_type);
 	}
 
-	private void acceptRulesAndStart(int columns, int rows, int single_tile_ships) {
+	private void acceptRulesAndStart(int game_type) {
 		if (dialog_abort_warn != null && dialog_abort_warn.isShowing()) {
 			dialog_abort_warn.dismiss();
 		}
@@ -188,9 +152,25 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 			dialog_waiting.dismiss();
 		}
 
-		BattleshipsApplication.context().GRID_COLUMNS = columns;
-		BattleshipsApplication.context().GRID_ROWS  = rows;
-		//BattleshipsApplication.context().MAX_SHIPS = single_tile_ships;
+		switch (game_type) {
+		case GAME_TYPE_SHORT:
+			BattleshipsApplication.context().GRID_COLUMNS = 6;
+			BattleshipsApplication.context().GRID_ROWS  = 6;
+			BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 2, 1, 1, 1 };
+			break;
+		case GAME_TYPE_MEDIUM:
+			default:
+			BattleshipsApplication.context().GRID_COLUMNS = 8;
+			BattleshipsApplication.context().GRID_ROWS  = 8;
+			BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
+			break;
+		case GAME_TYPE_LONG:
+			BattleshipsApplication.context().GRID_COLUMNS = 10;
+			BattleshipsApplication.context().GRID_ROWS  = 10;
+			BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
+			break;
+		}
+
 		Intent i = new Intent(SetupGameActivity.this, PlaceShipsActivity.class);
 		startActivity(i);
 		finish();

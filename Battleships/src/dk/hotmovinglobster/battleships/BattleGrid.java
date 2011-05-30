@@ -290,7 +290,6 @@ public class BattleGrid extends View {
 							drawHover = true;
 						}
 					}
-				int i = 1;	
 				}
 				
 				if (drawHover) {

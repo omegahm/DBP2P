@@ -12,8 +12,8 @@
     <string name="win">Congratulations!\nYou won!</string>
     <string name="loose">You have been defeated!</string>
     <string name="place_ships_warn_abort_wait">Do you wish to stop waiting for your opponent and exit the game?</string>
-    <string name="setup_game_grid_size">Grid size:</string>
-    <string name="setup_game_select_grid_size">Please select a grid size</string>
+    <string name="setup_game_game_type">Game type:</string>
+    <string name="setup_game_select_game_type">Please select a game type</string>
     <string name="setup_game_waiting_for_host">Waiting for opponent to select rules...</string>
     <string name="setup_game_amount_single_ships">Amount of single tile ships:</string>
     <string name="setup_game_select_single_tile_ships">Please select amount of single tile ships</string>
