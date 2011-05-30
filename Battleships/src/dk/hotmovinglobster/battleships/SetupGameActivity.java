@@ -1,5 +1,7 @@
 package dk.hotmovinglobster.battleships;
 
+import java.util.Arrays;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -33,8 +35,9 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 	public static final int GAME_TYPE_SHORT = 0;
 	public static final int GAME_TYPE_MEDIUM = 1;
 	public static final int GAME_TYPE_LONG = 2;
+	public static final int GAME_TYPE_VERY_SHORT = 4;
 	
-	private String[] game_types_array = { "Short", "Medium", "Long" };
+	private String[] game_types_array = { "Short", "Medium", "Long", "Very short (DEBUG)" };
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -84,14 +87,18 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 					rules_game_type = GAME_TYPE_MEDIUM;
 				} else if (position == 2) {
 					rules_game_type = GAME_TYPE_LONG;
+				} else if (position == 3) {
+					rules_game_type = GAME_TYPE_VERY_SHORT;
 				}
 			}
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {}
 		});
-		// Choose 6x6 grid as default
-		gridSizeSpinner.setSelection( 1 );
+		// Choose medium game as default
+		//gridSizeSpinner.setSelection( 1 );
 		
+		// Choose very short game as default during development
+		gridSizeSpinner.setSelection( 3 );
 	}
 	
 	private void showWaitingDialog() {
@@ -151,25 +158,34 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 		if (dialog_waiting != null && dialog_waiting.isShowing()) {
 			dialog_waiting.dismiss();
 		}
+		
+		Log.v(BattleshipsApplication.LOG_TAG, "SetupGameActivity: acceptRulesAndStart("+game_type+")");
 
 		switch (game_type) {
-		case GAME_TYPE_SHORT:
-			BattleshipsApplication.context().GRID_COLUMNS = 6;
-			BattleshipsApplication.context().GRID_ROWS  = 6;
-			BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 2, 1, 1, 1 };
-			break;
-		case GAME_TYPE_MEDIUM:
+			case GAME_TYPE_SHORT:
+				BattleshipsApplication.context().GRID_COLUMNS = 6;
+				BattleshipsApplication.context().GRID_ROWS  = 6;
+				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 2, 1, 1, 1 };
+				break;
+			case GAME_TYPE_MEDIUM:
 			default:
-			BattleshipsApplication.context().GRID_COLUMNS = 8;
-			BattleshipsApplication.context().GRID_ROWS  = 8;
-			BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
-			break;
-		case GAME_TYPE_LONG:
-			BattleshipsApplication.context().GRID_COLUMNS = 10;
-			BattleshipsApplication.context().GRID_ROWS  = 10;
-			BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
-			break;
+				BattleshipsApplication.context().GRID_COLUMNS = 8;
+				BattleshipsApplication.context().GRID_ROWS  = 8;
+				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
+				break;
+			case GAME_TYPE_LONG:
+				BattleshipsApplication.context().GRID_COLUMNS = 10;
+				BattleshipsApplication.context().GRID_ROWS  = 10;
+				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
+				break;
+			case GAME_TYPE_VERY_SHORT:
+				BattleshipsApplication.context().GRID_COLUMNS = 4;
+				BattleshipsApplication.context().GRID_ROWS  = 4;
+				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 1, 0, 0, 0 };
+				break;
 		}
+
+		Log.v(BattleshipsApplication.LOG_TAG, "SetupGameActivity: acceptRulesAndStart("+BattleshipsApplication.context().GRID_COLUMNS+", " +BattleshipsApplication.context().GRID_ROWS+", " +Arrays.toString(BattleshipsApplication.context().MAX_SHIPS)+")");
 
 		Intent i = new Intent(SetupGameActivity.this, PlaceShipsActivity.class);
 		startActivity(i);

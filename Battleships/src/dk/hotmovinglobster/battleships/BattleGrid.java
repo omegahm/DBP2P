@@ -69,6 +69,11 @@ public class BattleGrid extends View {
 	private boolean listenerAllowedMultiSelection = false;
 	
 	/**
+	 * Allow for user interaction through touch
+	 */
+	private boolean allowTouch = true;
+	
+	/**
 	 * Allow for multiple tile selection
 	 */
 	private boolean allowMultiSelection = false;
@@ -111,6 +116,14 @@ public class BattleGrid extends View {
 		return mListener;
 	}
 	
+	public void setAllowTouch(boolean allowTouch) {
+		this.allowTouch = allowTouch;
+	}
+
+	public boolean getAllowTouch() {
+		return allowTouch;
+	}
+
 	public void setAllowMultiSelection(boolean allowMultiSelection) {
 		this.allowMultiSelection = allowMultiSelection;
 	}
@@ -268,7 +281,7 @@ public class BattleGrid extends View {
 				
 				boolean drawHover = false;
 				
-				if (tileFirstPressed != null) {
+				if (tileFirstPressed != null && allowTouch) {
 					
 					if (allowMultiSelection) {
 
@@ -339,6 +352,9 @@ public class BattleGrid extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e) {
+		if (!allowTouch) {
+			return true;
+		}
 		int x = (int)e.getX();
 		int y = (int)e.getY();
 		Point tile = getTileWithPoint( x, y );
