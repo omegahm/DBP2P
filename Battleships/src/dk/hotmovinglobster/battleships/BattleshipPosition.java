@@ -7,6 +7,9 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import dk.hotmovinglobster.battleships.BattleGrid.Point;
 
+/**
+ * The location of a battleship represented by a ship, its orientation and points
+ */
 public class BattleshipPosition {
 	
 	private final Battleship ship;
@@ -27,18 +30,22 @@ public class BattleshipPosition {
 		decideOrientation();
 	}
 	
+	/** The ship at this BattleshipPosition */
 	public Battleship getShip() {
 		return ship;
 	}
 	
+	/** The points this battleship covers */
 	public List<Point> getPosition() {
 		return position;
 	}
 	
+	/** The orientation of the ship */
 	public int getOrientation() {
 		return orientation;
 	}
 	
+	/** A bitmap for this ship */
 	public List<Bitmap> getTileBitmaps() {
 		if (rotatedBitmaps == null) {
 			int length = ship.getLength();
@@ -60,6 +67,7 @@ public class BattleshipPosition {
 		return rotatedBitmaps;
 	}
 	
+	/** Bitmap rotated to match ship orientation */
 	private Bitmap getRotatedBitmap(RotatableBitmap rbmp) {
 		switch(orientation) {
 			case UP:
@@ -74,6 +82,7 @@ public class BattleshipPosition {
 		}
 	}
 	
+	/** Set the orientation based on the two end points */
 	private void decideOrientation() {
 		Point first = position.get( 0 );
 		Point last = position.get( position.size() - 1 );
@@ -88,7 +97,7 @@ public class BattleshipPosition {
 				orientation = LEFT;
 			}
 		}
-		// Else, assume vertital
+		// Else, assume vertical
 		else {
 			if (first.row <= last.row) {
 				Log.v(BattleshipsApplication.LOG_TAG, "Orientation: Up");

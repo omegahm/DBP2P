@@ -1,7 +1,7 @@
 package dk.hotmovinglobster.battleships;
 
 /**
- * An abstract representation of a battleship (of size 1 to 5).
+ * A representation of a battleship (of size 1 to 5).
  * A battleship has a name and bitmap associated with the number of tiles it covers.
  * 
  * TODO: Refactor? Support other battleship sizes?

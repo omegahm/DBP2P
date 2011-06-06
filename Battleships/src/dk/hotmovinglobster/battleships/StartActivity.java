@@ -128,7 +128,8 @@ public class StartActivity extends Activity {
 				startActivity(i);
 	        } else {
 	            Toast.makeText(this, getString( R.string.start_no_opponent),
-	                           Toast.LENGTH_LONG).show();
+	                           Toast.LENGTH_SHORT).show();
+	            // TODO: The message text as it stands now doesn't apply in the case where we turn on BT nor when the back button is pressed.
 	        }
 	    }
 	}

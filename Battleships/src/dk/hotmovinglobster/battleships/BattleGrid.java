@@ -162,10 +162,12 @@ public class BattleGrid extends View {
 		}
 	}
 
+	/** Returns the tile type (hit/miss) of these coordinates */
 	public TileType getTileType(int column, int row) {
 		return getTileTypes()[column][row];
 	}
 	
+	/** Returns the tile type (hit/miss) of this point */
 	public TileType getTileType(Point p) {
 		return getTileTypes()[p.column][p.row];
 	}
@@ -182,6 +184,7 @@ public class BattleGrid extends View {
 		return result;
 	}
 	
+	/** Undo a ship deployment */
 	public boolean undo() {
 		if (battleshipPositions.isEmpty()) {
 			return false;
@@ -221,6 +224,7 @@ public class BattleGrid extends View {
 		return battleshipPositions;
 	}
 	
+	/** Is ship in this tile destroyed or not? */
 	private boolean isShipDestroyed(BattleshipPosition bsp) {
 		for (Point p: bsp.getPosition()) {
 			if (getTileType(p) != TileType.HIT) {

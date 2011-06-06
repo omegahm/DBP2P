@@ -22,6 +22,10 @@ import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.BattleGrid.TileType;
 import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 
+/**
+ * Allows the user to place ships and waits for opponent to place his ships.
+ * Launches GameActivity when both players have deployed their ships.
+ */
 public class PlaceShipsActivity extends CommunicationProtocolActivity implements BattleGridListener {
 
 	private BattleGrid grid;

@@ -12,14 +12,54 @@
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			src="@drawable/header_attack"></ImageView>
 		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:id="@+id/place_ships_lbl_ships_remaining"
+			android:layout_height="wrap_content" android:id="@+id/game_lbl_ships_remaining"
 			android:text="@string/place_ships_ships_remaining"
 			android:layout_marginBottom="5dp" android:textColor="@color/navy_brown"
 			android:textSize="20dp"></TextView>
+<!-- ShipsRemaining box -->
+	<TableLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:stretchColumns="1">
+	    <TableRow>
+	        <TextView
+	            android:text="2"
+	            android:id="@+id/game_counter_size2"
+	            android:padding="3dip" />
+	        <TextView
+	            android:text=" x Destroyer (2)"
+	            android:padding="3dip" />
+	        <TextView
+	            android:text="1"
+	            android:id="@+id/game_counter_size3"
+	            android:padding="3dip" />
+	        <TextView
+	            android:text=" x Frigate (3)"
+	            android:padding="3dip" />
+	    </TableRow>
+	    <TableRow>
+	        <TextView
+	            android:text="1"
+	            android:id="@+id/game_counter_size4"
+	            android:padding="3dip" />
+	        <TextView
+	            android:text=" x Cruiser (4)"
+	            android:padding="3dip" />
+	        <TextView
+	            android:text="1"
+	            android:id="@+id/game_counter_size5"
+	            android:padding="3dip" />
+	        <TextView
+	            android:text=" x Carrier (5)"
+	            android:padding="3dip" />
+	    </TableRow>
+	</TableLayout>
+<!-- 
 		<TextView android:id="@+id/game_txt_ships_remaining"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:text="@string/place_ships_remaining_ships_formatted"
 			android:textColor="@color/navy_brown" android:textSize="20dp"></TextView>
+-->
 		<FrameLayout android:id="@+id/game_grid_frame"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginBottom="10dp"></FrameLayout>

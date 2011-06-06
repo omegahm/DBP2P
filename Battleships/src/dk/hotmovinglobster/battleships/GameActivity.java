@@ -1,5 +1,8 @@
 package dk.hotmovinglobster.battleships;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import dk.hotmovinglobster.battleships.BattleGrid.Point;
 import dk.hotmovinglobster.battleships.BattleGrid.TileType;
@@ -102,6 +106,10 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 	}
 
 	private void switchGrids(int delay) {
+		
+		// Update when hit (before switch)
+		updateShipsRemainingLabel();
+		
 		mHandler.postDelayed(new Runnable() {
 			
 			@Override
@@ -126,7 +134,9 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 				gridFrame.removeAllViews();
 				gridFrame.addView( newGrid );
 				header.setImageResource( headerImage );
-
+			
+				// Update when switched
+				updateShipsRemainingLabel();
 			}
 		}, delay);
 		
@@ -245,7 +255,58 @@ public class GameActivity extends CommunicationProtocolActivity implements Battl
 
 	@Override
 	public void onMultiTileHit(Point tile1, Point tile2) {}
-	
-	
 
+	/** Update the UI for tracking remaining ships */
+	private void updateShipsRemainingLabel() {
+		TextView game_lbl_ships_remaning = (TextView) findViewById(R.id.game_lbl_ships_remaining);
+		TextView game_counter_size2 = (TextView) findViewById(R.id.game_counter_size2);
+		TextView game_counter_size3 = (TextView) findViewById(R.id.game_counter_size3);
+		TextView game_counter_size4 = (TextView) findViewById(R.id.game_counter_size4);
+		TextView game_counter_size5 = (TextView) findViewById(R.id.game_counter_size5);
+
+		int[] shipsRemaining;
+		if (attacking) {
+			// TODO: Use @string
+			game_lbl_ships_remaning.setText("Opponent's ships:");
+			shipsRemaining = calculateShipsNotDestroyed(opponentGrid);
+		} else {
+			game_lbl_ships_remaning.setText("Your ships:");
+			shipsRemaining = calculateShipsNotDestroyed(myGrid);
+		}
+		
+		game_counter_size2.setText(Integer.toString(shipsRemaining[2]));
+		game_counter_size3.setText(Integer.toString(shipsRemaining[3]));
+		game_counter_size4.setText(Integer.toString(shipsRemaining[4]));
+		game_counter_size5.setText(Integer.toString(shipsRemaining[5]));
+	}
+	
+	/**
+	 * Calculate ships not destroyed (MAX - SUNK) for a given BattleGrid.
+	 */
+	private int[] calculateShipsNotDestroyed(BattleGrid grid) {
+		int[] result = BattleshipsApplication.context().MAX_SHIPS.clone();
+
+		HashSet<Battleship> ships_destroyed = new HashSet<Battleship>();
+		
+		// Decide which ships are fully destroyed
+		// TODO: Non-optimal search, we might be looking at the same ship multiple times
+		for (BattleshipPosition bsp: grid.getBattleshipPositions()) {
+			boolean ship_fully_hit = true;
+			for (Point p: bsp.getPosition()){
+				ship_fully_hit = (ship_fully_hit && (grid.getTileType(p) == TileType.HIT));
+			}
+			
+			if (ship_fully_hit)
+				ships_destroyed.add(bsp.getShip());
+		}
+		
+		// Substract fully destroyed ships from MAX ships
+		for (Battleship ship: ships_destroyed){
+			int length = ship.getLength();
+			result[length]--;
+			assert(result[length] >= 0); // Requires: adb shell setprop debug.assert 1
+		}
+		
+		return result;
+	}
 }
