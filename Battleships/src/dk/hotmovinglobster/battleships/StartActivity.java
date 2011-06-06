@@ -84,7 +84,7 @@ public class StartActivity extends Activity {
 		        startActivityForResult(i, REQUEST_DUSTYTUBA);
 		    }
 		});
-
+/*
 		// TODO: Remove, used for debugging
 		((Button)findViewById(R.id.start_btn_find_opponent_debug)).setOnClickListener(new OnClickListener() {
 			@Override
@@ -104,7 +104,8 @@ public class StartActivity extends Activity {
 		        startActivityForResult(i, REQUEST_DUSTYTUBA);
 		    }
 		});
-		
+		*/
+		/*
 		// TODO: Remove, used for debugging
 		((Button)findViewById(R.id.start_btn_test)).setOnClickListener(new OnClickListener() {
 			@Override
@@ -114,6 +115,7 @@ public class StartActivity extends Activity {
 				startActivity(i);
 			}
 		});
+		*/
 	}
 	
 	@Override

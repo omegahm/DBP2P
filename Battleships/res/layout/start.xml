@@ -9,8 +9,10 @@
     <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_gravity="center">
         <Button android:textSize="20dp" android:layout_gravity="center" android:text="@string/find_opponent" android:layout_width="wrap_content" android:id="@+id/start_btn_find_opponent" android:layout_height="wrap_content" android:layout_weight="1"></Button>
     </LinearLayout>
+<!-- /* DEBUG Buttons */
     <LinearLayout android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_gravity="center">
         <Button android:textSize="20dp" android:layout_gravity="center" android:text="Find opponent (DEBUG)" android:layout_width="wrap_content" android:id="@+id/start_btn_find_opponent_debug" android:layout_height="wrap_content" android:layout_weight="1"></Button>
         <Button android:textSize="20dp" android:layout_gravity="center" android:text="End (DEBUG)" android:layout_width="wrap_content" android:id="@+id/start_btn_test" android:layout_height="fill_parent"></Button>
     </LinearLayout>
+-->
 </LinearLayout>
