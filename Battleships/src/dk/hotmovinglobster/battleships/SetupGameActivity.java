@@ -40,9 +40,10 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 	public static final int GAME_TYPE_SHORT = 0;
 	public static final int GAME_TYPE_MEDIUM = 1;
 	public static final int GAME_TYPE_LONG = 2;
-	public static final int GAME_TYPE_VERY_SHORT = 4;
+	//public static final int GAME_TYPE_VERY_SHORT = 4;
 	
-	private String[] game_types_array = { "Short", "Medium", "Long", "Very short (DEBUG)" };
+//	private String[] game_types_array = { "Short", "Medium", "Long", "Very short (DEBUG)" };
+	private String[] game_types_array = { "Short", "Medium", "Long" };
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,8 +93,8 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 					rules_game_type = GAME_TYPE_MEDIUM;
 				} else if (position == 2) {
 					rules_game_type = GAME_TYPE_LONG;
-				} else if (position == 3) {
-					rules_game_type = GAME_TYPE_VERY_SHORT;
+//				} else if (position == 3) {
+//					rules_game_type = GAME_TYPE_VERY_SHORT;
 				}
 			}
 			@Override
@@ -184,12 +185,12 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 				BattleshipsApplication.context().GRID_ROWS  = 10;
 				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
 				break;
-			case GAME_TYPE_VERY_SHORT:
+/*			case GAME_TYPE_VERY_SHORT:
 				BattleshipsApplication.context().GRID_COLUMNS = 4;
 				BattleshipsApplication.context().GRID_ROWS  = 4;
 				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 1, 0, 0, 0 };
 				break;
-		}
+*/		}
 
 		Log.v(BattleshipsApplication.LOG_TAG, "SetupGameActivity: acceptRulesAndStart("+BattleshipsApplication.context().GRID_COLUMNS+", " +BattleshipsApplication.context().GRID_ROWS+", " +Arrays.toString(BattleshipsApplication.context().MAX_SHIPS)+")");
 

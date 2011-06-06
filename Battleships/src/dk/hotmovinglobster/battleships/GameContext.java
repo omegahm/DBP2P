@@ -17,6 +17,15 @@ public class GameContext {
 	public List<BattleshipPosition> myShips = new ArrayList<BattleshipPosition>();
 	public List<BattleshipPosition> opponentShips = new ArrayList<BattleshipPosition>();
 	
+	/**
+	 * Used to save the shots fired for show battlefield after game
+	 */
+	public BattleGrid.TileType[][] myTileTypes;
+	/**
+	 * Used to save the shots fired for show battlefield after game
+	 */
+	public BattleGrid.TileType[][] opponentTileTypes;
+	
 	public GameContext() {
 		GRID_COLUMNS = 8;
 		GRID_ROWS = 8;

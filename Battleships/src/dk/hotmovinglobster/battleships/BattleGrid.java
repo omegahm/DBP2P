@@ -99,10 +99,10 @@ public class BattleGrid extends View {
 	}
 
 	private void initializeTiles() {
-		tiles = new TileType[mColumns][mRows];
+		setTileTypes(new TileType[mColumns][mRows]);
 		for (int column=0; column<mColumns; column++) {
 			for (int row=0; row<mRows; row++) {
-				tiles[column][row] = TileType.EMPTY;
+				getTileTypes()[column][row] = TileType.EMPTY;
 			}
 		}
 		tileBitmaps = new Bitmap[mColumns][mRows];
@@ -140,33 +140,41 @@ public class BattleGrid extends View {
 		return showNonDestroyedShips;
 	}
 
+	public void setTileTypes(TileType[][] tiles) {
+		this.tiles = tiles;
+	}
+
+	public TileType[][] getTileTypes() {
+		return tiles;
+	}
+
 	public void setTileType(int column, int row, TileType type) {
-		if (tiles[column][row] != type) {
-			tiles[column][row] = type;
+		if (getTileTypes()[column][row] != type) {
+			getTileTypes()[column][row] = type;
 			invalidate();
 		}
 	}
 	
 	public void setTileType(Point p, TileType type) {
-		if (tiles[p.column][p.row] != type) {
-			tiles[p.column][p.row] = type;
+		if (getTileTypes()[p.column][p.row] != type) {
+			getTileTypes()[p.column][p.row] = type;
 			invalidate();
 		}
 	}
 
 	public TileType getTileType(int column, int row) {
-		return tiles[column][row];
+		return getTileTypes()[column][row];
 	}
 	
 	public TileType getTileType(Point p) {
-		return tiles[p.column][p.row];
+		return getTileTypes()[p.column][p.row];
 	}
 	
 	public List<Point> getPointsWithType(TileType type) {
 		List<Point> result = new ArrayList<Point>();
 		for (int c = 0; c < mColumns; c++) {
 			for (int r = 0; r < mRows; r++) {
-				if (tiles[c][r] == type) {
+				if (getTileTypes()[c][r] == type) {
 					result.add( new Point(c, r) );
 				}
 			}
@@ -182,7 +190,7 @@ public class BattleGrid extends View {
 		battleshipPositions.remove( bsp );
 		
 		for (Point p: bsp.getPosition()) {
-			tiles[p.column][p.row] = TileType.EMPTY;
+			getTileTypes()[p.column][p.row] = TileType.EMPTY;
 			tileBitmaps[p.column][p.row] = null;
 		}
 		
@@ -202,7 +210,7 @@ public class BattleGrid extends View {
 			Point p = bsp.getPosition().get( i );
 			Bitmap bmp = bitmaps.get( i );
 			tileBitmaps[p.column][p.row] = bmp;
-			tiles[p.column][p.row] = TileType.SHIP;
+			getTileTypes()[p.column][p.row] = TileType.SHIP;
 		}
 		
 		invalidate();
