@@ -1,6 +1,6 @@
 # DustyTuba Bluetooth Library
 
-![DustyTuba Icon](https://github.com/omegahm/DBP2P/raw/master/DustyTubaSampleApp/res/drawable-hdpi/icon.png)
+![DustyTuba Icon](https://github.com/omegahm/DBP2P/raw/master/icon.png)
 
 ### Goal: to ease the use of bluetooth in Android projects
 The code behind a simple bluetooth connection can be cumbersome to setup.
