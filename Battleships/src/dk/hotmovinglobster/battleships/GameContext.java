@@ -21,11 +21,11 @@ public class GameContext {
 		GRID_COLUMNS = 8;
 		GRID_ROWS = 8;
 		
-		MAX_SHIPS[0] = 0;
-		MAX_SHIPS[1] = 0;
-		
-		MAX_SHIPS[2] = 3;
-		MAX_SHIPS[3] = 2;
+		/** Number of ships to be placed. **/
+		MAX_SHIPS[0] = 0; // Never used (Zero tile ships)
+		MAX_SHIPS[1] = 0; // Single tile ships
+		MAX_SHIPS[2] = 3; // Two tile ships
+		MAX_SHIPS[3] = 2; // ...
 		MAX_SHIPS[4] = 2;
 		MAX_SHIPS[5] = 1;
 	}

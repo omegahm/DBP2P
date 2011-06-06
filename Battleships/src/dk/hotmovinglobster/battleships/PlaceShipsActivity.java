@@ -25,14 +25,19 @@ import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 public class PlaceShipsActivity extends CommunicationProtocolActivity implements BattleGridListener {
 
 	private BattleGrid grid;
+	/** Simple view for listing remaining ships to be placed */
 	private TextView txt_ships_remaining;
 
+	/** Dialog to keep the waiting user happy **/
 	private ProgressDialog dialog_waiting;
+	/** Warn the waiting user that BACK cancels game */
 	private AlertDialog dialog_abort_warn;
 
 	private Resources res;
 
+	/** Number of remaining ships to be placed for different tile-sizes. */
 	private int[] shipsRemaining;
+	/** Number of remaining ships to be placed in total. */
 	private int totalShipsRemaining;
 
 	private boolean isReady = false;
@@ -113,15 +118,14 @@ public class PlaceShipsActivity extends CommunicationProtocolActivity implements
 
 	private int[] calculateShipsRemaining() {
 		int[] result = BattleshipsApplication.context().MAX_SHIPS.clone();
-		int length;
-		length = 0;
+		int length = 0;
 //		Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): " + Arrays.toString(result));
 
 		for (BattleshipPosition bsp: grid.getBattleshipPositions()) {
 			length = bsp.getShip().getLength();
 //			Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): loop " + length + ", " + result[length]);
 			result[length]--;
-			assert(result[length] >= 0);
+			assert(result[length] >= 0); // Requires: adb shell setprop debug.assert 1
 //			Log.v(BattleshipsApplication.LOG_TAG, "PlaceShipsActivity: calculateShipsRemaining(): l00p " + length + ", " + result[length]);
 		}
 

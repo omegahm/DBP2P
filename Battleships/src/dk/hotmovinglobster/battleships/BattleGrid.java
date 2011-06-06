@@ -208,6 +208,7 @@ public class BattleGrid extends View {
 		invalidate();
 	}
 	
+	/** List of all positions where ships have been placed */
 	public List<BattleshipPosition> getBattleshipPositions() {
 		return battleshipPositions;
 	}

@@ -1,5 +1,13 @@
 package dk.hotmovinglobster.battleships;
 
+/**
+ * An abstract representation of a battleship (of size 1 to 5).
+ * A battleship has a name and bitmap associated with the number of tiles it covers.
+ * 
+ * TODO: Refactor? Support other battleship sizes?
+ * * Remove name?
+ * * Refactor to enable higher battleshipsizes?
+ */
 public class Battleship {
 	
 	private final RotatableBitmap startTile;
@@ -8,8 +16,8 @@ public class Battleship {
 	private final RotatableBitmap middleTile3;
 	private final RotatableBitmap endTile;
 	
+	/** Size of ship ( */
 	private int length;
-	
 	private final String name;
 	
 	public Battleship( String name, RotatableBitmap startTile, RotatableBitmap middleTile1, RotatableBitmap middleTile2, RotatableBitmap middleTile3, RotatableBitmap endTile ) {
@@ -32,7 +40,6 @@ public class Battleship {
 		} else {
 			length = 5;
 		}
-		
 	}
 	
 	public RotatableBitmap getStartTile() {

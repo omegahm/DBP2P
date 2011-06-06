@@ -16,6 +16,9 @@ import dk.hotmovinglobster.battleships.comm.CommunicationProtocol;
 import dk.hotmovinglobster.dustytuba.api.BtAPI;
 import dk.hotmovinglobster.dustytuba.api.BtConnection;
 
+/**
+ * Main activity with welcome screen and option to start a game.
+ */
 public class StartActivity extends Activity {
 
 	protected static final int REQUEST_DUSTYTUBA = 20;
@@ -31,7 +34,7 @@ public class StartActivity extends Activity {
 		if ( BattleshipsApplication.context().Comm != null ) {
 			BattleshipsApplication.context().Comm.disconnect();
 		}
-		
+				
 		initializeButtons();
 	}
 /*
@@ -74,14 +77,15 @@ public class StartActivity extends Activity {
 				String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP,
                         BtAPI.IDENTITY_PROVIDER_PAIRED};
 		        Bundle b = new Bundle();
+		        // TODO: Send along UUID + SDP_NAME
 		        b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
 		        b.putString(BumpAPI.EXTRA_API_KEY, "273a39bb29d342c2a9fcc2e61158cbba");
 		        Intent i = BtAPI.getIntent(StartActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
 		        startActivityForResult(i, REQUEST_DUSTYTUBA);
-
 		    }
 		});
 
+		// TODO: Remove, used for debugging
 		((Button)findViewById(R.id.start_btn_find_opponent_debug)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -101,6 +105,7 @@ public class StartActivity extends Activity {
 		    }
 		});
 		
+		// TODO: Remove, used for debugging
 		((Button)findViewById(R.id.start_btn_test)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -120,7 +125,7 @@ public class StartActivity extends Activity {
 				Intent i = new Intent(this, SetupGameActivity.class);
 				startActivity(i);
 	        } else {
-	            Toast.makeText(this, "Failed to find opponent, please try again. (HC)",
+	            Toast.makeText(this, getString( R.string.start_no_opponent),
 	                           Toast.LENGTH_LONG).show();
 	        }
 	    }

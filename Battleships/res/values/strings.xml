@@ -24,4 +24,5 @@
     <string name="end_play_again">Play again</string>
     <string name="end_opponent_disconnected">Opponent disconnected...</string>
     <string name="end_opponent_wants_to_play_again">Opponent wants to play again!</string>
+    <string name="start_no_opponent">Failed to find opponent, please try again.</string>
 </resources>

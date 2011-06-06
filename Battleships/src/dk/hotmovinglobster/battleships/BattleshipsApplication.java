@@ -3,6 +3,9 @@ package dk.hotmovinglobster.battleships;
 import android.app.Application;
 import android.util.Log;
 
+/**
+ * Maintains global application state
+ */
 public class BattleshipsApplication extends Application {
 
 	public static final String LOG_TAG = "Battleships";

@@ -21,11 +21,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import dk.hotmovinglobster.battleships.comm.CommunicationProtocolActivity;
 
+/**
+ * Lets the user configure the game and then launches PlaceShipsActivity.
+ */
 public class SetupGameActivity extends CommunicationProtocolActivity {
 
 	private Spinner gridSizeSpinner;
 
+	/** Dialog to keep the waiting user happy **/
 	private ProgressDialog dialog_waiting;
+	/** Warn the waiting user that BACK cancels game */
 	private AlertDialog dialog_abort_warn;
 	
 	private Resources res;
@@ -97,6 +102,7 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 		// Choose medium game as default
 		//gridSizeSpinner.setSelection( 1 );
 		
+		// TODO: Switch back!
 		// Choose very short game as default during development
 		gridSizeSpinner.setSelection( 3 );
 	}
