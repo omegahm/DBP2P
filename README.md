@@ -7,7 +7,7 @@ The code behind a simple bluetooth connection can be cumbersome to setup.
 DustyTuba is here to ease this connection setup, and at the same time, offer other solutions to getting the identity of the actors in the bluetooth connection.
 
 ## Getting started is halfway done
-If you just want to use the library (and not develop on it), you should download the all-included zip-file [DustyTuba.zip](https://github.com/omegahm/DBP2P/tree/master/DustyTuba.zip).
+If you just want to use the library (and not develop on it), you should download the all-included zip-file [DustyTuba.zip](https://github.com/omegahm/DBP2P/raw/master/DustyTuba.zip).
 
 ![Copy folders](https://github.com/omegahm/DBP2P/raw/master/Documentation/copy-folders.png)
 
