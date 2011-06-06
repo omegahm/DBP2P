@@ -109,12 +109,12 @@ For example, to invoke the manual identity provider\footnote{Se section \ref{ide
 
 \footnotesize
 \begin{verbatim}
-Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
+Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL, uuid);
 startActivityForResult(i, REQUEST_DUSTYTUBA);
 \end{verbatim}
 \normalsize
 
-where \verb+REQUEST_DUSTYTUBA+ is an integer constant chosen to distinguish between the result of this activity and others you may be using. Also make your main activity implement the \verb+BtAPIListener+ interface and override the \verb+onActivityResult()+ method as follows:
+where \verb+REQUEST_DUSTYTUBA+ is an integer constant chosen to distinguish between the result of this activity and others you may be using and \verb+uuid+ is an instance of the \verb+java.util.UUID+ class used to distinguish your bluetooth application from others. Also make your main activity implement the \verb+BtAPIListener+ interface and override the \verb+onActivityResult()+ method as follows:
 
 \footnotesize
 \begin{verbatim}
@@ -138,12 +138,13 @@ The \verb+BtAPI+ provides the two static methods \verb+getIntent()+ used to gene
 
 \footnotesize
 \begin{verbatim}
-public static Intent getIntent(Context context, String idProvider);
-public static Intent getIntent(Context context, String idProvider, Bundle extras);
+public static Intent getIntent(Context context, String idProvider, UUID uuid);
+public static Intent getIntent(Context context, String idProvider, UUID uuid, 
+                               Bundle extras);
 \end{verbatim}
 \normalsize
 
-Both methods need a \verb+Context+ object and an identity provider to use (see section \ref{identity-providers} for a list). Furthermore, the second method allows for passing on a bundle of information to the identity provider -- which is used e.g. for providing the Bump\texttrademark{} with an API key.
+Both methods need a \verb+Context+ object, an identity provider to use (see section \ref{identity-providers} for a list) and a UUID to distinguish your application from other bluetooth applications. Furthermore, the second method allows for passing on a bundle of information to the identity provider -- which is used e.g. for providing the Bump\texttrademark{} with an API key.
 
 \subsection{Identity providers}
 \label{identity-providers}

@@ -77,10 +77,10 @@ public class StartActivity extends Activity {
 				String[] providers = {BtAPI.IDENTITY_PROVIDER_MANUAL, BtAPI.IDENTITY_PROVIDER_BUMP,
                         BtAPI.IDENTITY_PROVIDER_PAIRED};
 		        Bundle b = new Bundle();
-		        // TODO: Send along UUID + SDP_NAME
+
 		        b.putStringArray(BtAPI.EXTRA_IP_PROVIDERS, providers);
 		        b.putString(BumpAPI.EXTRA_API_KEY, "273a39bb29d342c2a9fcc2e61158cbba");
-		        Intent i = BtAPI.getIntent(StartActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, b);
+		        Intent i = BtAPI.getIntent(StartActivity.this, BtAPI.IDENTITY_PROVIDER_MULTIPLE, BattleshipsApplication.BLUETOOTH_UUID, b);
 		        startActivityForResult(i, REQUEST_DUSTYTUBA);
 		    }
 		});
@@ -100,7 +100,7 @@ public class StartActivity extends Activity {
 //		        	other_mac = "90:21:55:A1:A5:67";
 		        }
 		        b.putString(BtAPI.EXTRA_IP_MAC, other_mac);
-		        Intent i = BtAPI.getIntent(StartActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, b);
+		        Intent i = BtAPI.getIntent(StartActivity.this, BtAPI.IDENTITY_PROVIDER_FAKE, BattleshipsApplication.BLUETOOTH_UUID, b);
 		        startActivityForResult(i, REQUEST_DUSTYTUBA);
 		    }
 		});

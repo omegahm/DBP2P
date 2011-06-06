@@ -54,10 +54,10 @@ public class BluetoothConnectionManager extends BroadcastReceiver {
 	
 	private AlertDialog pairingHelpDialog;
 	
-	public BluetoothConnectionManager(Context context, String mac, String uuid, String sdp_name) {
+	public BluetoothConnectionManager(Context context, String mac, UUID uuid, String sdp_name) {
 		this.mContext = context;
 		this.mac = mac;
-		this.uuid = UUID.fromString(uuid);
+		this.uuid = uuid;
 		this.sdp_name = sdp_name;
 		this.mBTAdapter = BluetoothAdapter.getDefaultAdapter();
 	}

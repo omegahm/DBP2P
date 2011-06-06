@@ -7,6 +7,8 @@ The code behind a simple bluetooth connection can be cumbersome to setup.
 DustyTuba is here to ease this connection setup, and at the same time, offer other solutions to getting the identity of the actors in the bluetooth connection.
 
 ## Getting started is halfway done
+If you just want to use the library (and not develop on it), you should download the all-included zip-file [DustyTuba.zip](https://github.com/omegahm/DBP2P/tree/master/DustyTuba.zip).
+
 ![Copy folders](https://github.com/omegahm/DBP2P/raw/master/Documentation/copy-folders.png)
 
 In order to use DustyTuba, you need to include the three folders: `libs`, `res`, and `src` into your own project.
@@ -58,10 +60,10 @@ To receive data from the other end of the bluetooth connection, you need to have
 
 For example, to invoke the manual identity provider, insert the following code where you want it to be invoked:
     
-    Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL);
+    Intent i = BtAPI.getIntent(MainActivity.this, BtAPI.IDENTITY_PROVIDER_MANUAL, uuid);
     startActivityForResult(i, REQUEST_DUSTYTUBA);
 
-where `REQUEST_DUSTYTUBA` is an integer constant chosen to distinguish between the result of this activity and others you may be using. Also make your main activity implement the `BtAPIListener`-interface and override the `onActivityResult()` method as follows:
+where `REQUEST_DUSTYTUBA` is an integer constant chosen to distinguish between the result of this activity and others you may be using and `uuid` is an instance of the `java.util.UUID` class used to distinguish your bluetooth application from others. Also make your main activity implement the `BtAPIListener`-interface and override the `onActivityResult()` method as follows:
 
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {

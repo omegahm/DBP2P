@@ -1,5 +1,7 @@
 package dk.hotmovinglobster.dustytuba.api;
 
+import java.util.UUID;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -38,8 +40,8 @@ public class BtAPI {
 	 * @param idProvider A string deciding which identity provider to use
 	 * @return The Intent to pass on to startActivityForResult
 	 */
-	public static Intent getIntent(final Context context, final String idProvider) {
-		return getIntent( context, idProvider, null );
+	public static Intent getIntent(final Context context, final String idProvider, final UUID uuid) {
+		return getIntent( context, idProvider, uuid, null );
 	}
 	
 	/**
@@ -52,7 +54,7 @@ public class BtAPI {
 	 * @param extras Extra data to bundle along with the intent
 	 * @return The Intent to pass on to startActivityForResult
 	 */
-	public static Intent getIntent(final Context context, final String idProvider, final Bundle extras) {
+	public static Intent getIntent(final Context context, final String idProvider, final UUID uuid, final Bundle extras) {
 		final Class<?> cls = stringToIdProviderClass(idProvider);
 		
 		if ( cls == null ) {
@@ -60,6 +62,7 @@ public class BtAPI {
 			return null;
 		} else {
 			Intent intent = new Intent(context, GenericIPActivity.class);
+			intent.putExtra(EXTRA_BT_UUID, uuid);
 			if ( extras != null ) {
 				intent.putExtra(EXTRA_IP_BUNDLE, extras);
 			}
@@ -155,6 +158,11 @@ public class BtAPI {
 	 */
 	public static final String EXTRA_BT_MAC       = "bt_mac";
 	
+	/**
+	 * Used for sending the desired UUID of the bluetooth service from the application 
+	 * to GenericIPActivity
+	 */
+	public static final String EXTRA_BT_UUID      = "bt_uuid";
 	/**
 	 * Used for returning the bluetooth connection object to the application
 	 * 

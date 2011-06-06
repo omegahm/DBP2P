@@ -1,5 +1,7 @@
 package dk.hotmovinglobster.dustytuba.id;
 
+import java.util.UUID;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -51,6 +53,7 @@ public class GenericIPActivity extends Activity {
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
     	Log.d(BtAPI.LOG_TAG, "GenericIPActivity: Created");
     	thisIntent = getIntent();
+
     	Log.v(BtAPI.LOG_TAG, "GenericIPActivity: with data (Size "+thisIntent.getExtras().size()+": "+thisIntent.getExtras().keySet()+")");
 
     	// Get the class of the identity provider to use
@@ -150,26 +153,16 @@ public class GenericIPActivity extends Activity {
 			}
 		});
 		dialog.show();
-		// FIXME: HACK: Not the proper way to go about this, but it will do for now...
-		final String BT_UUID = "fa87c0e0-afac-12de-8a39-a80f200c9a96";
+
+		final UUID uuid = (UUID) thisIntent.getSerializableExtra( BtAPI.EXTRA_BT_UUID );
 		final String BT_SDP_NAME = "DustyTubaAPI_SDP_NAME";
-		// Change to use BTAPI CONSTANTS
-		//b.putExtra(BtAPI.EXTRA_BT_MAC, other_mac);
-		/*
-		Intent i = new Intent(GenericIPActivity.this, BluetoothConnector.class);
-		boolean isServer = false; // try to connect as client in addition to being a server
-		i.putExtra(BluetoothConnector.BT_CONN_DATA.SERVER.name(), isServer);
-		i.putExtra(BluetoothConnector.BT_CONN_DATA.MAC.name(), other_mac);
-		i.putExtra(BluetoothConnector.BT_CONN_DATA.UUID.name(), BT_UUID);
-		i.putExtra(BluetoothConnector.BT_CONN_DATA.SDP_NAME.name(), BT_SDP_NAME);
-		startActivityForResult(i, BtAPI.REQUEST_SETUP_BT);
-		*/
-		
+
+		// Start initialization of bluetooth connection in a separate thread
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				BluetoothConnectionManager bcm = new BluetoothConnectionManager(GenericIPActivity.this, other_mac, BT_UUID, BT_SDP_NAME);
+				BluetoothConnectionManager bcm = new BluetoothConnectionManager(GenericIPActivity.this, other_mac, uuid, BT_SDP_NAME);
 				bcm.setupConnection();
 				
 				BtConnection btConn = null;

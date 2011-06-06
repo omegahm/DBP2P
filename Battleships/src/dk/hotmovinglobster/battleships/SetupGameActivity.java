@@ -62,6 +62,18 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 		}
 	}
 	
+	@Override
+	public void onStart() {
+		Log.v(BattleshipsApplication.LOG_TAG, "SetupGameActivity: onShow()");
+		super.onStart();
+	}
+	
+	@Override
+	public void onResume() {
+		Log.v(BattleshipsApplication.LOG_TAG, "SetupGameActivity: onResume()");
+		super.onResume();
+	}
+	
 	private void setupComponents() {
 		
 		///////////////////////////////////
@@ -93,19 +105,14 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 					rules_game_type = GAME_TYPE_MEDIUM;
 				} else if (position == 2) {
 					rules_game_type = GAME_TYPE_LONG;
-//				} else if (position == 3) {
-//					rules_game_type = GAME_TYPE_VERY_SHORT;
 				}
 			}
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {}
 		});
 		// Choose medium game as default
-		//gridSizeSpinner.setSelection( 1 );
+		gridSizeSpinner.setSelection( 1 );
 		
-		// TODO: Switch back!
-		// Choose very short game as default during development
-		gridSizeSpinner.setSelection( 3 );
 	}
 	
 	private void showWaitingDialog() {
@@ -185,12 +192,7 @@ public class SetupGameActivity extends CommunicationProtocolActivity {
 				BattleshipsApplication.context().GRID_ROWS  = 10;
 				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 3, 2, 2, 1 };
 				break;
-/*			case GAME_TYPE_VERY_SHORT:
-				BattleshipsApplication.context().GRID_COLUMNS = 4;
-				BattleshipsApplication.context().GRID_ROWS  = 4;
-				BattleshipsApplication.context().MAX_SHIPS = new int[] { 0, 0, 1, 0, 0, 0 };
-				break;
-*/		}
+		}
 
 		Log.v(BattleshipsApplication.LOG_TAG, "SetupGameActivity: acceptRulesAndStart("+BattleshipsApplication.context().GRID_COLUMNS+", " +BattleshipsApplication.context().GRID_ROWS+", " +Arrays.toString(BattleshipsApplication.context().MAX_SHIPS)+")");
 

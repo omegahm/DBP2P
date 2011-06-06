@@ -96,8 +96,9 @@
 	</target>
 	
 	<target name="zip" depends="dist">
-		<zip destfile="DustyTuba.zip" update="true">
+		<zip destfile="../DustyTuba.zip" update="true">
 			<zipfileset dir="${dist}" />
+			<zipfileset dir=".." includes="Documentation/Documentation.pdf" fullpath="Documentation.pdf" />
 		</zip>
 	</target>
 
