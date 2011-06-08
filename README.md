@@ -93,6 +93,8 @@ But, nobody wants to view a boring dummy project, so we made a cool dummy projec
 
 The dummy project, which is actually a [Battleships](http://en.wikipedia.org/wiki/Battleships) game (cool, right?), is available in the [Battleships](https://github.com/omegahm/DBP2P/tree/master/Battleships)-folder.
 
+To see for yourself, have a look at our [Battleships Multiplayer application on Android Market](https://market.android.com/details?id=dk.hotmovinglobster.battleships&feature=search_result)
+
 ![Battleships](https://github.com/omegahm/DBP2P/raw/master/Battleships/res/drawable/icon.png)
 
 ## Documentation
